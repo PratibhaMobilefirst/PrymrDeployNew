@@ -1,0 +1,98 @@
+.slick-prev,
+.slick-next {
+  display: none !important;
+}
+
+.slick-dots {
+  top: 510px; /* Adjust as needed to position dots vertically */
+  text-align: center;
+}
+
+.slick-dots li {
+  margin: 0 5px; /* Adjust the spacing between dots */
+}
+
+.slick-dots li button:before {
+  color: white; /* Change to desired color */
+  font-size: 12px; /* Adjust the size of the dots */
+}
+
+.slick-dots {
+  text-align: center;
+  display: none !important;
+}
+
+@media (max-width: 376px) {
+  .slick-dots {
+    top: 465px;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 576px) {
+  .slick-dots {
+    top: 585px;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+  .slick-dots {
+    bottom: 15px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .slick-dots {
+    top: 390px;
+  }
+  .wallet {
+    margin-top: 150px;
+  }
+
+  .main-page {
+    margin-top: -50px;
+  }
+}
+
+@media (min-width: 1023px) and (max-width: 1365px) {
+  .slick-dots {
+    top: 450px;
+  }
+  .wallet {
+    margin-top: 330px;
+  }
+
+  .main-page {
+    margin-top: -50px;
+  }
+}
+@media (min-width: 1023px) and (max-width: 1365px) {
+  .container {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
+
+@media (min-width: 1440px) and (max-width: 1440px) {
+  .container {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
+/* @media (min-width: 1440px) and (max-width: 2560px) {
+  .container {
+    padding-left: 130px;
+    padding-right: 100px;
+  }
+} */
+@media (min-width: 1440px) and (max-width: 1640px) {
+  .container {
+    padding-left: 130px;
+    padding-right: 100px;
+  }
+}
+@media (min-width: 1650px) and (max-width: 2560px) {
+  .container {
+    padding-left: 200px;
+    padding-right: 110px;
+  }
+}
