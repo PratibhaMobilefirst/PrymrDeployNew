@@ -38,10 +38,10 @@ function App() {
           {/* <Route path="/" element={<Blank />} /> */}
           <Route path="/user-profile" element={<Logout />} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/loginscreen" element={<LoginScreen />} />
+          <Route path="/" element={<LoginScreen />} />
           <Route path="/forgetpassword" element={<ForgetPassword />} />
           {/* old code */}
-          <Route path="/" element={<OnBoarding />} />
+          {/* <Route path="/" element={<OnBoarding />} /> */}
           <Route path="/home" element={<Home />} />
           <Route path="/home-about-allcreators" element={<AllCreators />} />
           <Route path="/home-about-prymr" element={<AboutPrymr />} />

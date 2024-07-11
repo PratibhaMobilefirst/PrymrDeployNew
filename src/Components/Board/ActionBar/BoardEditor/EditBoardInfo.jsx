@@ -131,7 +131,7 @@ const EditBoardInfo = () => {
             className="flex bg-blue-400 w-full fixed bottom-1 h-16 font-bold text-3xl text-white justify-center items-center mb-3"
             onClick={handleSave}
           >
-            Save{" "}
+            Save
             <img
               src={checkCircleWhite}
               alt="Check Circle White"
