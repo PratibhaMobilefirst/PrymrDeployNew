@@ -217,50 +217,102 @@ const SignupPage = () => {
       alert("Please fill out all the fields correctly");
     }
   };
+
+  // const validateForm = () => {
+  //   let isValid = true;
+  //   const newErrors = {};
+
+  //   // Validate First Name
+  //   if (!formData.firstName.trim()) {
+  //     newErrors.firstName = "First Name is required";
+  //     isValid = false;
+  //   }
+
+  //   // Validate Last Name
+  //   if (!formData.lastName.trim()) {
+  //     newErrors.lastName = "Last Name is required";
+  //     isValid = false;
+  //   }
+
+  //   // Validate User Name
+  //   if (!formData.userName.trim()) {
+  //     newErrors.userName = "User Name is required";
+  //     isValid = false;
+  //   }
+
+  //   // Validate Email
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!formData.email.trim()) {
+  //     newErrors.email = "Email is required";
+  //     isValid = false;
+  //   } else if (!emailRegex.test(formData.email)) {
+  //     newErrors.email = "Invalid email format";
+  //     isValid = false;
+  //   }
+
+  //   // Validate Password
+  //   if (!formData.password) {
+  //     newErrors.password = "Password is required";
+  //     isValid = false;
+  //   } else if (formData.password.length < 6) {
+  //     newErrors.password = "Password must be at least 6 characters long";
+  //     isValid = false;
+  //   }
+
+  //   setErrors(newErrors);
+  //   return isValid;
+  // };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (validateForm()) {
+  //     handleSignUp(e);
+  //   } else {
+  //     toast.error("Please fill out all the fields correctly");
+  //   }
+  // };
+
   const handleBack = () => {
-    const storedToken = localStorage.removeItem("token");
     navigate("/");
   };
 
   //-------------***********API INTEGRATION ********** -------------
-
   const handleSignUp = async (e) => {
     e.preventDefault();
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      alert("No token found. Please sign in again.");
+      console.log("token:53" + storedToken);
+      return;
+    }
     try {
       const result = await fetch(`${baseURL}/auth/createUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer {eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZGNhYTA0LTFkMmItNGJiZi04OWJjLTc5MjU2OTkwNDIyMSIsInVzZXJOYW1lIjoiYWtzaGFkYV95ZWwiLCJlbWFpbCI6ImFrc2hhZGExMjNAZ21haWwuY29tIiwiZmlyc3ROYW1lIjoiQWtzaGFkYSIsImxhc3ROYW1lIjoiWWVsIiwiaWF0IjoxNzIwNzEzNTkwLCJleHAiOjE3Mzk3MjE1OTB9.Zo-5EHnbBV5FNGpW2PZgCmvmali8A9Z9pW_PTj_qdvc}`,
+          Authorization: `Bearer ${storedToken}`,
         },
+
         body: JSON.stringify(formData),
-      });
+      })
+        .then((response) => {
+          console.log(response);
+          return response.json();
+        })
 
-      if (!result.ok) {
-        throw new Error(`HTTP error! status: ${result.status}`);
-      }
-
-      const response = await result.json();
-      console.log("Full response:", response);
-
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        console.log("Token saved:", response.token);
-        alert("Sign up successful");
-        navigate("/home");
-      } else {
-        console.error("Token not found in response:", response);
-        alert("Sign up failed: Token not found in response.");
-      }
+        .then((data) => {
+          console.log(data);
+          if (data.status) {
+            alert("Sign in successful");
+            navigate("/home");
+          } else {
+            alert("Sign in failed");
+          }
+        });
     } catch (error) {
-      console.error("Error during sign up:", error);
-      alert(`Error during sign up: ${error.message}`);
+      console.error("Error signing in:", error);
     }
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
   };
   return (
     <div className="bg-cover bg-center absolute h-[100vh] w-full flex justify-center items-center">
@@ -273,7 +325,7 @@ const SignupPage = () => {
         <div className="absolute -top-8 right-5">
           <RxCrossCircled
             className="w-8 h-8 cursor-pointer"
-            onClick={handleBack}
+            // onClick={handleBack}
           />
         </div>
         <h1 className="text-[28px] font-bold mb-6 text-center">
