@@ -1,4 +1,3 @@
-//  akshada'
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -96,11 +95,9 @@ const Home = () => {
     { src: deleteBai, alt: "Avatar 2" },
     { src: deleteBai, alt: "Avatar 3" },
   ];
-
-    const handleContact = () => {
-      navigate("/contact");
-    };
-
+  const handleContact = () => {
+    navigate("/contact");
+  };
   return (
     <>
       <div className="lg:w-[30%]">
@@ -139,7 +136,7 @@ const Home = () => {
               <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
               <span>Info</span>
             </li>
-            <li className="flex items-center space-x-2 cursor-pointer" onClick={handleContact}>
+            <li className="flex items-center space-x-2" onClick={handleContact}>
               <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
               <span>Contact</span>
             </li>
