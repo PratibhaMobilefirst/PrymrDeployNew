@@ -13,23 +13,22 @@ const EditBoard = ({ cameraImage }) => {
   const { layerImageUrl } = useContext(ImageContext);
   const [isPanZoomEnabled, setIsPanZoomEnabled] = useState(true);
   const [layers, setLayers] = useState([]);
+  const [tappableAreas, setTappableAreas] = useState([]);
+  const [jsonContent, setJsonContent] = useState("");
   const canvasRef = useRef(null);
-  const fabricCanvasRef = useRef(null);
   const location = useLocation();
-  const { croppedImage } = location.state || {};
   const { createBlankCanvas } = location.state || {};
   const [showTappableArea, setShowTappableArea] = useState(false);
   const [tappablePosition, setTappablePosition] = useState({ x: 0, y: 0 });
   const [showNewTappable, setShowNewTappable] = useState(false);
-  const [zoom, setZoom] = useState(1);
-  const [imageBounds, setImageBounds] = useState({ width: 0, height: 0 });
-  const imageRef = useRef(null);
+  const [imageBounds, setImageBounds] = useState({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+  });
   const [isLayersPanelVisible, setIsLayersPanelVisible] = useState(false);
   const [tappableContent, setTappableContent] = useState(null);
-  // const imageUrl = decodeURIComponent(
-  //   new URLSearchParams(location.search).get("image")
-  // );
-
   const { imageUrl } = location.state || {};
 
   useEffect(() => {
@@ -72,7 +71,6 @@ const EditBoard = ({ cameraImage }) => {
       canvas.setWidth(width - width * 0.1);
       canvas.setHeight(height - height * 0.25);
 
-      // Set the background image (non-selectable) with aspect ratio
       fabric.Image.fromURL(
         imageUrl,
         function (img) {
@@ -82,11 +80,9 @@ const EditBoard = ({ cameraImage }) => {
           let bgWidth, bgHeight;
 
           if (imgAspectRatio > canvasAspectRatio) {
-            // Image is wider
             bgWidth = canvas.width;
             bgHeight = canvas.width / imgAspectRatio;
           } else {
-            // Image is taller
             bgHeight = canvas.height;
             bgWidth = canvas.height * imgAspectRatio;
           }
@@ -94,7 +90,6 @@ const EditBoard = ({ cameraImage }) => {
           img.scaleToWidth(bgWidth);
           img.scaleToHeight(bgHeight);
 
-          // Center the background image
           img.set({
             originX: "center",
             originY: "center",
@@ -102,9 +97,25 @@ const EditBoard = ({ cameraImage }) => {
             top: canvas.height / 2,
           });
 
+          setImageBounds({
+            left: canvas.width / 2 - bgWidth / 2,
+            top: canvas.height / 2 - bgHeight / 2,
+            width: bgWidth,
+            height: bgHeight,
+          });
+
           canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
             selectable: false,
             evented: false,
+          });
+
+          img.on("modified", () => {
+            setImageBounds({
+              left: img.left - (img.width * img.scaleX) / 2,
+              top: img.top - (img.height * img.scaleY) / 2,
+              width: img.width * img.scaleX,
+              height: img.height * img.scaleY,
+            });
           });
         },
         { crossOrigin: "" }
@@ -174,7 +185,6 @@ const EditBoard = ({ cameraImage }) => {
     };
   }, [editor?.canvas, isPanZoomEnabled]);
 
-  // Initialize Hammer.js and add pinch event listener
   useEffect(() => {
     const canvasContainer = document.querySelector(".canvas-container");
     const hammer = new Hammer(canvasContainer);
@@ -257,29 +267,57 @@ const EditBoard = ({ cameraImage }) => {
     };
   }, [editor?.canvas, createBlankCanvas]);
 
+  const addTappableArea = (content = null) => {
+    const newTappableArea = {
+      id: `tappable-${getRandomNumber(100000, 999999999)}`,
+      position: { x: tappablePosition.x, y: tappablePosition.y },
+      size: { width: 100, height: 100 },
+      content,
+    };
+
+    setTappableAreas((prev) => {
+      const updatedAreas = [...prev, newTappableArea];
+      saveCanvasAsJson(updatedAreas);
+      return updatedAreas;
+    });
+
+    setShowTappableArea(true);
+    setTappableContent(null);
+    setIsPanZoomEnabled(false); // Disable pan and zoom
+  };
+
   const handleSelectTappableArea = () => {
-    const centerX = imageBounds.width / 2;
-    const centerY = imageBounds.height / 2;
+    const centerX = imageBounds.left + imageBounds.width / 2;
+    const centerY = imageBounds.top + imageBounds.height / 2;
     setTappablePosition({ x: centerX, y: centerY });
     setShowTappableArea(true);
     setShowNewTappable(false);
+    addTappableArea(); // Directly add tappable area for demo
   };
 
-  const handleRemoveTappableArea = () => {
+  const handleRemoveTappableArea = (id) => {
+    setTappableAreas((prev) => {
+      const updatedAreas = prev.filter((area) => area.id !== id);
+      saveCanvasAsJson(updatedAreas);
+      return updatedAreas;
+    });
     setShowTappableArea(false);
     setTappableContent(null);
+    setIsPanZoomEnabled(true);
   };
 
   const handleImageSelect = (imageData) => {
     setTappableContent(imageData);
     setShowTappableArea(true);
     setShowNewTappable(false);
+    addTappableArea(imageData); // Directly add tappable area with image content
   };
 
   const handleEmojiSelect = (emoji) => {
     setTappableContent(emoji);
     setShowTappableArea(true);
     setShowNewTappable(false);
+    addTappableArea(emoji); // Directly add tappable area with emoji content
   };
 
   const handleNewTappableClose = () => {
@@ -290,14 +328,6 @@ const EditBoard = ({ cameraImage }) => {
     setTappableContent(content);
   };
 
-  // const getAdjustedCoordinates = () => {
-  //   const adjustedCoords = calculateAdjustedCoordinates();
-  //   // setCoordinates(adjustedCoords);
-  //   // toggleDialog();
-  // console.log("Display Coordinates")
-  // console.log(adjustedCoords);
-  // };
-
   const getZoomLevel = (canvas) => {
     const viewportTransform = canvas.viewportTransform;
     const scaleX = viewportTransform[0];
@@ -305,7 +335,7 @@ const EditBoard = ({ cameraImage }) => {
     return Math.sqrt(scaleX * scaleY);
   };
 
-  const calculateAdjustedCoordinates = () => {
+  const calculateAdjustedCoordinates = (tappableAreas) => {
     const canvas = editor?.canvas;
     const zoom = getZoomLevel(canvas);
 
@@ -334,39 +364,71 @@ const EditBoard = ({ cameraImage }) => {
       });
     });
 
-    // commentBoxes.forEach((box) => {
-    //   const { id, left, top, comment, zoom } = box;
-
-    //   adjustedCoordinates.push({
-    //     id,
-    //     left: left,
-    //     top: top,
-    //     zoom,
-    //     comment,
-    //   });
-    // });
+    tappableAreas.forEach((area) => {
+      adjustedCoordinates.push({
+        id: area.id,
+        left: area.position.x,
+        top: area.position.y,
+        width: area.size.width,
+        height: area.size.height,
+        content: area.content,
+      });
+    });
 
     return adjustedCoordinates;
   };
 
   const handleCanvasClick = (event) => {
     const rect = event.target.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
 
-    setTappablePosition({ x, y });
+    x = Math.max(
+      imageBounds.left,
+      Math.min(x, imageBounds.left + imageBounds.width - 100)
+    );
+    y = Math.max(
+      imageBounds.top,
+      Math.min(y, imageBounds.top + imageBounds.height - 100)
+    );
+
+    const newTappableArea = {
+      id: `tappable-${getRandomNumber(100000, 999999999)}`,
+      position: { x, y },
+      size: { width: 100, height: 100 },
+      content: null,
+    };
+
+    setTappableAreas((prev) => {
+      const updatedAreas = [...prev, newTappableArea];
+      saveCanvasAsJson(updatedAreas);
+      return updatedAreas;
+    });
+    setTappablePosition({ id: newTappableArea.id, x, y });
     setShowTappableArea(true);
     setTappableContent(null);
+    setIsPanZoomEnabled(false);
 
     const json = editor?.canvas.toJSON();
-    console.log("DIsplay JSON");
+    console.log("Display JSON");
     console.log(json);
 
-    const adjustedCoords = calculateAdjustedCoordinates();
-    // setCoordinates(adjustedCoords);
-    // toggleDialog();
+    const adjustedCoords = calculateAdjustedCoordinates(tappableAreas);
     console.log("Display Coordinates");
     console.log(adjustedCoords);
+  };
+
+  const getRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  const saveCanvasAsJson = (tappableAreas) => {
+    const json = {
+      canvas: editor?.canvas.toJSON(),
+      tappableAreas: calculateAdjustedCoordinates(tappableAreas),
+    };
+    setJsonContent(JSON.stringify(json, null, 2));
+    console.log("Saved JSON:", json);
   };
 
   return (
@@ -378,32 +440,43 @@ const EditBoard = ({ cameraImage }) => {
       >
         {isPanZoomEnabled ? "" : ""}
         <FabricJSCanvas className="fabric-canvas" onReady={onReady} />
-        <ActionBar
-          imageUrl={imageUrl}
-          onSelectTappableArea={handleSelectTappableArea}
-          onImageSelect={handleImageSelect}
-          onEmojiSelect={handleEmojiSelect}
-          onNewTappableClick={() => setShowNewTappable(true)}
-          onLayersToggle={(isVisible) => setIsLayersPanelVisible(isVisible)}
-        />
       </div>
+      <ActionBar
+        imageUrl={imageUrl}
+        onSelectTappableArea={handleSelectTappableArea}
+        onImageSelect={handleImageSelect}
+        onEmojiSelect={handleEmojiSelect}
+        onNewTappableClick={() => setShowNewTappable(true)}
+        onLayersToggle={(isVisible) => setIsLayersPanelVisible(isVisible)}
+      />
 
       <LayersPanel
         isVisible={isLayersPanelVisible}
         tappableContent={tappableContent}
       />
 
-      {showTappableArea && (
+      {tappableAreas.map((area) => (
         <TappableArea
-          onRemove={handleRemoveTappableArea}
-          position={tappablePosition}
-          setPosition={setTappablePosition}
-          content={tappableContent}
+          key={area.id}
+          onRemove={() => handleRemoveTappableArea(area.id)}
+          position={area.position}
+          setPosition={(position) =>
+            setTappableAreas((prev) =>
+              prev.map((a) => (a.id === area.id ? { ...a, position } : a))
+            )
+          }
+          size={area.size}
+          setSize={(size) =>
+            setTappableAreas((prev) =>
+              prev.map((a) => (a.id === area.id ? { ...a, size } : a))
+            )
+          }
+          content={area.content}
           imageBounds={imageBounds}
           onCheckSquareClick={handleCheckSquareClick}
-          initialSize={{ width: 100, height: 100 }}
+          initialSize={area.size}
         />
-      )}
+      ))}
     </div>
   );
 };

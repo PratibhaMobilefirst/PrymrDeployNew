@@ -28,7 +28,8 @@ import { useLocation } from "react-router";
 //   "https://artstudiolife.com/wp-content/uploads/2022/03/roman-painting.jpg";
 const BoardEdit = () => {
   const location = useLocation();
-  const imageUrl = location.state; // Access imageUrl from location.state
+  // const imageUrl = location.state; // Access imageUrl from location.state
+  const imageUrl = JSON.parse(sessionStorage.getItem("state"))?.imageUrl; // Access imageUrl from location.state
   console.log("Editor ", imageUrl);
   const [currentImage, setCurrentImage] = useState(imageUrl);
   const [showTools, setShowTools] = useState(false);

@@ -19,6 +19,7 @@ const BrushTool = ({ image, onClose, onBrush }) => {
     const context = canvas.getContext("2d");
 
     const img = new Image();
+    img.crossOrigin = "Anonymous"; // Set the crossOrigin attribute
     img.src = image;
     img.onload = () => {
       canvas.width = img.width;
@@ -148,8 +149,14 @@ const BrushTool = ({ image, onClose, onBrush }) => {
 
   const handleApplyChanges = () => {
     const canvas = canvasRef.current;
-    const imageDataUrl = canvas.toDataURL("image/png");
-    onBrush(imageDataUrl);
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        onBrush(url);
+      } else {
+        console.error("Failed to create blob");
+      }
+    }, "image/png");
   };
 
   // Function to get preview circle style

@@ -21,7 +21,7 @@ import AboutPrymr from "./Components/HomePage/AboutPrymr";
 import Blank from "./Components/Blank.jsx";
 import EditBoardInfo from "./Components/Board/ActionBar/BoardEditor/EditBoardInfo";
 import ActionBar from "./Components/Board/ActionBar/ActionBar";
-import Logout from "./Components/Rework/Logout";
+import VisitorProfile from "./Components/Rework/VisitorProfile";
 import Header from "./Components/common/Header";
 import Navbar from "./Components/common/Navbar";
 import LoginScreen from "./Components/OnboardingScreen/LoginScreen";
@@ -29,6 +29,7 @@ import SignIn from "./Components/OnboardingScreen/SignupIn/SignIn";
 // import SignupPage from "./Components/OnboardingScreen/SignupIn/signup";
 import BoardEdit from "./Profile Settings/BoardEdit";
 import ForgetPassword from "./Components/OnboardingScreen/SignupIn/forgetPassword";
+import Contact from "./Components/HomePage/Contact";
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
       <ImageProvider>
         <Routes>
           {/* <Route path="/" element={<Blank />} /> */}
-          <Route path="/user-profile" element={<Logout />} />
+          <Route path="/user-profile" element={<VisitorProfile />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/" element={<LoginScreen />} />
           <Route path="/forgetpassword" element={<ForgetPassword />} />
@@ -78,6 +79,7 @@ function App() {
             path="/board-builder-actionbar-image-edit"
             element={<BoardEdit />}
           />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </ImageProvider>
     </BrowserRouter>

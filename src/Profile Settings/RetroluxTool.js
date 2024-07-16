@@ -26,6 +26,7 @@ const RetroluxTool = ({ image, onClose, onApply }) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const img = new Image();
+    img.crossOrigin = "Anonymous";
     img.src = image;
     img.onload = () => {
       canvas.width = img.width;

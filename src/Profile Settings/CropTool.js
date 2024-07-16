@@ -14,8 +14,9 @@ const CropTool = ({ image, onClose, onCrop }) => {
   const [historyIndex, setHistoryIndex] = useState(-1);
 
   useEffect(() => {
-    if (imageRef.current) {
-      const { width, height } = imageRef.current.getBoundingClientRect();
+    const img = imageRef.current;
+    const handleLoad = () => {
+      const { width, height } = img.getBoundingClientRect();
       const initialCropArea = {
         x: width * 0.1,
         y: height * 0.1,
@@ -25,6 +26,13 @@ const CropTool = ({ image, onClose, onCrop }) => {
       setCropArea(initialCropArea);
       setHistory([initialCropArea]);
       setHistoryIndex(0);
+    };
+
+    if (img.complete) {
+      handleLoad();
+    } else {
+      img.addEventListener("load", handleLoad);
+      return () => img.removeEventListener("load", handleLoad);
     }
   }, []);
 
@@ -217,6 +225,7 @@ const CropTool = ({ image, onClose, onCrop }) => {
           alt="To crop"
           className="max-h-[80vh] max-w-[90vw]"
           onTouchStart={(e) => e.preventDefault()}
+          crossOrigin="Anonymous"
         />
         <div
           ref={cropRef}

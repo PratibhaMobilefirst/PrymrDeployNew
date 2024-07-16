@@ -14,6 +14,7 @@ const CurvesModal = ({ image, onClose, onApply }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const img = new Image();
+    img.crossOrigin = "Anonymous";
     img.src = image;
     imageRef.current = img;
 
@@ -162,6 +163,7 @@ const CurvesModal = ({ image, onClose, onApply }) => {
   const applyChanges = () => {
     const canvas = document.createElement("canvas");
     const img = new Image();
+    img.crossOrigin = "Anonymous";
     img.src = image;
     img.onload = () => {
       canvas.width = img.width;
@@ -217,7 +219,6 @@ const CurvesModal = ({ image, onClose, onApply }) => {
     borderRadius: "8px",
     zIndex: 1000,
     width: "80%", // Adjust width as per your design
-    maxWidth: "290px", // Example maximum width
   };
 
   return (
@@ -244,7 +245,7 @@ const CurvesModal = ({ image, onClose, onApply }) => {
       <div className="relative">
         <canvas
           ref={canvasRef}
-          style={{ width: "100%", height: "100%", maxWidth: "100%" }}
+          style={{ width: "100%", height: "100%", maxHeight: "80vh" }}
           className="border border-gray-600"
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}

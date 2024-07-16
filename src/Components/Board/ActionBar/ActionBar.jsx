@@ -13,6 +13,11 @@ import { FaPlus, FaRedo, FaUndo } from "react-icons/fa";
 import LayersPanel from "./Layers/Layers";
 import NewTappable from "./NewTappeable/Newtapable";
 import Play from "../../../assets/Play.svg";
+import { useSelector } from "react-redux";
+import undo from "../../../assets/images/undo.svg";
+import redo from "../../../assets/images/redo.svg";
+import info from "../../../assets/info.svg";
+import line from "../../../assets/Line68.png";
 
 const ActionBar = ({
   imageUrl,
@@ -26,6 +31,8 @@ const ActionBar = ({
   const [isBoardVisible, setBoardVisible] = useState(true);
   const [isNewTappableClicked, setNewTappableClicked] = useState(false);
   const [isBoardEditorVisible, setBoardEditorVisible] = useState(false);
+  const { count } = useSelector((state) => state.layerId);
+  const [showLayerCount, setShowLayerCount] = useState(null);
 
   const handleBoardInfo = () => {
     alert("navigating to board info");
@@ -46,7 +53,7 @@ const ActionBar = ({
 
   const handleLayerClick = () => {
     setLayerIsClicked(!layerIsClicked);
-    setBoardVisible(!layerIsClicked);
+    setBoardVisible(layerIsClicked);
     setNewTappableClicked(false);
     onLayersToggle(!layerIsClicked);
   };
@@ -55,6 +62,7 @@ const ActionBar = ({
     setNewTappableClicked(!isNewTappableClicked);
     setBoardVisible(isNewTappableClicked);
     setLayerIsClicked(false);
+    onLayersToggle(false);
   };
 
   const handleTappableClose = () => {
@@ -74,59 +82,28 @@ const ActionBar = ({
     <>
       <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
         {isBoardVisible && (
-          <div className="bg-gray-600 justify-center flex w-full p-1 items-center space-y-4 shrink">
-            {/* Top section */}
-            {/* <div className="flex space-x-4 py-2">
+          <div className="bg-gray-600 justify-center flex w-full p-1 items-center space-y-2 shrink">
+            <div className="flex space-x-4 py-1">
               <button
                 onClick={handleBoardInfo}
-                className="py-2 px-6 sm:py-3 sm:px-5 md:py-4 md:px-6 lg:py-5 lg:px-7 rounded-[25px] border border-white flex items-center justify-center space-x-2"
-              >
-                <span className="flex-shrink-0"> Board Info</span>
-                <span className="flex-shrink-0">
-                  {" "}
-                  <BsInfoCircle />
-                </span>
-              </button>
-
-              <button
-                className="py-2 px-6 sm:py-3 sm:px-5 md:py-4 md:px-6 lg:py-5 lg:px-7 rounded-[25px] border border-white flex items-center justify-center space-x-2"
-                onClick={handleBoardEditorClick}
-              >
-                <span className="flex-shrink-0">Board Editor</span>{" "}
-                <span className="flex-shrink-0">
-                  <LuPencilLine />
-                </span>
-              </button>
-
-              <button className="py-2 px-4 sm:py-3 sm:px-5 md:py-4 md:px-6 lg:py-5 lg:px-7 rounded-[25px] border border-white flex items-center justify-center space-x-2">
-                <span className="flex-shrink-0"> Add Page</span>
-                <span className="flex-shrink-0">
-                  <HiOutlineBookOpen />
-                </span>
-              </button>
-            </div> */}
-            <div className="flex space-x-4 py-2">
-              <button
-                onClick={handleBoardInfo}
-                className="py-2 px-6 sm:py-3 sm:px-5 md:py-4 md:px-6 lg:py-5 lg:px-7 rounded-[25px] border border-white flex items-center justify-center space-x-2"
+                className="py-1 px-6 sm:py-1 sm:px-5 md:py-1 md:px-6 lg:py-1 lg:px-7 rounded-[25px] border border-white flex items-center justify-center space-x-2"
               >
                 <span className="flex-shrink-0"> Board Info</span>
                 <span className="flex-shrink-0">
                   <BsInfoCircle />
                 </span>
               </button>
-              <button className="py-2 px-6 sm:py-3 sm:px-5 md:py-4 md:px-6 lg:py-5 lg:px-7  bg-sky-500 rounded-[55px]  flex items-center justify-center space-x-2">
+              <button className="py-1 px-6 sm:py-1 sm:px-5 md:py-1 md:px-6 lg:py-1 lg:px-7  bg-sky-500 rounded-[55px]  flex items-center justify-center space-x-2">
                 <span className="flex-shrink-0">Preview</span>
                 <span className="flex-shrink-0">
                   <img src={Play} alt="" />
                 </span>
               </button>
               <button
-                className="py-2 px-4 sm:py-3 sm:px-5 md:py-4 md:px-6 lg:py-5 lg:px-7 rounded-[25px] border border-white flex items-center justify-center space-x-2"
+                className="py-1 px-4 sm:py-1 sm:px-5 md:py-1 md:px-6 lg:py-1 lg:px-7 rounded-[25px] border border-white flex items-center justify-center space-x-2"
                 onClick={handleBoardEditorClick}
               >
                 <span className="flex-shrink-0" onClick={handleImageEditor}>
-                  {" "}
                   Image Editors
                 </span>
                 <span className="flex-shrink-0">
@@ -138,10 +115,6 @@ const ActionBar = ({
         )}
 
         {layerIsClicked && <LayersPanel />}
-
-        {/* {isNewTappableClicked && <NewTappable />} */}
-
-        {/* {isBoardEditorVisible && <BoardEditorBottomDiv />} */}
         {isNewTappableClicked && (
           <NewTappable
             onClose={handleTappableClose}
@@ -152,32 +125,36 @@ const ActionBar = ({
         )}
 
         <div className="bg-gray-900 justify-center flex w-full p-1 items-center ">
-          <div className="flex space-x-5 py-3">
+          <div className="flex space-x-5 py-1">
             <div className="flex flex-col items-center space-x-2   mr-1">
               <button
-                className={` py-1 px-4 rounded-full flex flex-col items-center ${
+                className={` py-2 px-8 rounded-full flex flex-col items-center ${
                   isNewTappableClicked
                     ? "bg-[#0085ff]"
                     : "bg-gray-700 hover:bg-gray-600"
                 }`}
                 onClick={handleTappableClick}
+                // onClick={handleBoardInfo}
               >
-                <GoPlus className="text-xl mb-1" />
+                <img src={info} className="text-xl  items-center" />
               </button>
-              <span className="text-white"> New Tappable </span>
+              <span className="text-[#d1cdcdc8]  text-sm ">New tappable</span>
             </div>
             <div className="flex flex-col items-center ">
               <button className=" hover:bg-gray-600 py-1 px-4 rounded-full flex flex-col items-center">
-                <FaUndo className="text-xl mb-1" />
+                <img src={undo} className="text-xl h-5 w-5 mb-1" />
               </button>
-              <span className="text-white  float-left"> Undo </span>
+              <span className="text-[#d1cdcdc8]  text-sm float-left">
+                Undo{" "}
+              </span>
             </div>
+            <img src={line} className="h-8" />
 
             <div className="flex flex-col items-center ">
               <button className=" hover:bg-gray-600 py-1 px-4 rounded-full flex flex-col items-center">
-                <FaRedo className="text-xl mb-1" />
+                <img src={redo} className="text-xl h-5 w-5 mb-1" />
               </button>
-              <span className="text-white float-left"> Redo</span>
+              <span className="text-[#d1cdcdc8] text-sm float-left"> Redo</span>
             </div>
             <div className="flex flex-col items-center space-x-1 mr-1">
               <button
@@ -189,10 +166,12 @@ const ActionBar = ({
                 onClick={handleLayerClick}
               >
                 <span className="flex gap-2">
-                  0<IoLayersOutline className="text-xl mb-1" />
+                  {count}
+
+                  <IoLayersOutline className="text-xl mb-1" />
                 </span>
               </button>
-              <span className="text-white -ml-1">Layers</span>
+              <span className="text-[#d1cdcdc8] text-sm">Layers</span>
             </div>
           </div>
         </div>

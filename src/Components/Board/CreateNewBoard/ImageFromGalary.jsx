@@ -209,7 +209,7 @@ const ImageFromGalary = () => {
       </div> */}
 
       <div className="pl-[30px] flex items-center justify-center">
-        <div className="border-2 border-dashed border-[#f5f4f4] rounded-[30px] h-[63vh] w-[70vw]">
+        <div className="border-2 border-dashed border-[#f5f4f4] rounded-[30px] h-[60vh] w-[70vw]">
           {imageFromChangeBG ? (
             <TransformWrapper>
               <TransformComponent
@@ -300,9 +300,9 @@ const ImageFromGalary = () => {
                             onClick={handleHorizontalClick}
                         />
                     </span> */}
-          {/* <img src={fullScreen} alt="Full Screen" className="sm:pr-2 pr-3" onClick={() => setShowPreview(!showPreview)} /> */}
+          {/* {/ <img src={fullScreen} alt="Full Screen" className="sm:pr-2 pr-3" onClick={() => setShowPreview(!showPreview)} /> /} */}
           <label htmlFor="fileInput1" className="m-3 flex justify-center pl-4">
-            <div className="flex items-center w-[50vw] text-white bg-[#363636] p-2 gap-2 rounded">
+            <div className="flex items-center w-auto px-3 text-white bg-[#363636] p-2 gap-2 rounded">
               <img
                 src={changeBg}
                 alt="Change Background Icon"
@@ -328,7 +328,7 @@ const ImageFromGalary = () => {
         </div>
       </div>
 
-      <div className="bg-black py-3 h-[10vh] w-full flex items-center justify-center">
+      <div className="bg-black py-5 h-[10vh] w-full mt-[1vh] flex items-center justify-center">
         <div
           className="bg-[#0085FF] h-10 flex items-center justify-center text-black w-full max-w-xs sm:w-50 sm:bottom-0 md:max-w-sm lg:max-w-md xl:max-w-lg rounded-full font-bold px-4 cursor-pointer"
           onClick={showCroppedImage}

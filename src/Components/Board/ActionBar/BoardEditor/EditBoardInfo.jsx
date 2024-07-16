@@ -106,9 +106,9 @@ const EditBoardInfo = () => {
           <span className="text-lg">Back</span>
         </header>
         <div className="p-1 rounded-lg mb-2">
-          <img src={imageUrl} alt="Board" className="h-[54vh] w-[213vw]" />
+          <img src={imageUrl} alt="Board" className="h-[54vh] w-full" />
 
-          <div className="absolute top-[50vh] h-auto inset-0 bg-black bg-opacity-50 flex flex-col p-4">
+          <div className="absolute top-[50vh] w-full h-auto inset-0 bg-black bg-opacity-50 flex flex-col p-4">
             <div className="text-white mb-4">
               <h1 className="text-md top5">Title Board</h1>
             </div>

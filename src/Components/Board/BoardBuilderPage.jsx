@@ -27,6 +27,7 @@ import "swiper/css/free-mode";
 
 // import required modules
 import { FreeMode, Pagination } from "swiper/modules";
+import Home from "../HomePage/Home";
 
 // ------------------------------REWORK------------------------------------------
 
@@ -51,10 +52,14 @@ const BoardBuilder = () => {
     setButtonIsClicked("ADS");
     navigate("/create-new-board-ADS");
   };
-
+  const imagesforsmallpost = [
+    { src: deleteBai, alt: "Avatar 1" },
+    { src: deleteBai, alt: "Avatar 2" },
+    { src: deleteBai, alt: "Avatar 3" },
+  ];
   return (
-    <div className="container">
-      <div className="container">
+    <>
+      <div className=" lg:w-[30%]">
         <div className="flex items-center">
           <button className="w-auto h-auto" onClick={handleBackFunction}>
             <img src={handleBack} className="text-3xl border-white" />
@@ -142,7 +147,7 @@ const BoardBuilder = () => {
             <div key={index} className="bg-[#262626] p-4 rounded-lg">
               <div className="relative">
                 <img src={deleteFoodFrame} className="rounded-md" alt="Food" />
-                <div className="absolute bottom-2 left-2 flex space-x-1">
+                {/* <div className="absolute bottom-2 left-2 flex space-x-1">
                   <img
                     src={deleteBai}
                     className="h-6 w-6 rounded-full"
@@ -163,7 +168,22 @@ const BoardBuilder = () => {
                     className="h-6 w-6 rounded-full"
                     alt="Avatar"
                   />
-                </div>
+                </div> */}
+                {/* <div className=" left-2 flex m-2 h-20 space-x-2">
+                      <Swiper
+                        spaceBetween={10}
+                        slidesPerView="auto"
+                        centeredSlides={true}
+                      >
+                        {imagesforsmallpost.map((image, index) => (
+                          <SwiperSlide key={index}>
+                            <img className="ml-1" key={index} src={image.src} />
+                            <img src={deleteBai} className="ml-1 w-2 w-h" />
+                            <img src={deleteBai} className="ml-1" />
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    </div> */}
               </div>
               <div className="mt-2">
                 <p className="bg-[#949494] rounded-lg px-2 py-1 text-sm text-black w-20 text-center">
@@ -275,165 +295,12 @@ const BoardBuilder = () => {
           </div>
         </div> */}
       </div>
-    </div>
+
+      <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
+        <NewBoard />
+      </div>
+    </>
   );
 };
 
 export default BoardBuilder;
-
-// ---------------------------------------AADICH WORK----------------------------------------------------------------
-// const BoardBuilder = () => {
-//   const [isSaveActive, setIsSaveActive] = useState(false);
-//   const [selectedImage, setSelectedImage] = useState(null);
-
-//   const navigate = useNavigate();
-
-//   const handleNewBoardClick = () => {
-//     setIsSaveActive(false);
-//   };
-//   const handleSaveBoardClick = () => {
-//     setIsSaveActive(true);
-//   };
-
-//   const handleImageSelect = (imageUrl) => {
-//     setSelectedImage(imageUrl);
-//     navigate("/board");
-//     window.open(`/board?image=${encodeURIComponent(imageUrl)}`, "_blank");
-//   };
-
-//   const handleBack = () => {
-//     navigate("/home");
-//   };
-
-//   return (
-//     <div className="bg-black h-screen">
-//       <div className="flex items-center bg-black">
-//         <button
-//           className="text-3xl justify-center flex flex-col"
-//           onClick={handleBack}
-//         >
-//           <RxCross2 className="ml-1" />
-//           <span className="text-base">Close</span>
-//         </button>
-
-//         <button className="border rounded-3xl text-sm w-60">
-//           Advanced settings
-//         </button>
-//       </div>
-
-//       <div className="flex justify-center items-center space-x-4 mt-4">
-//         <button
-//           className={`${
-//             isSaveActive
-//               ? "text-white"
-//               : "text-blue-500 border-b-2 border-blue-500"
-//           } px-4 py-2`}
-//           onClick={handleNewBoardClick}
-//         >
-//           New Board
-//         </button>
-//         <button
-//           className={`${
-//             isSaveActive ? "text-blue-500  border-b-blue-500" : "text-white"
-//           } px-4 py-2`}
-//           onClick={handleSaveBoardClick}
-//         >
-//           Saved Board
-//         </button>
-//       </div>
-
-//       {isSaveActive ? (
-//         <SaveBoard />
-//       ) : (
-//         <NewBoard onImageSelect={handleImageSelect} />
-//       )}
-
-//       {selectedImage && <BoardScreen imageUrl={selectedImage} />}
-//     </div>
-//   );
-// };
-
-// export default BoardBuilder;
-
-// import React, { useState } from "react";
-// import { RxCross2 } from "react-icons/rx";
-// import "./board.css";
-// import { useNavigate } from "react-router";
-// import SaveBoard from "./SaveBoard";
-// import NewBoard from "./NewBoard";
-// import BoardScreen from "./EditBoard";
-
-// const BoardBuilder = () => {
-//   const [isSaveActive, setIsSaveActive] = useState(false);
-//   const [selectedImage, setSelectedImage] = useState(null);
-
-//   const navigate = useNavigate();
-
-//   const handleNewBoardClick = () => {
-//     setIsSaveActive(false);
-//   };
-//   const handleSaveBoardClick = () => {
-//     setIsSaveActive(true);
-//   };
-
-//   const handleImageSelect = (imageUrl) => {
-//     setSelectedImage(imageUrl);
-//     navigate("/board");
-//     window.open("/board?image=${encodeURIComponent(imageUrl)}", "_blank");
-//   };
-//   const handleBack = () => {
-//     navigate("/home");
-//   };
-
-//   return (
-//     <div className="bg-black h-screen">
-//       <div className="flex items-center  bg-black ">
-//         <button
-//           className="text-3xl justify-center  flex flex-col"
-//           onClick={handleBack}
-//         >
-//           <RxCross2 className="ml-1" />
-//           <span className="text-base">Close</span>
-//         </button>
-
-//         <button className="border rounded-3xl text-sm w-60">
-//           Advanced settings
-//         </button>
-//       </div>
-
-//       <div className="flex justify-center items-center space-x-4 ">
-//         <button
-//           className={`${
-//             isSaveActive
-//               ? "border-b-2 border-blue-500 text-blue"
-//               : "border-b-2 "
-//           }`}
-//           onClick={handleNewBoardClick}
-//         >
-//           New Board
-//         </button>
-//         <button
-//           className={`${
-//             isSaveActive
-//               ? "border-b-2 border-blue-500 text-blue"
-//               : "border-b-2 "
-//           }`}
-//           className="border-2"
-//           onClick={handleSaveBoardClick}
-//         >
-//           Saved Board
-//         </button>
-//       </div>
-
-//       {isSaveActive ? (
-//         <SaveBoard />
-//       ) : (
-//         <NewBoard onImageSelect={handleImageSelect} />
-//       )}
-
-//       {selectedImage && <BoardScreen imageUrl={selectedImage} />}
-//     </div>
-//   );
-// };
-
-// export default BoardBuilder;

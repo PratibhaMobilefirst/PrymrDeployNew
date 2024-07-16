@@ -13,6 +13,7 @@ const HealingTool = ({ image, onClose, onApply }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const img = new Image();
+  img.crossOrigin = "Anonymous"; 
     img.src = image;
     img.onload = () => {
       canvas.width = img.width;
@@ -157,8 +158,8 @@ const HealingTool = ({ image, onClose, onApply }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       ></canvas>
-      <div className="mt-4 flex items-center justify-center bg-black flex-wrap">
-        <label className="text-white mr-2">Brush Size:</label>
+      <div className="grid grid-cols-2 gap-1 mt-4 items-center justify-center bg-black flex-wrap">
+        <label className="text-white">Brush Size:</label>
         <input
           type="range"
           min="5"
@@ -168,11 +169,20 @@ const HealingTool = ({ image, onClose, onApply }) => {
           className="mr-4"
         />
         <button
-          className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+          className="bg-red-500 text-white px-4 py-2 rounded"
           onClick={onClose}
         >
           Cancel
         </button>
+
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={handleApply}
+        >
+          Apply
+        </button>
+      </div>
+      <div className="flex">
         <div
           className="px-2 flex flex-col items-center cursor-pointer mr-2"
           onClick={handleUndo}
@@ -191,12 +201,6 @@ const HealingTool = ({ image, onClose, onApply }) => {
             Redo
           </div>
         </div>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={handleApply}
-        >
-          Apply
-        </button>
       </div>
     </div>
   );

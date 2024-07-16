@@ -8,15 +8,18 @@ const ColorPanel = ({ onSelectColor }) => {
     "#FFFF00",
     "#FF00FF",
     "#00FFFF",
+    "#000000",
+    ,
+    "#3B2B3B",
   ];
 
   return (
-    <div className="absolute z-10 mt-2 p-2 bg-white border rounded shadow-md">
+    <div className="flex absolute z-10 -left-11 top-[1px] h-8 bg-[#4B4B4B]  rounded  shadow-md">
       {colors.map((color) => (
         <div
           key={color}
           onClick={() => onSelectColor(color)}
-          className="w-6 h-6 m-1 cursor-pointer"
+          className="w-5 h-5 rounded-full m-1 cursor-pointer"
           style={{ backgroundColor: color }}
         />
       ))}
@@ -25,40 +28,3 @@ const ColorPanel = ({ onSelectColor }) => {
 };
 
 export default ColorPanel;
-
-// import React, { useState } from "react";
-// import { ChromePicker } from "react-color";
-
-// const ColorPanel = ({ onSelectColor }) => {
-//   const [displayColorPicker, setDisplayColorPicker] = useState(false);
-//   const [currentColor, setCurrentColor] = useState("#FF0000");
-
-//   const handleColorChange = (color) => {
-//     setCurrentColor(color.hex);
-//   };
-
-//   const handleColorSelect = () => {
-//     onSelectColor(currentColor);
-//     setDisplayColorPicker(false); // Close the color picker after selecting
-//   };
-
-//   return (
-//     <div className="absolute z-10 mt-2 p-2 bg-white border rounded shadow-md">
-//       <div
-//         className="w-6 h-6 m-1 cursor-pointer"
-//         style={{ backgroundColor: currentColor }}
-//         onClick={() => setDisplayColorPicker(!displayColorPicker)}
-//       />
-
-//       {displayColorPicker && (
-//         <ChromePicker
-//           color={currentColor}
-//           onChange={handleColorChange}
-//           onChangeComplete={handleColorSelect}
-//         />
-//       )}
-//     </div>
-//   );
-// };
-
-// export default ColorPanel;

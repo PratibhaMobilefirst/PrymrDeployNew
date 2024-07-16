@@ -14,5 +14,18 @@ const slice = createSlice({
   },
 });
 
+const layerSlice = createSlice({
+  name: "layer",
+  initialState: {
+    id: null,
+  },
+  reducers: {
+    setLayerId: (state, action) => {
+      state.id = action.payload;
+    },
+  },
+});
+
+export const { setLayerId } = layerSlice.actions;
 export const { setBoards } = slice.actions;
 export default slice.reducer;

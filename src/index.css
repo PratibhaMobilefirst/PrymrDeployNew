@@ -14,7 +14,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
+/* 
 @media (min-width: 320px) and (max-width: 420px) {
   .canvas-container {
     display: flex;
@@ -175,7 +175,7 @@ code {
     justify-content: center;
     align-items: center;
     /* padding-left: 3vw; */
-    height: 50vh;
+    /* height: 50vh;
     width: 80vw;
     border-radius: 40px;
   }
@@ -194,8 +194,8 @@ code {
     justify-content: center;
     align-items: center;
     /* padding-left: 3vw; */
-    height: 50vh;
+    /* height: 50vh;
     width: 80vw;
     border-radius: 40px;
   }
-}
+} */ 
