@@ -10,9 +10,9 @@ const LoginScreen = () => {
     navigate("./signin");
   };
 
-  const handleForgetPassword = () => {
-    navigate("/forgetpassword");
-  };
+  // const handleForgetPassword = () => {
+  //   navigate("/forgetpassword");
+  // };
   return (
     <div className=" text-white w-full h-screen flex justify-center items-center">
       <div className=" text-center">
@@ -48,13 +48,6 @@ const LoginScreen = () => {
           </button>
         </div>
 
-        <div
-          className="text-white text-sm bg-opacity-300 gap-2 w-[100%] h-[45px] mb-5 "
-          type="submit"
-          onClick={handleForgetPassword}
-        >
-          Forget Password?
-        </div>
       </div>
     </div>
   );

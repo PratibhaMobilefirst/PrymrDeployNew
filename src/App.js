@@ -11,7 +11,7 @@ import { ImageProvider } from "./Components/Board/ImageContext/ImageContext";
 import TapAction from "./Components/Board/ActionBar/Layers/TapAction";
 import NewBoard from "./Components/Board/CreateNewBoard/NewBoard";
 import ImageFromGalary from "./Components/Board/CreateNewBoard/ImageFromGalary";
-import ImageFromCamera from "./Components/Board/CreateNewBoard/ImageFromCamera";
+// import ImageFromCamera from "./Components/Board/CreateNewBoard/ImageFromCamera";
 import Share from "./Components/common/Share";
 import Bookmarks from "./Components/HomePage/Bookmarks";
 import Ads from "./Components/Board/CreateNewBoard/ADS/Ads";
@@ -30,6 +30,9 @@ import SignIn from "./Components/OnboardingScreen/SignupIn/SignIn";
 import BoardEdit from "./Profile Settings/BoardEdit";
 import ForgetPassword from "./Components/OnboardingScreen/SignupIn/forgetPassword";
 import Contact from "./Components/HomePage/Contact";
+import HomePage from "./Components/HomePage/HomePage";
+import SaveDesktopView from "./Components/Board/CreateNewBoard/SaveDesktopView";
+
 
 function App() {
   return (
@@ -65,7 +68,7 @@ function App() {
             path="/boardBuilder-BoardInfo-createPost"
             element={<CreateBoard />}
           />
-          <Route path="/Camera" element={<ImageFromCamera />} />
+          {/* <Route path="/Camera" element={<ImageFromCamera />} /> */}
           <Route path="/board-builder-edit-board" element={<EditBoard />} />
           <Route
             path="/create-new-board-edit-board-info"
@@ -80,6 +83,11 @@ function App() {
             element={<BoardEdit />}
           />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/homePage" element={<HomePage />} />
+          <Route
+            path="/create/new-board/desktop-view"
+            element={<SaveDesktopView />}
+          />
         </Routes>
       </ImageProvider>
     </BrowserRouter>

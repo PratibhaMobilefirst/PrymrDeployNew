@@ -127,114 +127,117 @@
 
 // export default ImageFromCamera;
 
-import React, { useState, useRef, useCallback } from "react";
-import Webcam from "react-webcam";
-import handleBack from "../../../assets/handleBack.svg";
-import { useNavigate } from "react-router-dom";
-import { MdOutlineFlipCameraIos } from "react-icons/md";
-import { baseURL } from "../../../Constants/urls";
 
-const ImageFromCamera = () => {
-  const [cameraImage, setCameraImage] = useState(null);
-  const [showCamera, setShowCamera] = useState(true);
-  const [useFrontCamera, setUseFrontCamera] = useState(false);
-  const webcamRef = useRef(null);
-  const navigate = useNavigate();
-  const [selectedImage, setSelectedImage] = useState(null);
+/// latest one
 
-  const capture = useCallback(async () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setCameraImage(imageSrc);
-    setShowCamera(false);
+// import React, { useState, useRef, useCallback } from "react";
+// import Webcam from "react-webcam";
+// import handleBack from "../../../assets/handleBack.svg";
+// import { useNavigate } from "react-router-dom";
+// import { MdOutlineFlipCameraIos } from "react-icons/md";
+// import { baseURL } from "../../../Constants/urls";
 
-    const file = await (await fetch(imageSrc)).blob();
-    const formData = new FormData();
-    formData.append("file", file);
+// const ImageFromCamera = () => {
+//   const [cameraImage, setCameraImage] = useState(null);
+//   const [showCamera, setShowCamera] = useState(true);
+//   const [useFrontCamera, setUseFrontCamera] = useState(false);
+//   const webcamRef = useRef(null);
+//   const navigate = useNavigate();
+//   const [selectedImage, setSelectedImage] = useState(null);
 
-    const storedToken = localStorage.getItem("token");
+//   const capture = useCallback(async () => {
+//     const imageSrc = webcamRef.current.getScreenshot();
+//     setCameraImage(imageSrc);
+//     setShowCamera(false);
 
-    try {
-      const response = await fetch(`${baseURL}/file-upload/uploadFile`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
-        body: formData,
-      });
+//     const file = await (await fetch(imageSrc)).blob();
+//     const formData = new FormData();
+//     formData.append("file", file);
 
-      if (response.ok) {
-        const result = await response.json();
-        const imageUrl = result.data.url;
-        setSelectedImage(imageUrl);
-        navigate("/board-builder-edit-board", {
-          state: { imageSrc: imageSrc, imageUrl: imageUrl },
-        });
-      } else {
-        console.error(
-          "Failed to upload file",
-          response.status,
-          response.statusText
-        );
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  }, [webcamRef, navigate]);
+//     const storedToken = localStorage.getItem("token");
 
-  const handleBackFunction = () => {
-    navigate("/create-new-board");
-  };
+//     try {
+//       const response = await fetch(`${baseURL}/file-upload/uploadFile`, {
+//         method: "POST",
+//         headers: {
+//           Authorization: `Bearer ${storedToken}`,
+//         },
+//         body: formData,
+//       });
 
-  const handleSwitchCamera = () => {
-    setUseFrontCamera((prev) => !prev);
-  };
+//       if (response.ok) {
+//         const result = await response.json();
+//         const imageUrl = result.data.url;
+//         setSelectedImage(imageUrl);
+//         navigate("/board-builder-edit-board", {
+//           state: { imageSrc: imageSrc, imageUrl: imageUrl },
+//         });
+//       } else {
+//         console.error(
+//           "Failed to upload file",
+//           response.status,
+//           response.statusText
+//         );
+//       }
+//     } catch (error) {
+//       console.error("Error uploading file:", error);
+//     }
+//   }, [webcamRef, navigate]);
 
-  const videoConstraints = {
-    facingMode: useFrontCamera ? "user" : { exact: "environment" },
-  };
+//   const handleBackFunction = () => {
+//     navigate("/create-new-board");
+//   };
 
-  return (
-    <div className="justify-center items-center">
-      <div className="container top-2 flex px-3 justify-center items-center gap-x-20">
-        <button
-          className="h-auto w-20 flex items-center"
-          onClick={handleBackFunction}
-        >
-          <img
-            src={handleBack}
-            className="text-3xl border-white"
-            alt="Go Back"
-          />
-        </button>
-        <div
-          onClick={handleSwitchCamera}
-          className="w-12 h-12 pl-80 text-white rounded"
-        >
-          <MdOutlineFlipCameraIos className="w-8 h-8" />
-        </div>
-      </div>
-      <div className="flex flex-col items-center space-y-4">
-        {showCamera && (
-          <div className="flex flex-col items-center">
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              videoConstraints={videoConstraints}
-              mirrored={true}
-              screenshotFormat="image/jpeg"
-              className="w-full h-full bg-gray-300"
-            />
-            <button
-              onClick={capture}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Capture Photo
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+//   const handleSwitchCamera = () => {
+//     setUseFrontCamera((prev) => !prev);
+//   };
 
-export default ImageFromCamera;
+//   const videoConstraints = {
+//     facingMode: useFrontCamera ? "user" : { exact: "environment" },
+//   };
+
+//   return (
+//     <div className="justify-center items-center">
+//       <div className="container top-2 flex px-3 justify-center items-center gap-x-20">
+//         <button
+//           className="h-auto w-20 flex items-center"
+//           onClick={handleBackFunction}
+//         >
+//           <img
+//             src={handleBack}
+//             className="text-3xl border-white"
+//             alt="Go Back"
+//           />
+//         </button>
+//         <div
+//           onClick={handleSwitchCamera}
+//           className="w-12 h-12 pl-80 text-white rounded"
+//         >
+//           <MdOutlineFlipCameraIos className="w-8 h-8" />
+//         </div>
+//       </div>
+//       <div className="flex flex-col items-center space-y-4">
+//         {showCamera && (
+//           <div className="flex flex-col items-center">
+//             <Webcam
+//               audio={false}
+//               ref={webcamRef}
+//               videoConstraints={videoConstraints}
+//               mirrored={true}
+//               screenshotFormat="image/jpeg"
+//               className="w-full h-full bg-gray-300"
+//             />
+//             <button
+//               onClick={capture}
+//               className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+//             >
+//               Capture Photo
+//             </button>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ImageFromCamera;

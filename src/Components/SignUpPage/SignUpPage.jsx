@@ -99,20 +99,20 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="bg-cover bg-center absolute h-[100vh] w-full flex justify-center items-center">
+    <div className="bg-cover bg-center absolute h-screen  w-full flex justify-center items-center">
       <img
         src={blueFly}
         alt="Blue cloud"
         className="absolute w-full h-full object-cover"
       />
-      <div className="relative flex flex-col items-center justify-center text-white">
+      <div className="relative ml-2  mr-2 flex flex-col items-center justify-center text-white">
         <div className="absolute -top-8 right-5">
           <RxCrossCircled
             className="w-8 h-8 cursor-pointer"
             // onClick={handleBack}
           />
         </div>
-        <h1 className="text-[28px] font-bold mb-6 text-center">
+        <h1 className="text-[28px] font-bold mb-1 text-center">
           Sign Up to get started on Prymr
         </h1>
         {errors.general && (
@@ -122,10 +122,10 @@ const SignupPage = () => {
           onSubmit={handleSignUp}
           className="bg-gray-800 bg-opacity-75 p-6 rounded-md sm:ml-[18px] sm:mr-[18px]"
         >
-          <label className="block mb-4">
+          <label>
             First Name:
             <input
-              className="w-full p-2 mt-1 bg-gray-900 rounded-md"
+              className="w-full p-2  bg-gray-900 rounded-md"
               type="text"
               name="firstName"
               value={formData.firstName}
@@ -138,10 +138,10 @@ const SignupPage = () => {
               <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>
             )}
           </label>
-          <label className="block mb-4">
+          <label>
             Last Name:
             <input
-              className="w-full p-2 mt-1 bg-gray-900 rounded-md"
+              className="w-full p-2  bg-gray-900 rounded-md"
               type="text"
               name="lastName"
               value={formData.lastName}
@@ -154,10 +154,10 @@ const SignupPage = () => {
               <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>
             )}
           </label>
-          <label className="block mb-4">
+          <label>
             User Name:
             <input
-              className="w-full p-2 mt-1 bg-gray-900 rounded-md"
+              className="w-full p-2 bg-gray-900 rounded-md"
               type="text"
               name="userName"
               value={formData.userName}
@@ -170,10 +170,10 @@ const SignupPage = () => {
               <p className="text-xs text-red-500 mt-1">{errors.userName}</p>
             )}
           </label>
-          <label className="block mb-4">
+          <label>
             Email :
             <input
-              className="w-full p-2 mt-1 bg-gray-900 rounded-md"
+              className="w-full p-2  bg-gray-900 rounded-md"
               type="text"
               name="email"
               value={formData.email}
@@ -185,10 +185,10 @@ const SignupPage = () => {
               <p className="text-xs text-red-500 mt-1">{errors.email}</p>
             )}
           </label>
-          <label className="block mb-4 relative">
+          <label className="block mb-2 relative">
             Password :
             <input
-              className="w-full p-2 mt-1 bg-gray-900 rounded-md pr-10"
+              className="w-full p-2  bg-gray-900 rounded-md pr-10"
               type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}

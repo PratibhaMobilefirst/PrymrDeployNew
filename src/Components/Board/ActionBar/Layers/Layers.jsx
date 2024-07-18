@@ -6,13 +6,14 @@ import colorcircle from "../../../../assets/colorcircle.png";
 import deletee from "../../../../assets/delete.svg";
 import search from "../../../../assets/search.svg";
 import arrowspointingout from "../../../../assets/arrowspointingout.svg";
-import tappable from "../../../../assets/tappable.svg";
+import LayerTappable from "../../../../assets/tappable.svg";
 import AddAction from "../../../../assets/AddActions.svg";
 import AddContent from "../../../../assets/AddContent.svg";
 // import { fabric } from "fabric";
 import * as fabric from "fabric";
 import { ImageContext } from "../../ImageContext/ImageContext";
 import TapAction from "./TapAction";
+import AddContentPage from "./AddContentPage";
 import { useContext, useRef, useState, useEffect } from "react";
 import { baseURL } from "../../../../Constants/urls";
 import ColorPanel from "./ColorPannel";
@@ -22,10 +23,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCount } from "../../../../redux/LayerCountSlice";
 import "./layers.css";
 
-const LayersPanel = ({ isVisible, tappableContent }) => {
+const LayersPanel = ({
+  isVisible,
+  tappableContent,
+  lastAddedTappableContent,
+}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [layerIsClicked, setLayerIsClicked] = useState(false);
   const [isTapActionOpen, setTapActionOpen] = useState(false);
+  const [isAddContentOpen, setAddContentOpen] = useState(false);
   const [colorPanelVisible, setColorPanelVisible] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#4B4B4B");
   const [isSwiperView, setIsSwiperView] = useState(true);
@@ -53,6 +59,11 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
   };
   const handleTapAction = () => {
     setTapActionOpen(!isTapActionOpen);
+    setLayerIsClicked(false);
+  };
+
+  const handleAddContent = () => {
+    setAddContentOpen(!isAddContentOpen);
     setLayerIsClicked(false);
   };
 
@@ -112,7 +123,7 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
   return (
     isVisible && (
       <div className="fixed bottom-20 w-full left-0">
-        {isTapActionOpen && <TapAction imageUrl={selectedImage} />}
+        {isTapActionOpen && <TapAction imageUrl={selectedImage} />}{ isAddContentOpen && <AddContentPage />}
         <header className="flex items-center justify-between bg-[#00000047]">
           <h2 className="text-lg text-white px-2">Layers</h2>
           <button className="text-white" onClick={handleNewLayerAddClick}>
@@ -135,11 +146,11 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
               navigation
               // style={{ paddingBottom: "20px" }}
             >
-              {layers.map((layer) => (
+              {layers.map((layer, index) => (
                 <SwiperSlide key={layer.id}>
                   <div className="relative flex flex-col space-y-1">
                     <div
-                      className="flex items-center h-9 justify-between   p-2"
+                      className="flex items-center h-9 justify-between p-2"
                       style={{
                         backgroundColor: layer.selectedColor,
                         borderRadius: "0.25rem",
@@ -157,7 +168,7 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
                       <div
                         className={`flex h-8 w-60 transition-transform duration-30 ease-in-out bg-[#4B4B4B] ${
                           colorPanelVisible && currentLayerId === layer.id
-                            ? "transform -translate-x-20"
+                            ? "transform -translate-x-36"
                             : ""
                         }`}
                       >
@@ -205,9 +216,8 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
                         {colorPanelVisible && currentLayerId === layer.id && (
                           <div className="absolute left-16 top-0 z-10">
                             <div className="overflow-y-auto">
-                              {" "}
                               <ColorPanel onSelectColor={handleColorSelect} />
-                            </div>{" "}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -223,28 +233,31 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
                         }}
                       >
                         <label htmlFor={`fileInput${layer.id}`}>
-                          {layer.tappableContent ? (
-                            typeof layer.tappableContent === "string" &&
-                            layer.tappableContent.startsWith("data:image") ? (
+                          {index === layers.length - 1 &&
+                          lastAddedTappableContent ? (
+                            typeof lastAddedTappableContent === "string" &&
+                            lastAddedTappableContent.startsWith(
+                              "data:image"
+                            ) ? (
                               <img
-                                src={layer.tappableContent}
+                                src={lastAddedTappableContent}
                                 alt="Tappable Content"
                                 className="cursor-pointer w-[120px] h-[120px] rounded-md object-contain"
                               />
                             ) : (
                               <span className="cursor-pointer w-[120px] h-[120px] rounded-md flex items-center justify-center text-6xl">
-                                {layer.tappableContent}
+                                {lastAddedTappableContent}
                               </span>
                             )
-                          ) : (
+                          ) : layer.tappableContent ? (
                             <img
-                              src={layer.selectedImage || tappable}
+                              src={layer.selectedImage || LayerTappable}
                               // src={tappable}
                               alt="Tappable"
                               className="cursor-pointer w-[120px] h-[120px] rounded-md"
                               // onClick={handletapbale}
                             />
-                          )}
+                          ) : null}
                           {/* {/ {isTappableVisible && <NewTappable />} /} */}
                         </label>
                         {/* <input
@@ -271,6 +284,7 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
                           backgroundColor: layer.selectedColor,
                           borderRadius: "0.25rem",
                         }}
+                        onClick={handleAddContent}
                       >
                         <img src={AddContent} alt="Add Content" />
                       </button>
@@ -281,7 +295,7 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
             </Swiper>
           ) : (
             <div className="flex flex-col space-y-1 m-3 max-h-[70vh] overflow-y-auto">
-              {layers.map((layer) => (
+              {layers.map((layer, index) => (
                 <div
                   key={layer.id}
                   className="relative flex flex-col space-y-1 m-3"
@@ -359,28 +373,29 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
                       }}
                     >
                       <label htmlFor={`fileInput${layer.id}`}>
-                        {layer.tappableContent ? (
-                          typeof layer.tappableContent === "string" &&
-                          layer.tappableContent.startsWith("data:image") ? (
+                        {index === layers.length - 1 &&
+                        lastAddedTappableContent ? (
+                          typeof lastAddedTappableContent === "string" &&
+                          lastAddedTappableContent.startsWith("data:image") ? (
                             <img
-                              src={layer.tappableContent}
+                              src={lastAddedTappableContent}
                               alt="Tappable Content"
                               className="cursor-pointer w-[120px] h-[120px] rounded-md object-contain"
                             />
                           ) : (
                             <span className="cursor-pointer w-[120px] h-[120px] rounded-md flex items-center justify-center text-6xl">
-                              {layer.tappableContent}
+                              {lastAddedTappableContent}
                             </span>
                           )
-                        ) : (
+                        ) : layer.tappableContent ? (
                           <img
-                            src={layer.selectedImage || tappable}
+                            src={layer.selectedImage || LayerTappable}
                             // src={tappable}
                             alt="Tappable"
                             className="cursor-pointer w-[120px] h-[120px] rounded-md"
                             // onClick={handletapbale}
                           />
-                        )}
+                        ) : null}
                         {/* {/ {isTappableVisible && <NewTappable />} /} */}
                       </label>
                       <input
@@ -407,6 +422,7 @@ const LayersPanel = ({ isVisible, tappableContent }) => {
                         backgroundColor: layer.selectedColor,
                         borderRadius: "0.25rem",
                       }}
+                      onClick={handleAddContent}
                     >
                       <img src={AddContent} alt="Add Content" />
                     </button>

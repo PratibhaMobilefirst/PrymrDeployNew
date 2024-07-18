@@ -9,6 +9,7 @@ const TappableArea = ({
   setPosition,
   imageBounds,
   initialSize = { width: 100, height: 100 },
+  onCheckSquareClick,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -103,11 +104,9 @@ const TappableArea = ({
 
   const handleCheckSquareClick = (e) => {
     e.stopPropagation();
-    const rect = tappableRef.current.getBoundingClientRect();
-    const currentX = rect.left;
-    const currentY = rect.top;
-
-    console.log("Current position:", { x: currentX, y: currentY });
+    if (typeof onCheckSquareClick === "function") {
+      onCheckSquareClick(content, position, size);
+    }
   };
 
   return (
@@ -158,15 +157,15 @@ const TappableArea = ({
       <div
         className="absolute bg-sky-500 rounded-[13.68px] flex items-center justify-center"
         style={{
-          width: `${Math.min(size.width * 0.6, 157)}px`, // Adjust as needed
-          height: `${Math.min(size.height * 0.3, 52)}px`, // Adjust as needed
+          width: "100px", // Adjust as needed
+          height: "40px", // Adjust as needed
           left: "50%",
           transform: `translateX(-50%)`,
         }}
       >
         <div
-          className="flex justify-between items-center w-full h-full"
-          style={{ padding: `${Math.min(size.width * 0.04, 8)}px` }} // Adjust padding as needed
+          className="flex justify-center items-center w-full h-full"
+          style={{ padding: "4px" }} // Adjust padding as needed
         >
           <div
             className="flex justify-center items-center"
@@ -175,16 +174,8 @@ const TappableArea = ({
           >
             <div
               style={{
-                width: `${Math.min(
-                  size.width * 0.2,
-                  size.height * 0.6,
-                  43.79
-                )}px`, // Adjust width to stay within bounds
-                height: `${Math.min(
-                  size.width * 0.2,
-                  size.height * 0.6,
-                  43.79
-                )}px`, // Adjust height to stay within bounds
+                width: "30px",
+                height: "50px",
               }}
             >
               <img
@@ -199,6 +190,8 @@ const TappableArea = ({
               width: "3px",
               height: "100%",
               backgroundColor: "white",
+              marginLeft: "10px",
+              marginRight: "10px",
             }}
           ></div>
           <div
@@ -208,16 +201,8 @@ const TappableArea = ({
           >
             <div
               style={{
-                width: `${Math.min(
-                  size.width * 0.2,
-                  size.height * 0.6,
-                  43.79
-                )}px`, // Adjust width to stay within bounds
-                height: `${Math.min(
-                  size.width * 0.2,
-                  size.height * 0.6,
-                  40.79
-                )}px`, // Adjust height to stay within bounds
+                width: "25px",
+                height: "30px",
               }}
             >
               <img

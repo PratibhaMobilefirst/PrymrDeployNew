@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const layerIdSlice = createSlice({
   name: "layerId",
-  initialState: { count: 0 },
+  initialState: { count: 1 },
   reducers: {
     setCount: (state, action) => {
       console.log("action", action);

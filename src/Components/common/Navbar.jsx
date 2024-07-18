@@ -20,7 +20,7 @@ const Navbar = () => {
   };
   return (
     <>
-      <div className="bg-black fixed bottom-0 w-full text-[#6B6B6B] flex justify-around items-center py-2 h-18 lg:w-[30%] ">
+      <div className="bg-black fixed bottom-0 w-full text-[#6B6B6B] flex justify-around items-center py-2 h-18 lg:w-[30%]">
         <div className="flex flex-col items-center">
           <GrHomeRounded className="text-[#FFF500]" size={28} />
         </div>

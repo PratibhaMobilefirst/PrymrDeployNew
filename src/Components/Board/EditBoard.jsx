@@ -21,6 +21,8 @@ const EditBoard = ({ cameraImage }) => {
   const [showTappableArea, setShowTappableArea] = useState(false);
   const [tappablePosition, setTappablePosition] = useState({ x: 0, y: 0 });
   const [showNewTappable, setShowNewTappable] = useState(false);
+  const [lastAddedTappableContent, setLastAddedTappableContent] =
+    useState(null);
   const [imageBounds, setImageBounds] = useState({
     left: 0,
     top: 0,
@@ -274,16 +276,15 @@ const EditBoard = ({ cameraImage }) => {
       size: { width: 100, height: 100 },
       content,
     };
-
     setTappableAreas((prev) => {
       const updatedAreas = [...prev, newTappableArea];
       saveCanvasAsJson(updatedAreas);
       return updatedAreas;
     });
-
     setShowTappableArea(true);
     setTappableContent(null);
-    setIsPanZoomEnabled(false); // Disable pan and zoom
+    setIsPanZoomEnabled(false);
+    setLastAddedTappableContent(content); // Add this line
   };
 
   const handleSelectTappableArea = () => {
@@ -453,6 +454,7 @@ const EditBoard = ({ cameraImage }) => {
       <LayersPanel
         isVisible={isLayersPanelVisible}
         tappableContent={tappableContent}
+        lastAddedTappableContent={lastAddedTappableContent}
       />
 
       {tappableAreas.map((area) => (

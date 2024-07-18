@@ -17,7 +17,7 @@ import { baseURL } from "../../../Constants/urls";
 const NewBoard = () => {
   const navigate = useNavigate();
   const [selectedImageFromGalary, setSelectedImageFromGalary] = useState(true);
-  const [selectImageFromCamera, setImageFromCamera] = useState(false);
+  // const [selectImageFromCamera, setImageFromCamera] = useState(false);
   const [createBlankCanvas, setCreateBlankCanvas] = useState(false);
   const [SelectedImage, setSelectedImage] = useState();
   const [buttonIsClicked, setButtonIsClicked] = useState(null);

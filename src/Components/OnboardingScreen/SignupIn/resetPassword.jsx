@@ -1,4 +1,4 @@
-import { FaArrowLeftLong } from "react-icons/fa6";
+import { FaArrowLeftLong, FaEye, FaEyeSlash } from "react-icons/fa6";
 import "./signup.css";
 import ValidationButton from "./ValidationButton";
 import { useNavigate, useParams } from "react-router";
@@ -14,6 +14,9 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [passwordError, setPasswordError] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
   // const { token } = useParams();
   const navigate = useNavigate();
 
@@ -62,6 +65,14 @@ const ResetPassword = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+  };
+
   return (
     <div className="h-screen bg-cover bg-center relative text-white w-full flex justify-center items-center ">
       <img
@@ -78,35 +89,53 @@ const ResetPassword = () => {
           <h1 className="m-4 text-4xl font-bold leading-[38.19px] text-left">
             Reset Password
           </h1>
-          {/* <h3 className="mb-2 text-center">Please enter your new password.</h3> */}
+          {/* {/ <h3 className="mb-2 text-center">Please enter your new password.</h3> /} */}
         </div>
 
         <form className="space-y-4 bg-gray-800 p-4 mb-8">
-          <label className="block">
+          <label className="block relative">
             New Password
-            <input
-              className="w-full mt-1 h-12 pl-2 bg-gray-900 rounded-md"
-              type="password"
-              name="password"
-              value={formData.password}
-              placeholder="Enter Password"
-              onChange={handlePasswordChange}
-              required
-            />
+            <div className="relative">
+              <input
+                className="w-full mt-1 h-12 pl-2 bg-gray-900 rounded-md pr-10"
+                type={isPasswordVisible ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                placeholder="Enter Password"
+                onChange={handlePasswordChange}
+                required
+              />
+              <button
+                type="button"
+                className="absolute w-10 top-1/2 right-3 transform -translate-y-1/2"
+                onClick={togglePasswordVisibility}
+              >
+                {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </label>
           <ValidationButton password={formData.password} />
 
-          <label className="block py-[6vh]">
+          <label className="block relative py-[8vh]">
             Confirm Password
-            <input
-              className="w-full mt-2 h-12 pl-2 bg-gray-900 rounded-md"
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              placeholder="Confirm Your Password"
-              onChange={handlePasswordChange}
-              required
-            />
+            <div className="relative">
+              <input
+                className="w-full mt-2 h-12 pl-2 bg-gray-900 rounded-md pr-10"
+                type={isConfirmPasswordVisible ? "text" : "password"}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                placeholder="Confirm Your Password"
+                onChange={handlePasswordChange}
+                required
+              />
+              <button
+                type="button"
+                className="absolute w-10 top-1/2 right-3 transform -translate-y-1/2"
+                onClick={toggleConfirmPasswordVisibility}
+              >
+                {isConfirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
             {formData.password === formData.confirmPassword ? (
               <p className="text-xs text-green-500 mt-1">Password Matches!</p>
             ) : (
@@ -116,21 +145,16 @@ const ResetPassword = () => {
             )}
           </label>
           <button
-            className="text-white mt-8 font-bold bg-opacity-300  bg-blue-600 w-full h-[4vh] rounded-full"
+            className="text-white mt-8 font-bold bg-opacity-300  bg-blue-600 w-full h-[6vh] rounded-full"
             type="submit"
             onClick={handleContinue}
           >
             Continue
           </button>
         </form>
-
-        {/* <img
-          src="/Images/Line.png"
-          className="flex justify-center mx-auto mt-10"
-          alt=""
-        /> */}
       </div>
     </div>
   );
 };
+
 export default ResetPassword;

@@ -5,7 +5,7 @@ import LoginScreen from "../OnboardingScreen/LoginScreen";
 const HomePage = () => {
   return (
     <>
-      <div className="lg:w-[30%]">
+      <div>
         <Home />
       </div>
       <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
