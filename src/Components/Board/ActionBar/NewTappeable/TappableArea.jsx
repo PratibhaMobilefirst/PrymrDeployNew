@@ -11,11 +11,12 @@ const TappableArea = ({
   imageBounds,
   initialSize = { width: 100, height: 100 },
   onCheckSquareClick,
+  setSize,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [size, setSize] = useState(initialSize);
+  const [size, setSizeState] = useState(initialSize);
   const tappableRef = useRef(null);
 
   useEffect(() => {
@@ -57,6 +58,10 @@ const TappableArea = ({
         // Ensure the tappable area stays within the image bounds during resizing
         const maxWidth = imageBounds.width - (position.x - imageBounds.left);
         const maxHeight = imageBounds.height - (position.y - imageBounds.top);
+        setSizeState({
+          width: Math.min(newWidth, maxWidth),
+          height: Math.min(newHeight, maxHeight),
+        });
         setSize({
           width: Math.min(newWidth, maxWidth),
           height: Math.min(newHeight, maxHeight),
@@ -78,7 +83,7 @@ const TappableArea = ({
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, isResizing, dragOffset, imageBounds, setPosition]);
+  }, [isDragging, isResizing, dragOffset, imageBounds, setPosition, setSize]);
 
   const handleMouseDown = (e) => {
     const rect = tappableRef.current.getBoundingClientRect();
@@ -107,7 +112,7 @@ const TappableArea = ({
     e.stopPropagation();
     if (typeof onCheckSquareClick === "function") {
       onCheckSquareClick(content, position, size);
-      onFixContent();
+      onFixContent(position, size);
     }
   };
 

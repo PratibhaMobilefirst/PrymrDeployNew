@@ -299,18 +299,10 @@ const EditBoard = ({ cameraImage }) => {
       content,
     };
 
-    if (!content) {
-      const capturedContent = captureBackgroundArea(
-        newTappableArea.position,
-        newTappableArea.size
-      );
-      newTappableArea.content = capturedContent;
-    }
-
     const newLayer = {
       id: newTappableArea.id,
       name: `Layer ${layers.length + 1}`,
-      tappableContent: newTappableArea.content,
+      tappableContent: content,
       selectedImage: null,
     };
 
@@ -349,7 +341,25 @@ const EditBoard = ({ cameraImage }) => {
     setActiveTappable(null);
   };
 
-  const handleFixTappableContent = () => {
+  const handleFixTappableContent = (position, size) => {
+    if (!activeTappable) return;
+
+    let capturedContent = activeTappable.content;
+    if (!capturedContent) {
+      capturedContent = captureBackgroundArea(position, size);
+    }
+
+    const updatedLayers = layers.map((layer) => {
+      if (layer.id === activeTappable.id) {
+        return {
+          ...layer,
+          tappableContent: capturedContent,
+        };
+      }
+      return layer;
+    });
+    setLayers(updatedLayers);
+    setTappableContent(capturedContent);
     setActiveTappable(null);
     setIsPanZoomEnabled(true);
   };
@@ -373,23 +383,7 @@ const EditBoard = ({ cameraImage }) => {
   };
 
   const handleCheckSquareClick = (content, position, size) => {
-    if (!content) {
-      const capturedContent = captureBackgroundArea(position, size);
-      const updatedLayers = layers.map((layer) => {
-        if (layer.id === activeTappable.id) {
-          return {
-            ...layer,
-            tappableContent: capturedContent,
-          };
-        }
-        return layer;
-      });
-      setLayers(updatedLayers);
-      setTappableContent(content);
-      setActiveTappable(null);
-    } else {
-      setActiveTappable(null);
-    }
+    handleFixTappableContent(position, size);
   };
 
   const getZoomLevel = (canvas) => {
@@ -465,11 +459,12 @@ const EditBoard = ({ cameraImage }) => {
       content: null,
     };
 
-    const capturedContent = captureBackgroundArea(
-      newTappableArea.position,
-      newTappableArea.size
-    );
-    newTappableArea.content = capturedContent;
+    const newLayer = {
+      id: newTappableArea.id,
+      name: `Layer ${layers.length + 1}`,
+      tappableContent: null,
+      selectedImage: null,
+    };
 
     setTappableAreas((prev) => {
       const updatedAreas = [...prev, newTappableArea];
@@ -477,6 +472,7 @@ const EditBoard = ({ cameraImage }) => {
       return updatedAreas;
     });
 
+    setLayers((prev) => [...prev, newLayer]);
     setTappablePosition({ id: newTappableArea.id, x, y });
     setShowTappableArea(true);
     setTappableContent(null);
