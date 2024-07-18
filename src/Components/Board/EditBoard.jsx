@@ -14,6 +14,7 @@ const EditBoard = ({ cameraImage }) => {
   const [isPanZoomEnabled, setIsPanZoomEnabled] = useState(true);
   const [layers, setLayers] = useState([]);
   const [tappableAreas, setTappableAreas] = useState([]);
+  const [activeTappable, setActiveTappable] = useState(null);
   const [jsonContent, setJsonContent] = useState("");
   const canvasRef = useRef(null);
   const location = useLocation();
@@ -21,14 +22,8 @@ const EditBoard = ({ cameraImage }) => {
   const [showTappableArea, setShowTappableArea] = useState(false);
   const [tappablePosition, setTappablePosition] = useState({ x: 0, y: 0 });
   const [showNewTappable, setShowNewTappable] = useState(false);
-  const [lastAddedTappableContent, setLastAddedTappableContent] =
-    useState(null);
-  const [imageBounds, setImageBounds] = useState({
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-  });
+  const [lastAddedTappableContent, setLastAddedTappableContent] = useState(null);
+  const [imageBounds, setImageBounds] = useState({ left: 0, top: 0, width: 0, height: 0 });
   const [isLayersPanelVisible, setIsLayersPanelVisible] = useState(false);
   const [tappableContent, setTappableContent] = useState(null);
   const { imageUrl } = location.state || {};
@@ -45,23 +40,19 @@ const EditBoard = ({ cameraImage }) => {
       return;
     }
 
-    fabric.Image.fromURL(
-      layerImageUrl,
-      function (oImg) {
-        oImg.set({
-          selectable: true,
-          evented: true,
-          originX: "center",
-          originY: "center",
-          hasControls: true,
-          hasBorders: true,
-        });
+    fabric.Image.fromURL(layerImageUrl, function (oImg) {
+      oImg.set({
+        selectable: true,
+        evented: true,
+        originX: "center",
+        originY: "center",
+        hasControls: true,
+        hasBorders: true,
+      });
 
-        canvas.add(oImg);
-        canvas.requestRenderAll();
-      },
-      { crossOrigin: "" }
-    );
+      canvas.add(oImg);
+      canvas.requestRenderAll();
+    }, { crossOrigin: "" });
 
     console.log("Images loaded and added to canvas");
   };
@@ -73,55 +64,51 @@ const EditBoard = ({ cameraImage }) => {
       canvas.setWidth(width - width * 0.1);
       canvas.setHeight(height - height * 0.25);
 
-      fabric.Image.fromURL(
-        imageUrl,
-        function (img) {
-          const imgAspectRatio = img.width / img.height;
-          const canvasAspectRatio = canvas.width / canvas.height;
+      fabric.Image.fromURL(imageUrl, function (img) {
+        const imgAspectRatio = img.width / img.height;
+        const canvasAspectRatio = canvas.width / canvas.height;
 
-          let bgWidth, bgHeight;
+        let bgWidth, bgHeight;
 
-          if (imgAspectRatio > canvasAspectRatio) {
-            bgWidth = canvas.width;
-            bgHeight = canvas.width / imgAspectRatio;
-          } else {
-            bgHeight = canvas.height;
-            bgWidth = canvas.height * imgAspectRatio;
-          }
+        if (imgAspectRatio > canvasAspectRatio) {
+          bgWidth = canvas.width;
+          bgHeight = canvas.width / imgAspectRatio;
+        } else {
+          bgHeight = canvas.height;
+          bgWidth = canvas.height * imgAspectRatio;
+        }
 
-          img.scaleToWidth(bgWidth);
-          img.scaleToHeight(bgHeight);
+        img.scaleToWidth(bgWidth);
+        img.scaleToHeight(bgHeight);
 
-          img.set({
-            originX: "center",
-            originY: "center",
-            left: canvas.width / 2,
-            top: canvas.height / 2,
-          });
+        img.set({
+          originX: "center",
+          originY: "center",
+          left: canvas.width / 2,
+          top: canvas.height / 2,
+        });
 
+        setImageBounds({
+          left: canvas.width / 2 - bgWidth / 2,
+          top: canvas.height / 2 - bgHeight / 2,
+          width: bgWidth,
+          height: bgHeight,
+        });
+
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+          selectable: false,
+          evented: false,
+        });
+
+        img.on("modified", () => {
           setImageBounds({
-            left: canvas.width / 2 - bgWidth / 2,
-            top: canvas.height / 2 - bgHeight / 2,
-            width: bgWidth,
-            height: bgHeight,
+            left: img.left - (img.width * img.scaleX) / 2,
+            top: img.top - (img.height * img.scaleY) / 2,
+            width: img.width * img.scaleX,
+            height: img.height * img.scaleY,
           });
-
-          canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-            selectable: false,
-            evented: false,
-          });
-
-          img.on("modified", () => {
-            setImageBounds({
-              left: img.left - (img.width * img.scaleX) / 2,
-              top: img.top - (img.height * img.scaleY) / 2,
-              width: img.width * img.scaleX,
-              height: img.height * img.scaleY,
-            });
-          });
-        },
-        { crossOrigin: "" }
-      );
+        });
+      }, { crossOrigin: "" });
       console.log("Image URL:", imageUrl);
     }
   }, [editor?.canvas, imageUrl]);
@@ -269,22 +256,37 @@ const EditBoard = ({ cameraImage }) => {
     };
   }, [editor?.canvas, createBlankCanvas]);
 
-  const addTappableArea = (content = null) => {
+  const addTappableArea = (content = null, capturedArea = null) => {
+    if (activeTappable) {
+      alert("Please finish placing the current tappable element before creating a new one.");
+      return;
+    }
+
     const newTappableArea = {
       id: `tappable-${getRandomNumber(100000, 999999999)}`,
       position: { x: tappablePosition.x, y: tappablePosition.y },
       size: { width: 100, height: 100 },
       content,
     };
+
+    const newLayer = {
+      id: newTappableArea.id,
+      name: `Layer ${layers.length + 1}`,
+      tappableContent: capturedArea || content,
+      selectedImage: capturedArea,
+    };
+
     setTappableAreas((prev) => {
       const updatedAreas = [...prev, newTappableArea];
       saveCanvasAsJson(updatedAreas);
       return updatedAreas;
     });
+
+    setLayers((prev) => [...prev, newLayer]);
     setShowTappableArea(true);
     setTappableContent(null);
     setIsPanZoomEnabled(false);
-    setLastAddedTappableContent(content); // Add this line
+    setActiveTappable(newTappableArea);
   };
 
   const handleSelectTappableArea = () => {
@@ -293,7 +295,7 @@ const EditBoard = ({ cameraImage }) => {
     setTappablePosition({ x: centerX, y: centerY });
     setShowTappableArea(true);
     setShowNewTappable(false);
-    addTappableArea(); // Directly add tappable area for demo
+    addTappableArea();
   };
 
   const handleRemoveTappableArea = (id) => {
@@ -302,8 +304,15 @@ const EditBoard = ({ cameraImage }) => {
       saveCanvasAsJson(updatedAreas);
       return updatedAreas;
     });
+    setLayers((prev) => prev.filter((layer) => layer.id !== id));
     setShowTappableArea(false);
     setTappableContent(null);
+    setIsPanZoomEnabled(true);
+    setActiveTappable(null);
+  };
+
+  const handleFixTappableContent = () => {
+    setActiveTappable(null);
     setIsPanZoomEnabled(true);
   };
 
@@ -311,14 +320,14 @@ const EditBoard = ({ cameraImage }) => {
     setTappableContent(imageData);
     setShowTappableArea(true);
     setShowNewTappable(false);
-    addTappableArea(imageData); // Directly add tappable area with image content
+    addTappableArea(imageData);
   };
 
   const handleEmojiSelect = (emoji) => {
     setTappableContent(emoji);
     setShowTappableArea(true);
     setShowNewTappable(false);
-    addTappableArea(emoji); // Directly add tappable area with emoji content
+    addTappableArea(emoji);
   };
 
   const handleNewTappableClose = () => {
@@ -343,8 +352,7 @@ const EditBoard = ({ cameraImage }) => {
     const adjustedCoordinates = [];
 
     canvas.getObjects().forEach((obj) => {
-      const { left, top, width, height, id, text, fill, stroke, imageLink } =
-        obj;
+      const { left, top, width, height, id, text, fill, stroke, imageLink } = obj;
 
       const adjustedLeft = left * zoom;
       const adjustedTop = top * zoom;
@@ -379,19 +387,15 @@ const EditBoard = ({ cameraImage }) => {
     return adjustedCoordinates;
   };
 
-  const handleCanvasClick = (event) => {
+  const handleCanvasClick = async (event) => {
+    if (activeTappable) return;
+
     const rect = event.target.getBoundingClientRect();
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
 
-    x = Math.max(
-      imageBounds.left,
-      Math.min(x, imageBounds.left + imageBounds.width - 100)
-    );
-    y = Math.max(
-      imageBounds.top,
-      Math.min(y, imageBounds.top + imageBounds.height - 100)
-    );
+    x = Math.max(imageBounds.left, Math.min(x, imageBounds.left + imageBounds.width - 100));
+    y = Math.max(imageBounds.top, Math.min(y, imageBounds.top + imageBounds.height - 100));
 
     const newTappableArea = {
       id: `tappable-${getRandomNumber(100000, 999999999)}`,
@@ -400,15 +404,19 @@ const EditBoard = ({ cameraImage }) => {
       content: null,
     };
 
+    const capturedArea = await captureBackgroundArea(newTappableArea);
+
     setTappableAreas((prev) => {
       const updatedAreas = [...prev, newTappableArea];
       saveCanvasAsJson(updatedAreas);
       return updatedAreas;
     });
+
     setTappablePosition({ id: newTappableArea.id, x, y });
     setShowTappableArea(true);
     setTappableContent(null);
     setIsPanZoomEnabled(false);
+    setActiveTappable(newTappableArea);
 
     const json = editor?.canvas.toJSON();
     console.log("Display JSON");
@@ -417,6 +425,8 @@ const EditBoard = ({ cameraImage }) => {
     const adjustedCoords = calculateAdjustedCoordinates(tappableAreas);
     console.log("Display Coordinates");
     console.log(adjustedCoords);
+
+    addTappableArea(null, capturedArea);
   };
 
   const getRandomNumber = (min, max) => {
@@ -432,13 +442,49 @@ const EditBoard = ({ cameraImage }) => {
     console.log("Saved JSON:", json);
   };
 
+  const captureBackgroundArea = (tappableArea) => {
+    return new Promise((resolve) => {
+      const canvas = editor?.canvas;
+      if (!canvas) {
+        resolve(null);
+        return;
+      }
+
+      const { left, top, width, height } = tappableArea.position;
+      const area = {
+        left: left - imageBounds.left,
+        top: top - imageBounds.top,
+        width: tappableArea.size.width,
+        height: tappableArea.size.height,
+      };
+
+      const croppedCanvas = document.createElement("canvas");
+      croppedCanvas.width = area.width;
+      croppedCanvas.height = area.height;
+      const croppedCtx = croppedCanvas.getContext("2d");
+
+      const backgroundImage = canvas.backgroundImage;
+      if (backgroundImage) {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = backgroundImage.getSrc();
+        img.onload = () => {
+          croppedCtx.drawImage(
+            img,
+            area.left, area.top, area.width, area.height,
+            0, 0, area.width, area.height
+          );
+          resolve(croppedCanvas.toDataURL());
+        };
+      } else {
+        resolve(null);
+      }
+    });
+  };
+
   return (
     <div className="App container">
-      <div
-        className="canvas-container"
-        ref={canvasRef}
-        onClick={handleCanvasClick}
-      >
+      <div className="canvas-container" ref={canvasRef} onClick={handleCanvasClick}>
         {isPanZoomEnabled ? "" : ""}
         <FabricJSCanvas className="fabric-canvas" onReady={onReady} />
       </div>
@@ -455,24 +501,20 @@ const EditBoard = ({ cameraImage }) => {
         isVisible={isLayersPanelVisible}
         tappableContent={tappableContent}
         lastAddedTappableContent={lastAddedTappableContent}
+        layers={layers}
+        setLayers={setLayers}
+        handleFixTappableContent={handleFixTappableContent}
       />
 
       {tappableAreas.map((area) => (
         <TappableArea
           key={area.id}
           onRemove={() => handleRemoveTappableArea(area.id)}
+          onFixContent={handleFixTappableContent}
           position={area.position}
-          setPosition={(position) =>
-            setTappableAreas((prev) =>
-              prev.map((a) => (a.id === area.id ? { ...a, position } : a))
-            )
-          }
+          setPosition={(position) => setTappableAreas((prev) => prev.map((a) => (a.id === area.id ? { ...a, position } : a)))}
           size={area.size}
-          setSize={(size) =>
-            setTappableAreas((prev) =>
-              prev.map((a) => (a.id === area.id ? { ...a, size } : a))
-            )
-          }
+          setSize={(size) => setTappableAreas((prev) => prev.map((a) => (a.id === area.id ? { ...a, size } : a)))}
           content={area.content}
           imageBounds={imageBounds}
           onCheckSquareClick={handleCheckSquareClick}

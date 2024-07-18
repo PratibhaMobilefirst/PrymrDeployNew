@@ -4,6 +4,7 @@ import Subtract from "../../../../assets/Subtract.svg";
 
 const TappableArea = ({
   onRemove,
+  onFixContent,
   content,
   position,
   setPosition,
@@ -106,6 +107,7 @@ const TappableArea = ({
     e.stopPropagation();
     if (typeof onCheckSquareClick === "function") {
       onCheckSquareClick(content, position, size);
+      onFixContent();
     }
   };
 
@@ -157,15 +159,15 @@ const TappableArea = ({
       <div
         className="absolute bg-sky-500 rounded-[13.68px] flex items-center justify-center"
         style={{
-          width: "100px", // Adjust as needed
-          height: "40px", // Adjust as needed
+          width: "100px",
+          height: "40px",
           left: "50%",
           transform: `translateX(-50%)`,
         }}
       >
         <div
           className="flex justify-center items-center w-full h-full"
-          style={{ padding: "4px" }} // Adjust padding as needed
+          style={{ padding: "4px" }}
         >
           <div
             className="flex justify-center items-center"
