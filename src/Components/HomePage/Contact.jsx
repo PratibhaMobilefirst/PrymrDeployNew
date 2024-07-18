@@ -18,36 +18,36 @@ function Contact() {
           <div className="flex flex-col space-y-2">
             <div className="flex items-center space-x-2">
               <img src={instagram} />
-              <span className="text-sm">@creatorart</span>
+              <span className="text-md">@creatorart</span>
             </div>
             <div className="flex items-center space-x-2">
               <img src={twitter} />
-              <span className="text-sm">@creatorartist</span>
+              <span className="text-md">@creatorartist</span>
             </div>
             <div className="flex items-center space-x-2">
               <img src={message} />
-              <span classname="text-sm">creator@creator.com</span>
+              <span classname="text-md">creator@creator.com</span>
             </div>
           </div>
           <form className="space-y-2 mt-6 w-full">
             <input
               type="text"
               placeholder="First name"
-              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded italic"
+              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded placeholder-italic"
             />
             <input
               type="email"
               placeholder="Email address"
-              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded italic"
+              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded placeholder-italic"
             />
             <input
               type="text"
               placeholder="Subject Matter"
-              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded italic"
+              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded placeholder-italic"
             />
             <textarea
               placeholder="Write Your Message Here"
-              className=" p-2 bg-[#2A2A2A] border-2 text-sm w-full h-[20vh] rounded italic"
+              className=" p-2 bg-[#2A2A2A] border-2 text-sm w-full h-[20vh] rounded placeholder-italic"
             />
             <button
               type="submit"

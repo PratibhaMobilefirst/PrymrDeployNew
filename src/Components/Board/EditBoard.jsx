@@ -297,6 +297,7 @@ const EditBoard = ({ cameraImage }) => {
       position: { x: tappablePosition.x, y: tappablePosition.y },
       size: { width: 100, height: 100 },
       content,
+      isVisible: true,
     };
 
     const newLayer = {
@@ -358,7 +359,17 @@ const EditBoard = ({ cameraImage }) => {
       }
       return layer;
     });
+
     setLayers(updatedLayers);
+
+    setTappableAreas((prev) =>
+      prev.map((area) =>
+        area.id === activeTappable.id
+          ? { ...area, content: capturedContent, isVisible: false }
+          : area
+      )
+    );
+
     setTappableContent(capturedContent);
     setActiveTappable(null);
     setIsPanZoomEnabled(true);
@@ -384,6 +395,15 @@ const EditBoard = ({ cameraImage }) => {
 
   const handleCheckSquareClick = (content, position, size) => {
     handleFixTappableContent(position, size);
+  };
+
+  const handleCircleClick = (id) => {
+    setTappableAreas((prev) =>
+      prev.map((area) => (area.id === id ? { ...area, isVisible: true } : area))
+    );
+    setLayers((prev) =>
+      prev.map((layer) => (layer.id === id ? { ...layer } : layer))
+    );
   };
 
   const getZoomLevel = (canvas) => {
@@ -457,6 +477,7 @@ const EditBoard = ({ cameraImage }) => {
       position: { x, y },
       size: { width: 100, height: 100 },
       content: null,
+      isVisible: true,
     };
 
     const newLayer = {
@@ -529,29 +550,46 @@ const EditBoard = ({ cameraImage }) => {
         handleFixTappableContent={handleFixTappableContent}
       />
 
-      {tappableAreas.map((area) => (
-        <TappableArea
-          key={area.id}
-          onRemove={() => handleRemoveTappableArea(area.id)}
-          onFixContent={handleFixTappableContent}
-          position={area.position}
-          setPosition={(position) =>
-            setTappableAreas((prev) =>
-              prev.map((a) => (a.id === area.id ? { ...a, position } : a))
-            )
-          }
-          size={area.size}
-          setSize={(size) =>
-            setTappableAreas((prev) =>
-              prev.map((a) => (a.id === area.id ? { ...a, size } : a))
-            )
-          }
-          content={area.content}
-          imageBounds={imageBounds}
-          onCheckSquareClick={handleCheckSquareClick}
-          initialSize={area.size}
-        />
-      ))}
+      {tappableAreas.map((area) =>
+        area.isVisible ? (
+          <TappableArea
+            key={area.id}
+            onRemove={() => handleRemoveTappableArea(area.id)}
+            onFixContent={handleFixTappableContent}
+            position={area.position}
+            setPosition={(position) =>
+              setTappableAreas((prev) =>
+                prev.map((a) => (a.id === area.id ? { ...a, position } : a))
+              )
+            }
+            size={area.size}
+            setSize={(size) =>
+              setTappableAreas((prev) =>
+                prev.map((a) => (a.id === area.id ? { ...a, size } : a))
+              )
+            }
+            content={area.content}
+            imageBounds={imageBounds}
+            onCheckSquareClick={handleCheckSquareClick}
+            initialSize={area.size}
+          />
+        ) : (
+          <div
+            key={area.id}
+            style={{
+              position: "absolute",
+              left: `${area.position.x}px`,
+              top: `${area.position.y}px`,
+              width: "20px",
+              height: "20px",
+              backgroundColor: "blue",
+              borderRadius: "50%",
+              cursor: "pointer",
+            }}
+            onClick={() => handleCircleClick(area.id)}
+          ></div>
+        )
+      )}
     </div>
   );
 };

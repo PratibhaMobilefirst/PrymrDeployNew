@@ -15,6 +15,7 @@ import Header from "../common/Header";
 import Navbar from "../common/Navbar";
 import deleteBai from "../../assets/deleteBai.svg";
 import DesktopNavbar from "../common/DesktopNavbar";
+import Contact from "./Contact";
 
 const Home = () => {
   const [allBoards, setAllBoards] = useState([]);
@@ -87,7 +88,7 @@ const Home = () => {
   ];
 
   const handleContact = () => {
-    navigate("/contact");
+    // navigate("/contact");
     setIsContactOpen(!isContactOpen);
     if (isContactOpen) {
       setIsArtOpen(false);
@@ -305,10 +306,11 @@ const Home = () => {
         </div>
 
         <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
-          <div className=" m-5 h-screen"> 
+          <div className=" m-5 h-screen text-white">
+            {isContactOpen ? <Contact /> : "Noting to Display!!"}
             <DesktopNavbar />
           </div>
-        </div> 
+        </div>
       </div>
     </>
   );
