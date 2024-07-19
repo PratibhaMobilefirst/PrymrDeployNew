@@ -21,10 +21,13 @@ const TappableArea = ({
   const tappableRef = useRef(null);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMove = (e) => {
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
       if (isDragging) {
-        let newX = e.clientX - dragOffset.x;
-        let newY = e.clientY - dragOffset.y;
+        let newX = clientX - dragOffset.x;
+        let newY = clientY - dragOffset.y;
 
         newX = Math.max(
           imageBounds.left,
@@ -49,11 +52,11 @@ const TappableArea = ({
       } else if (isResizing) {
         const newWidth = Math.max(
           50,
-          e.clientX - tappableRef.current.getBoundingClientRect().left
+          clientX - tappableRef.current.getBoundingClientRect().left
         );
         const newHeight = Math.max(
           50,
-          e.clientY - tappableRef.current.getBoundingClientRect().top
+          clientY - tappableRef.current.getBoundingClientRect().top
         );
 
         // Ensure the tappable area stays within the image bounds during resizing
@@ -70,27 +73,33 @@ const TappableArea = ({
       }
     };
 
-    const handleMouseUp = () => {
+    const handleUp = () => {
       setIsDragging(false);
       setIsResizing(false);
     };
 
     if (isDragging || isResizing) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("mousemove", handleMove);
+      window.addEventListener("mouseup", handleUp);
+      window.addEventListener("touchmove", handleMove);
+      window.addEventListener("touchend", handleUp);
     }
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleUp);
+      window.removeEventListener("touchmove", handleMove);
+      window.removeEventListener("touchend", handleUp);
     };
   }, [isDragging, isResizing, dragOffset, imageBounds, setPosition, setSize]);
 
   const handleMouseDown = (e) => {
     const rect = tappableRef.current.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: clientX - rect.left,
+      y: clientY - rect.top,
     });
     setIsDragging(true);
   };
@@ -128,6 +137,7 @@ const TappableArea = ({
         cursor: isDragging || isResizing ? "grabbing" : "grab",
       }}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleMouseDown}
     >
       <div
         className="relative rounded-[28px] border-4 border-sky-500 border-dashed flex items-center justify-center"
@@ -157,6 +167,7 @@ const TappableArea = ({
         <div
           className="absolute bottom-0 right-0 bg-white p-1 cursor-se-resize select-none"
           onMouseDown={handleResizeMouseDown}
+          onTouchStart={handleResizeMouseDown}
         >
           ↘
         </div>
@@ -170,9 +181,7 @@ const TappableArea = ({
           transform: `translateX(-50%)`,
         }}
       >
-        <div
-          className="flex justify-center items-center w-full h-full"
-        >
+        <div className="flex justify-center items-center w-full h-full">
           <div
             className="flex justify-center items-center"
             onClick={handleCheckSquareClick}

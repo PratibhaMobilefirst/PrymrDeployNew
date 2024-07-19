@@ -30,6 +30,7 @@ const LayersPanel = ({
   handleFixTappableContent,
   selectedLayerId,
   onLayerClick,
+  onLayerDelete,
 }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [layerIsClicked, setLayerIsClicked] = useState(false);
@@ -82,12 +83,13 @@ const LayersPanel = ({
   };
 
   const handleLayerDeleteClick = (layerId) => {
-    if (layerId === 1) {
-      alert("The first layer cannot be deleted.");
-    } else {
-      setLayers(layers.filter((layer) => layer.id !== layerId));
-      dispatch(setCount(layers.length - 1));
-    }
+    //   if (layerId === 1) {
+    //     alert("The first layer cannot be deleted.");
+    //   } else {
+    //     // Call the onLayerDelete function to notify EditBoard to remove the corresponding tappable area
+    onLayerDelete(layerId);
+    dispatch(setCount(layers.length - 1));
+    // }
   };
 
   const handleNewLayerAddClick = () => {
@@ -123,19 +125,27 @@ const LayersPanel = ({
   };
 
   const renderTappableContent = (content) => {
-    if (!content) return null;
+    if (!content) {
+      return (
+        <img
+          src={LayerTappable}
+          alt="Layer Tappable"
+          className="cursor-pointer max-w-[129px] max-h-[130px] object-contain"
+        />
+      );
+    }
 
     if (typeof content === "string" && content.startsWith("data:image")) {
       return (
         <img
           src={content}
           alt="Tappable Content"
-          className="cursor-pointer max-w-[120px] max-h-[120px] rounded-md object-contain"
+          className="cursor-pointer max-w-[129px] max-h-[130px] object-contain"
         />
       );
     } else {
       return (
-        <span className="cursor-pointer max-w-[120px] max-h-[120px] rounded-md flex items-center justify-center text-6xl">
+        <span className="cursor-pointer max-w-[120px] max-h-[120px] flex items-center justify-center text-6xl">
           {content}
         </span>
       );
@@ -249,19 +259,18 @@ const LayersPanel = ({
                     </div>
 
                     <div className="grid grid-cols-3 gap-1">
-                      <div
-                        className="flex flex-col items-center justify-center max-w-[120px] max-h-[120px] overflow-hidden"
+                      <button
+                        className="flex flex-col items-center justify-center"
                         style={{
                           backgroundColor: layer.selectedColor,
                           borderRadius: "0.25rem",
-                          padding: "1rem",
                         }}
                         onClick={() => handleTappableClick(layer.id)}
                       >
                         <label htmlFor={`fileInput${layer.id}`}>
                           {renderTappableContent(layer.tappableContent)}
                         </label>
-                      </div>
+                      </button>
                       <button
                         className="flex flex-col items-center justify-center"
                         style={{
@@ -296,7 +305,7 @@ const LayersPanel = ({
                   style={{
                     backgroundColor: layer.selectedColor,
                     borderRadius: "0.25rem",
-                    padding: "1rem",
+                    padding: "10px",
                   }}
                   onClick={() => handleTappableClick(layer.id)}
                 >
@@ -374,17 +383,18 @@ const LayersPanel = ({
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
-                    <div
-                      className="flex flex-col items-center justify-center max-w-[120px] max-h-[120px] overflow-hidden"
+                    <button
+                      className="flex flex-col items-center justify-center"
                       style={{
                         backgroundColor: layer.selectedColor,
                         borderRadius: "0.25rem",
                       }}
+                      onClick={() => handleTappableClick(layer.id)}
                     >
                       <label htmlFor={`fileInput${layer.id}`}>
                         {renderTappableContent(layer.tappableContent)}
                       </label>
-                    </div>
+                    </button>
                     <button
                       className="flex flex-col items-center justify-center"
                       style={{

@@ -343,6 +343,12 @@ const EditBoard = ({ cameraImage }) => {
     setActiveTappable(null);
   };
 
+  const handleLayerDelete = (layerId) => {
+    setLayers((prev) => prev.filter((layer) => layer.id !== layerId));
+    setTappableAreas((prev) => prev.filter((area) => area.id !== layerId));
+    setActiveTappable(null);
+  };
+
   const handleFixTappableContent = (id, position, size) => {
     const tappable = tappableAreas.find((area) => area.id === id);
     if (!tappable) return;
@@ -504,8 +510,11 @@ const EditBoard = ({ cameraImage }) => {
     if (activeTappable) return;
 
     const rect = event.target.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+    const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+    let x = clientX - rect.left;
+    let y = clientY - rect.top;
 
     x = Math.max(
       imageBounds.left,
@@ -572,6 +581,7 @@ const EditBoard = ({ cameraImage }) => {
         className="canvas-container"
         ref={canvasRef}
         onClick={handleCanvasClick}
+        onTouchStart={handleCanvasClick} // Handle touch events
       >
         {isPanZoomEnabled ? "" : ""}
         <FabricJSCanvas className="fabric-canvas" onReady={onReady} />
@@ -581,8 +591,8 @@ const EditBoard = ({ cameraImage }) => {
         onSelectTappableArea={handleSelectTappableArea}
         onImageSelect={handleImageSelect}
         onEmojiSelect={handleEmojiSelect}
-        onNewTappableClick={() => setShowNewTappable(true)}
         onLayersToggle={(isVisible) => setIsLayersPanelVisible(isVisible)}
+        layers={layers} // Pass layers as prop
       />
 
       <LayersPanel
@@ -593,7 +603,8 @@ const EditBoard = ({ cameraImage }) => {
         setLayers={setLayers}
         handleFixTappableContent={handleFixTappableContent}
         selectedLayerId={selectedLayerId}
-        onLayerClick={handleLayerClick} // Pass handleLayerClick as prop
+        onLayerClick={handleLayerClick}
+        onLayerDelete={handleLayerDelete}
       />
 
       {tappableAreas.map((area) =>
