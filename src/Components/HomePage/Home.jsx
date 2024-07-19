@@ -307,7 +307,10 @@ const Home = () => {
 
         <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
           <div className=" m-5 h-screen text-white">
-            {isContactOpen ? <Contact /> : "Noting to Display!!"}
+            <div className="flex justify-between">
+              <div>{isContactOpen ? <Contact /> : "Noting to Display!!"}</div>
+              <div>Hello</div>
+            </div>
             <DesktopNavbar />
           </div>
         </div>

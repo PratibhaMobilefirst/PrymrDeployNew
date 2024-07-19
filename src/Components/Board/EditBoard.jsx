@@ -33,6 +33,7 @@ const EditBoard = ({ cameraImage }) => {
   const [isLayersPanelVisible, setIsLayersPanelVisible] = useState(false);
   const [tappableContent, setTappableContent] = useState(null);
   const { imageUrl } = location.state || {};
+  const [selectedLayerId, setSelectedLayerId] = useState(null);
 
   useEffect(() => {
     addImagesToCanvas();
@@ -342,16 +343,17 @@ const EditBoard = ({ cameraImage }) => {
     setActiveTappable(null);
   };
 
-  const handleFixTappableContent = (position, size) => {
-    if (!activeTappable) return;
+  const handleFixTappableContent = (id, position, size) => {
+    const tappable = tappableAreas.find((area) => area.id === id);
+    if (!tappable) return;
 
-    let capturedContent = activeTappable.content;
+    let capturedContent = tappable.content;
     if (!capturedContent) {
       capturedContent = captureBackgroundArea(position, size);
     }
 
     const updatedLayers = layers.map((layer) => {
-      if (layer.id === activeTappable.id) {
+      if (layer.id === id) {
         return {
           ...layer,
           tappableContent: capturedContent,
@@ -364,15 +366,23 @@ const EditBoard = ({ cameraImage }) => {
 
     setTappableAreas((prev) =>
       prev.map((area) =>
-        area.id === activeTappable.id
+        area.id === id
           ? { ...area, content: capturedContent, isVisible: false }
           : area
       )
     );
 
     setTappableContent(capturedContent);
-    setActiveTappable(null);
+    setActiveTappable(null); // Reset the activeTappable state
     setIsPanZoomEnabled(true);
+  };
+
+  const toggleTappableVisibility = (id) => {
+    setTappableAreas((prev) =>
+      prev.map((area) =>
+        area.id === id ? { ...area, isVisible: !area.isVisible } : area
+      )
+    );
   };
 
   const handleImageSelect = (imageData) => {
@@ -393,16 +403,50 @@ const EditBoard = ({ cameraImage }) => {
     setShowNewTappable(false);
   };
 
-  const handleCheckSquareClick = (content, position, size) => {
-    handleFixTappableContent(position, size);
+  const handleCheckSquareClick = (id, content, position, size) => {
+    if (content) {
+      toggleTappableVisibility(id);
+    } else {
+      handleFixTappableContent(id, position, size);
+    }
+    if (!content) {
+      const capturedContent = captureBackgroundArea(position, size);
+      const updatedLayers = layers.map((layer) => {
+        if (layer.id === activeTappable.id) {
+          return {
+            ...layer,
+            tappableContent: capturedContent,
+          };
+        }
+        return layer;
+      });
+      setLayers(updatedLayers);
+      setTappableContent(content);
+      setActiveTappable(null);
+    } else {
+      setActiveTappable(null);
+    }
   };
 
   const handleCircleClick = (id) => {
+    setSelectedLayerId(id);
+    setIsLayersPanelVisible(true);
     setTappableAreas((prev) =>
-      prev.map((area) => (area.id === id ? { ...area, isVisible: true } : area))
+      prev.map((area) =>
+        area.id === id
+          ? { ...area, isVisible: true }
+          : { ...area, isVisible: false }
+      )
     );
-    setLayers((prev) =>
-      prev.map((layer) => (layer.id === id ? { ...layer } : layer))
+  };
+
+  const handleLayerClick = (id) => {
+    setTappableAreas((prev) =>
+      prev.map((area) =>
+        area.id === id
+          ? { ...area, isVisible: true }
+          : { ...area, isVisible: false }
+      )
     );
   };
 
@@ -548,12 +592,15 @@ const EditBoard = ({ cameraImage }) => {
         layers={layers}
         setLayers={setLayers}
         handleFixTappableContent={handleFixTappableContent}
+        selectedLayerId={selectedLayerId}
+        onLayerClick={handleLayerClick} // Pass handleLayerClick as prop
       />
 
       {tappableAreas.map((area) =>
         area.isVisible ? (
           <TappableArea
             key={area.id}
+            id={area.id}
             onRemove={() => handleRemoveTappableArea(area.id)}
             onFixContent={handleFixTappableContent}
             position={area.position}

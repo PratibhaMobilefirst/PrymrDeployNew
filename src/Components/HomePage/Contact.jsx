@@ -64,7 +64,7 @@ function Contact() {
           </div>
         </div>
 
-        <Navbar />
+        {/* <Navbar /> */}
       </div>
 
       <div></div>

@@ -3,6 +3,7 @@ import CheckSquare from "../../../../assets/CheckSquare.svg";
 import Subtract from "../../../../assets/Subtract.svg";
 
 const TappableArea = ({
+  id,
   onRemove,
   onFixContent,
   content,
@@ -111,8 +112,7 @@ const TappableArea = ({
   const handleCheckSquareClick = (e) => {
     e.stopPropagation();
     if (typeof onCheckSquareClick === "function") {
-      onCheckSquareClick(content, position, size);
-      onFixContent(position, size);
+      onCheckSquareClick(id, content, position, size);
     }
   };
 
@@ -172,7 +172,6 @@ const TappableArea = ({
       >
         <div
           className="flex justify-center items-center w-full h-full"
-          style={{ padding: "4px" }}
         >
           <div
             className="flex justify-center items-center"

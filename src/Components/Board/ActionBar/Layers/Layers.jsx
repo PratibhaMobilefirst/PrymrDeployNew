@@ -9,18 +9,16 @@ import arrowspointingout from "../../../../assets/arrowspointingout.svg";
 import LayerTappable from "../../../../assets/tappable.svg";
 import AddAction from "../../../../assets/AddActions.svg";
 import AddContent from "../../../../assets/AddContent.svg";
-// import { fabric } from "fabric";
 import * as fabric from "fabric";
 import { ImageContext } from "../../ImageContext/ImageContext";
 import TapAction from "./TapAction";
 import AddContentPage from "./AddContentPage";
 import { useContext, useRef, useState, useEffect } from "react";
-import { baseURL } from "../../../../Constants/urls";
 import ColorPanel from "./ColorPannel";
 import { Swiper, SwiperSlide } from "swiper/react";
-import NewTappable from "../NewTappeable/Newtapable";
 import { useDispatch, useSelector } from "react-redux";
 import { setCount } from "../../../../redux/LayerCountSlice";
+import "swiper/css";
 import "./layers.css";
 
 const LayersPanel = ({
@@ -30,6 +28,8 @@ const LayersPanel = ({
   layers,
   setLayers,
   handleFixTappableContent,
+  selectedLayerId,
+  onLayerClick,
 }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [layerIsClicked, setLayerIsClicked] = useState(false);
@@ -40,6 +40,16 @@ const LayersPanel = ({
   const [isSwiperView, setIsSwiperView] = useState(true);
   const dispatch = useDispatch();
   const [currentLayerId, setCurrentLayerId] = useState(null);
+  const swiperInstanceRef = useRef(null);
+
+  useEffect(() => {
+    if (isVisible && selectedLayerId && swiperInstanceRef.current) {
+      const index = layers.findIndex((layer) => layer.id === selectedLayerId);
+      if (index !== -1) {
+        swiperInstanceRef.current.slideTo(index);
+      }
+    }
+  }, [isVisible, selectedLayerId, layers]);
 
   const handleLayerAddClick = () => {
     if (selectedImage) {
@@ -97,7 +107,6 @@ const LayersPanel = ({
   };
 
   const toggleView = () => {
-    console.log("toggle swiper");
     setIsSwiperView(!isSwiperView);
   };
 
@@ -107,6 +116,30 @@ const LayersPanel = ({
         layer.id === layerId ? { ...layer, name: newName } : layer
       )
     );
+  };
+
+  const handleTappableClick = (layerId) => {
+    onLayerClick(layerId);
+  };
+
+  const renderTappableContent = (content) => {
+    if (!content) return null;
+
+    if (typeof content === "string" && content.startsWith("data:image")) {
+      return (
+        <img
+          src={content}
+          alt="Tappable Content"
+          className="cursor-pointer max-w-[120px] max-h-[120px] rounded-md object-contain"
+        />
+      );
+    } else {
+      return (
+        <span className="cursor-pointer max-w-[120px] max-h-[120px] rounded-md flex items-center justify-center text-6xl">
+          {content}
+        </span>
+      );
+    }
   };
 
   return (
@@ -129,8 +162,16 @@ const LayersPanel = ({
         </header>
         <div className="bg-gray-800 text-white opacity-500 p-2">
           {isSwiperView ? (
-            <Swiper slidesPerView={1} spaceBetween={10} loop={false} navigation>
-              {layers.map((layer, index) => (
+            <Swiper
+              onSwiper={(swiper) => {
+                swiperInstanceRef.current = swiper;
+              }}
+              slidesPerView={1}
+              spaceBetween={10}
+              loop={false}
+              navigation
+            >
+              {layers.map((layer) => (
                 <SwiperSlide key={layer.id}>
                   <div className="relative flex flex-col space-y-1">
                     <div
@@ -209,28 +250,16 @@ const LayersPanel = ({
 
                     <div className="grid grid-cols-3 gap-1">
                       <div
-                        className="flex flex-col items-center justify-center"
+                        className="flex flex-col items-center justify-center max-w-[120px] max-h-[120px] overflow-hidden"
                         style={{
                           backgroundColor: layer.selectedColor,
                           borderRadius: "0.25rem",
                           padding: "1rem",
                         }}
+                        onClick={() => handleTappableClick(layer.id)}
                       >
                         <label htmlFor={`fileInput${layer.id}`}>
-                          {layer.tappableContent ? (
-                            typeof layer.tappableContent === "string" &&
-                            layer.tappableContent.startsWith("data:image") ? (
-                              <img
-                                src={layer.tappableContent}
-                                alt="Tappable Content"
-                                className="cursor-pointer w-[120px] h-[120px] rounded-md object-contain"
-                              />
-                            ) : (
-                              <span className="cursor-pointer w-[120px] h-[120px] rounded-md flex items-center justify-center text-6xl">
-                                {layer.tappableContent}
-                              </span>
-                            )
-                          ) : null}
+                          {renderTappableContent(layer.tappableContent)}
                         </label>
                       </div>
                       <button
@@ -260,7 +289,7 @@ const LayersPanel = ({
             </Swiper>
           ) : (
             <div className="flex flex-col space-y-1 m-3 max-h-[70vh] overflow-y-auto">
-              {layers.map((layer, index) => (
+              {layers.map((layer) => (
                 <div
                   key={layer.id}
                   className="relative flex flex-col space-y-1 m-3"
@@ -269,6 +298,7 @@ const LayersPanel = ({
                     borderRadius: "0.25rem",
                     padding: "1rem",
                   }}
+                  onClick={() => handleTappableClick(layer.id)}
                 >
                   <div
                     className="flex items-center h-9 justify-between p-2"
@@ -345,27 +375,14 @@ const LayersPanel = ({
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <div
-                      className="flex flex-col items-center justify-center"
+                      className="flex flex-col items-center justify-center max-w-[120px] max-h-[120px] overflow-hidden"
                       style={{
                         backgroundColor: layer.selectedColor,
                         borderRadius: "0.25rem",
                       }}
                     >
                       <label htmlFor={`fileInput${layer.id}`}>
-                        {layer.tappableContent ? (
-                          typeof layer.tappableContent === "string" &&
-                          layer.tappableContent.startsWith("data:image") ? (
-                            <img
-                              src={layer.tappableContent}
-                              alt="Tappable Content"
-                              className="cursor-pointer w-[120px] h-[120px] rounded-md object-contain"
-                            />
-                          ) : (
-                            <span className="cursor-pointer w-[120px] h-[120px] rounded-md flex items-center justify-center text-6xl">
-                              {layer.tappableContent}
-                            </span>
-                          )
-                        ) : null}
+                        {renderTappableContent(layer.tappableContent)}
                       </label>
                     </div>
                     <button
