@@ -72,8 +72,8 @@ const EditBoard = ({ cameraImage }) => {
     const canvas = editor?.canvas;
     if (canvas && imageUrl) {
       const { innerWidth: width, innerHeight: height } = window;
-      canvas.setWidth(width - width * 0.1);
-      canvas.setHeight(height - height * 0.25);
+      canvas.setWidth(width - width * 0.0);
+      canvas.setHeight(height - height * 0.2);
 
       fabric.Image.fromURL(
         imageUrl,
@@ -250,8 +250,8 @@ const EditBoard = ({ cameraImage }) => {
       if (editor?.canvas && createBlankCanvas) {
         const canvas = editor.canvas;
         const { innerWidth: width, innerHeight: height } = window;
-        canvas.setWidth(width - width * 0.1);
-        canvas.setHeight(height - height * 0.3);
+        canvas.setWidth(width - width * 0);
+        canvas.setHeight(height - height * 0.2);
         const rect = new fabric.Rect({
           left: 0,
           top: 0,

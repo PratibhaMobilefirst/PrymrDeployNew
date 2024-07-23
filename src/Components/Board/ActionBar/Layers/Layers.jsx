@@ -1,4 +1,5 @@
-import { FaPlus, FaUndo, FaRedo } from "react-icons/fa";
+import React, { useContext, useRef, useState, useEffect } from "react";
+import { FaPlus } from "react-icons/fa";
 import hamburger from "../../../../assets/hamburger.svg";
 import eye from "../../../../assets/Eye.svg";
 import pin from "../../../../assets/pin.png";
@@ -13,19 +14,19 @@ import * as fabric from "fabric";
 import { ImageContext } from "../../ImageContext/ImageContext";
 import TapAction from "./TapAction";
 import AddContentPage from "./AddContentPage";
-import { useContext, useRef, useState, useEffect } from "react";
 import ColorPanel from "./ColorPannel";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCount } from "../../../../redux/LayerCountSlice";
 import "swiper/css";
 import "./layers.css";
+import { useNavigate } from "react-router";
 
 const LayersPanel = ({
   isVisible,
   tappableContent,
   lastAddedTappableContent,
-  layers,
+  layers = [],
   setLayers,
   handleFixTappableContent,
   selectedLayerId,
@@ -39,9 +40,11 @@ const LayersPanel = ({
   const [colorPanelVisible, setColorPanelVisible] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#4B4B4B");
   const [isSwiperView, setIsSwiperView] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
   const [currentLayerId, setCurrentLayerId] = useState(null);
   const swiperInstanceRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isVisible && selectedLayerId && swiperInstanceRef.current) {
@@ -51,6 +54,10 @@ const LayersPanel = ({
       }
     }
   }, [isVisible, selectedLayerId, layers]);
+
+  const NavigateToAddContent = () => {
+    navigate("/add-content");
+  };
 
   const handleLayerAddClick = () => {
     if (selectedImage) {
@@ -83,13 +90,8 @@ const LayersPanel = ({
   };
 
   const handleLayerDeleteClick = (layerId) => {
-    //   if (layerId === 1) {
-    //     alert("The first layer cannot be deleted.");
-    //   } else {
-    //     // Call the onLayerDelete function to notify EditBoard to remove the corresponding tappable area
     onLayerDelete(layerId);
     dispatch(setCount(layers.length - 1));
-    // }
   };
 
   const handleNewLayerAddClick = () => {
@@ -152,6 +154,14 @@ const LayersPanel = ({
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredLayers = layers.filter((layer) =>
+    layer.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     isVisible && (
       <div className="fixed bottom-20 w-full left-0">
@@ -162,7 +172,22 @@ const LayersPanel = ({
           <button className="text-white" onClick={handleNewLayerAddClick}>
             <FaPlus />
           </button>
-          <img src={search} alt="search" className="w-5 mr-2 h-5" />
+          <div className="flex mr-2">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search layers..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="text-black px-2 py-1 pl-8 mb-0"
+              />
+              <img
+                src={search}
+                alt="search"
+                className="w-5 h-5 absolute top-1/3 transform -translate-y-1/3 left-2"
+              />
+            </div>
+          </div>
           <img
             src={arrowspointingout}
             alt="arrowspointingout"
@@ -181,7 +206,7 @@ const LayersPanel = ({
               loop={false}
               navigation
             >
-              {layers.map((layer) => (
+              {filteredLayers.map((layer) => (
                 <SwiperSlide key={layer.id}>
                   <div className="relative flex flex-col space-y-1">
                     <div
@@ -251,7 +276,10 @@ const LayersPanel = ({
                         {colorPanelVisible && currentLayerId === layer.id && (
                           <div className="absolute left-16 top-0 z-10">
                             <div className="overflow-y-auto">
-                              <ColorPanel onSelectColor={handleColorSelect} />
+                              <ColorPanel
+                                onSelectColor={handleColorSelect}
+                                onClose={() => setColorPanelVisible(false)}
+                              />
                             </div>
                           </div>
                         )}
@@ -282,12 +310,12 @@ const LayersPanel = ({
                         <img src={AddAction} alt="Add Actions" />
                       </button>
                       <button
+                        onClick={NavigateToAddContent}
                         className="flex flex-col items-center justify-center"
                         style={{
                           backgroundColor: layer.selectedColor,
                           borderRadius: "0.25rem",
                         }}
-                        onClick={handleAddContent}
                       >
                         <img src={AddContent} alt="Add Content" />
                       </button>
@@ -298,7 +326,7 @@ const LayersPanel = ({
             </Swiper>
           ) : (
             <div className="flex flex-col space-y-1 m-3 max-h-[70vh] overflow-y-auto">
-              {layers.map((layer) => (
+              {filteredLayers.map((layer) => (
                 <div
                   key={layer.id}
                   className="relative flex flex-col space-y-1 m-3"
@@ -376,7 +404,10 @@ const LayersPanel = ({
                       {colorPanelVisible && currentLayerId === layer.id && (
                         <div className="absolute left-16 top-0 z-10">
                           <div className="overflow-y-auto">
-                            <ColorPanel onSelectColor={handleColorSelect} />
+                            <ColorPanel
+                              onSelectColor={handleColorSelect}
+                              onClose={() => setColorPanelVisible(false)}
+                            />
                           </div>
                         </div>
                       )}
@@ -418,6 +449,9 @@ const LayersPanel = ({
                   </div>
                 </div>
               ))}
+              {filteredLayers.length === 0 && (
+                <div className="text-center text-white">No layers found.</div>
+              )}
             </div>
           )}
         </div>

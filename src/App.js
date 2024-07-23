@@ -32,7 +32,7 @@ import ForgetPassword from "./Components/OnboardingScreen/SignupIn/forgetPasswor
 import Contact from "./Components/HomePage/Contact";
 import HomePage from "./Components/HomePage/HomePage";
 import SaveDesktopView from "./Components/Board/CreateNewBoard/SaveDesktopView";
-
+import AddContentPage from "./Components/Board/ActionBar/Layers/AddContentPage";
 
 function App() {
   return (
@@ -88,6 +88,7 @@ function App() {
             path="/create/new-board/desktop-view"
             element={<SaveDesktopView />}
           />
+          <Route path="/add-content" element={<AddContentPage />} />
         </Routes>
       </ImageProvider>
     </BrowserRouter>

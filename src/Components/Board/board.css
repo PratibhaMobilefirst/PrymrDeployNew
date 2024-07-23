@@ -12,11 +12,11 @@ html {
   height: 100%;
 }
 
-.canvas-container {
+/* .canvas-container {
   flex: 1;
   overflow: hidden;
   position: relative;
-  /* border: 2px solid #cfc0c0; */
+  border: 2px solid #cfc0c0;
 }
 
 .fabric-canvas {
@@ -25,7 +25,21 @@ html {
   left: 50%;
   position: fixed;
   transform: translate(-50%);
-  /* border: 2px solid #b30d0d; */
+  border: 2px solid #b30d0d;
+} */
+
+.canvas-container {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 80vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.fabric-canvas {
+  border: 1px solid #ccc;
 }
 
 .button-active {

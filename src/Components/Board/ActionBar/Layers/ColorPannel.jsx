@@ -13,7 +13,7 @@ const ColorPanel = ({ onSelectColor, onClose }) => {
   ];
 
   return (
-    <div className="relative z-10 bg-[#4B4B4B] rounded shadow-md flex items-center ">
+    <div className="relative z-10 bg-[#4B4B4B] rounded shadow-md flex items-center">
       <div className="flex space-x-2">
         {colors.map((color) => (
           <div
@@ -24,17 +24,7 @@ const ColorPanel = ({ onSelectColor, onClose }) => {
           />
         ))}
       </div>
-      <button
-        onClick={() => {
-          console.log("Close button clicked");
-          if (typeof onClose === "function") {
-            onClose();
-          } else {
-            console.error("onClose is not a function");
-          }
-        }}
-        className="p-1 text-white hover:text-gray-300"
-      >
+      <button onClick={onClose} className="p-1 text-white hover:text-gray-300">
         X
       </button>
     </div>

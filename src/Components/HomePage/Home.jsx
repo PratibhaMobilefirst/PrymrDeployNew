@@ -16,19 +16,21 @@ import Navbar from "../common/Navbar";
 import deleteBai from "../../assets/deleteBai.svg";
 import DesktopNavbar from "../common/DesktopNavbar";
 import Contact from "./Contact";
+import CreatorInfo from "./CreatorInfo";
 
 const Home = () => {
   const [allBoards, setAllBoards] = useState([]);
-  const [layout, setLayout] = useState("column");
+  const [layout, setLayout] = useState("grid");
   const navigate = useNavigate();
 
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isInfoOpen, setInfoOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState(10);
   const token = localStorage.getItem("token");
   const [useInfiniteScroll, setUseInfiniteScroll] = useState(false);
-
   const [isArtOpen, setIsArtOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState(null);
 
   const page = 1;
   useEffect(() => {
@@ -58,7 +60,6 @@ const Home = () => {
 
       console.log("setpagesize ", data?.data?.count);
       setAllBoards(data?.data?.data || []);
-      console.log("BoardImages 322", data.data.data.BoardImages);
     } catch (error) {
       console.log("Error fetching boards", error);
     } finally {
@@ -79,6 +80,7 @@ const Home = () => {
     if (isArtOpen) {
       setIsContactOpen(false);
     }
+    setActiveItem("Art");
   };
 
   const imagesforsmallpost = [
@@ -87,66 +89,40 @@ const Home = () => {
     { src: deleteBai, alt: "Avatar 3" },
   ];
 
+  // const handleContact = () => {
+  //   setIsContactOpen(!isContactOpen);
+  //   setInfoOpen(false);
+  // };
+
+  // const handleInfo = () => {
+  //   setInfoOpen(!isInfoOpen);
+  //   setIsContactOpen(false);
+  // };
+
   const handleContact = () => {
-    // navigate("/contact");
-    setIsContactOpen(!isContactOpen);
-    if (isContactOpen) {
-      setIsArtOpen(false);
-    }
+    setIsContactOpen(true);
+    setInfoOpen(false);
+    setActiveItem("Contact");
   };
 
+  const handleInfo = () => {
+    setInfoOpen(true);
+    setIsContactOpen(false);
+    setActiveItem("Info");
+  };
   return (
     <>
-      <div className="lg:w-[30%]">
+      <div className="lg:w-[30%]  ">
         <Header />
-        {/* <nav className="p-4 pt-[14vh] text-white bg-[#2A2A2A]">
-          <ul className="space-y-4">
-            <li
-              className="flex items-center space-x-2 cursor-pointer"
-              onClick={toggleArt}
-            >
-              <img className="w-6 h-6" src={Galary} alt="Galary" />
-              <span>Art</span>
-              <img
-                className={`w-6 h-6 transform transition-transform ${
-                  isContactOpen ? "rotate-180" : "rotate-0"
-                }`}
-                src={leftarrow}
-                alt="leftarrow"
-              />
-            </li>
-            {isContactOpen && (
-              <div className="space-y-4 mt-4 px-5">
-                <div className="flex items-center space-x-2">
-                  <span>Traditional</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span>Digital</span>
-                </div>
-              </div>
-            )}
-            <li className="flex items-center space-x-2">
-              <img className="w-6 h-6" src={headershop} alt="headershop" />
-              <span>Shop</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
-              <span>Info</span>
-            </li>
-            <li className="flex items-center space-x-2" onClick={handleContact}>
-              <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
-              <span>Contact</span>
-            </li>
-          </ul>
-        </nav> */}
-        <nav className="p-4 pt-[14vh] text-white bg-[#2A2A2A]">
+
+        {/* <nav className="p-4 pt-[14vh]  text-white ">
           <ul className="space-y-4">
             <li
               className={`flex items-center text-white space-x-2 cursor-pointer `}
               onClick={toggleArt}
             >
               <img className="w-6 h-6" src={Galary} alt="Galary" />
-              <span className="text-white">Art</span>
+              <span className="text-white cursor-pointer">Art</span>
               <img
                 className={`w-6 h-6 transform transition-transform ${
                   isArtOpen ? "rotate-180" : "rotate-0"
@@ -157,10 +133,10 @@ const Home = () => {
             </li>
             {isArtOpen && (
               <div className="space-y-4 mt-4 px-5">
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 cursor-pointer">
                   <span>Traditional</span>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center cursor-pointer space-x-2">
                   <span>Digital</span>
                 </div>
               </div>
@@ -172,22 +148,32 @@ const Home = () => {
                   : "filter brightness-100"
               }`}
             >
-              <img className="w-6 h-6" src={headershop} alt="headershop" />
-              <span>Shop</span>
+              <img
+                className="w-6 h-6 cursor-pointer"
+                src={headershop}
+                alt="headershop"
+              />
+              <span className="cursor-pointer">Shop</span>
             </li>
             <li
               className={`flex items-center space-x-2 ${
-                isArtOpen
+                isInfoOpen
                   ? "filter brightness-50 hover:brightness-75"
                   : "filter brightness-100"
               }`}
             >
-              <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
-              <span>Info</span>
+              <img
+                className="w-6 h-6 cursor-pointer"
+                src={headerinfo}
+                alt="headerinfo"
+              />
+              <span className="cursor-pointer" onClick={handleInfo}>
+                Info
+              </span>
             </li>
             <li
-              className={`flex items-center space-x-2 ${
-                isArtOpen
+              className={`flex items-center cursor-pointer space-x-2 ${
+                isContactOpen
                   ? "filter brightness-50 hover:brightness-75"
                   : "filter brightness-100"
               }`}
@@ -197,9 +183,74 @@ const Home = () => {
               <span>Contact</span>
             </li>
           </ul>
+        </nav> */}
+        <nav className="p-4 pt-[14vh] text-white">
+          <ul className="space-y-4">
+            <li
+              className={`flex items-center space-x-2 cursor-pointer ${
+                activeItem === "Art" || !activeItem
+                  ? "text-white"
+                  : "text-gray-500"
+              }`}
+              onClick={toggleArt}
+            >
+              <img className="w-6 h-6" src={Galary} alt="Galary" />
+              <span>Art</span>
+              <img
+                className={`w-6 h-6 transform transition-transform ${
+                  isArtOpen ? "rotate-180" : "rotate-0"
+                }`}
+                src={leftarrow}
+                alt="leftarrow"
+              />
+            </li>
+            {isArtOpen && (
+              <div className="space-y-4 mt-4 px-5">
+                <div className="flex items-center space-x-2 cursor-pointer">
+                  <span>Traditional</span>
+                </div>
+                <div className="flex items-center cursor-pointer space-x-2">
+                  <span>Digital</span>
+                </div>
+              </div>
+            )}
+            <li
+              className={`flex items-center space-x-2 cursor-pointer ${
+                activeItem === "Shop" || !activeItem
+                  ? "text-white"
+                  : "text-gray-500"
+              }`}
+              onClick={() => setActiveItem("Shop")}
+            >
+              <img className="w-6 h-6" src={headershop} alt="headershop" />
+              <span>Shop</span>
+            </li>
+            <li
+              className={`flex items-center space-x-2 cursor-pointer ${
+                activeItem === "Info" || !activeItem
+                  ? "text-white"
+                  : "text-gray-500"
+              }`}
+              onClick={handleInfo}
+            >
+              <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
+              <span>Info</span>
+            </li>
+            <li
+              className={`flex items-center space-x-2 cursor-pointer ${
+                activeItem === "Contact" || !activeItem
+                  ? "text-white"
+                  : "text-gray-500"
+              }`}
+              onClick={handleContact}
+            >
+              <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
+              <span>Contact</span>
+            </li>
+          </ul>
         </nav>
       </div>
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex  flex-col lg:flex-row">
         <div className="lg:w-[30%]">
           <div className="flex m-2 justify-between items-center">
             <p className="font-italic text-white italic">Most recent uploads</p>
@@ -244,7 +295,7 @@ const Home = () => {
                         useInfiniteScroll ? "overflow-y-auto" : "overflow-y"
                       }`}
                       style={{
-                        height: "50vh",
+                        height: "42vh",
 
                         borderRadius: "1.5rem",
                       }}
@@ -253,7 +304,7 @@ const Home = () => {
                         board.BoardImages.map((image, imageIndex) => (
                           <img
                             key={imageIndex}
-                            className="h-[30vh] w-full rounded-t-3xl object-cover"
+                            className="h-[25vh] w-full rounded-t-3xl object-cover"
                             src={image.imageUrl}
                             alt={`image-${imageIndex}`}
                           />
@@ -305,13 +356,54 @@ const Home = () => {
           <Navbar />
         </div>
 
-        <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
-          <div className=" m-5 h-screen text-white">
-            <div className="flex justify-between">
-              <div>{isContactOpen ? <Contact /> : "Noting to Display!!"}</div>
-              <div>Hello</div>
-            </div>
-            <DesktopNavbar />
+        {/* <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
+          <div className="m-5 text-white">
+            {isInfoOpen && (
+              <div className="flex justify-between h-[90vh] bg-[#191919]">
+                <CreatorInfo />
+              </div>
+            )}
+            {isContactOpen && (
+              <div className="flex justify-between h-[90vh] bg-[#2A2A2A]">
+                <Contact />
+              </div>
+            )}
+          </div>
+        </div> */}
+        <div
+          className={`${
+            isInfoOpen || isContactOpen ? "block" : "hidden"
+          } lg:block lg:w-[70%] fixed right-0 top-0`}
+        >
+          <div className="m-5 text-white">
+            {isInfoOpen && (
+              <div className="flex justify-between h-[90vh] bg-[#191919]">
+                <CreatorInfo />
+              </div>
+            )}
+            {isContactOpen && (
+              <div className="flex justify-between h-[90vh] bg-[#2A2A2A]">
+                <Contact />
+              </div>
+            )}
+          </div>
+        </div>
+        <div
+          className={`lg:hidden ${
+            isInfoOpen || isContactOpen ? "block" : "hidden"
+          } w-full fixed bottom-0 left-0 bg-gray-800`}
+        >
+          <div className="m-5 text-white">
+            {isInfoOpen && (
+              <div className="flex justify-between lg:h-[90vh] bg-[#191919]">
+                <CreatorInfo />
+              </div>
+            )}
+            {isContactOpen && (
+              <div className="flex justify-between lg:h-[90vh] bg-[#2A2A2A]">
+                <Contact />
+              </div>
+            )}
           </div>
         </div>
       </div>

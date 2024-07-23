@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react";
-import hamburger from "../../../../assets/hamburger.svg";
+import { useDispatch } from "react-redux";
 import eye from "../../../../assets/Eye.svg";
 import pin from "../../../../assets/pin.png";
 import colorcircle from "../../../../assets/colorcircle.png";
 import checkCircleWhite from "../../../../assets/checkCircleWhite.png";
 import deletee from "../../../../assets/delete.svg";
-
 import smallAvatar from "../../../../assets/smallAvatar.svg";
 import downarrow from "../../../../assets/downArrow.svg";
 import redDelete from "../../../../assets/redDelete.svg";
@@ -13,17 +12,17 @@ import AddChnageContent from "../../../../assets/hamburger.svg";
 import stars from "../../../../assets/hamburger.svg";
 import LayersPanel from "./Layers";
 import ColorPanel from "./ColorPannel";
-import { useDispatch, useSelector } from "react-redux";
 import "./layers.css";
 import { ToastContainer } from "react-toastify";
-
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import carousel styles
+import { Carousel } from "react-responsive-carousel";
 const AddContentPage = ({
   isVisible,
   tappableContent,
   lastAddedTappableContent,
   layer,
 }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
   const [layerIsClicked, setLayerIsClicked] = useState(false);
   const [isTapActionOpen, setTapActionOpen] = useState(false);
   const [isAddContentOpen, setAddContentOpen] = useState(false);
@@ -46,32 +45,38 @@ const AddContentPage = ({
       selectedImage: null,
     },
   ]);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const fileInputRef = useRef(null);
 
   const handleImageChange = (event) => {
     event.preventDefault();
 
-    let reader = new FileReader();
-    let file = event.target.files[0];
+    let files = event.target.files;
+    let images = [];
 
-    if (file) {
+    for (let i = 0; i < files.length; i++) {
+      let reader = new FileReader();
+      let file = files[i];
+
       reader.onloadend = () => {
-        setImagePreviewUrl(reader.result);
+        images.push({ id: new Date().getTime() + i, url: reader.result });
+        if (images.length === files.length) {
+          setSelectedImages((prevImages) => [...prevImages, ...images]);
+        }
       };
 
       reader.readAsDataURL(file);
     }
   };
-
   const handleClickChangeContent = () => {
     fileInputRef.current.click();
   };
+
   const handleLayerAddClick = () => {
     if (selectedImage) {
       onAddSticker(selectedImage);
     }
   };
+
   const handleTapAction = () => {
     setTapActionOpen(!isTapActionOpen);
     setLayerIsClicked(false);
@@ -86,6 +91,7 @@ const AddContentPage = ({
     setCurrentLayerId(id);
     setColorPanelVisible(true);
   };
+
   const handleColorSelect = (color) => {
     setLayers(
       layers.map((layer) =>
@@ -124,9 +130,11 @@ const AddContentPage = ({
     console.log("toggle swiper");
     setIsSwiperView(!isSwiperView);
   };
+
   const handletapbale = () => {
     setIsTappableVisible(true);
   };
+
   const handleLayerNameChange = (layerId, newName) => {
     setLayers(
       layers.map((layer) =>
@@ -135,11 +143,17 @@ const AddContentPage = ({
     );
   };
 
+  const handleImageDelete = (imageId) => {
+    setSelectedImages(selectedImages.filter((image) => image.id !== imageId));
+  };
+
   return (
     <>
       <div>
+        {/* Render layers */}
         {layers.map((layer, index) => (
           <div
+            key={layer.id} // Added missing key prop
             className="flex items-center h-9 justify-between p-2 m-1"
             style={{
               backgroundColor: layer.selectedColor,
@@ -201,8 +215,8 @@ const AddContentPage = ({
           </div>
         ))}
       </div>
-      <div className="flex bg-[#4B4B4B] justify-between items-center   shadow-md m-1 ">
-        <div className="flex  text-white items-center space-x-2">
+      <div className="flex bg-[#4B4B4B] justify-between items-center shadow-md m-1 ">
+        <div className="flex text-white items-center space-x-2">
           <img src={downarrow} className="h-5 w-5" alt="Down Arrow" />
           <span>Close</span>
         </div>
@@ -220,8 +234,7 @@ const AddContentPage = ({
           <img src={stars} className="h-5 w-5" alt="Stars" />
         </div>
       </div>
-      {/  /}
-      <div className="container top-[100vh] text-white">
+      <div className="container top-[100vh] text-white p-2 sm:p-4">
         <div className="p-1 rounded-lg mb-2">
           <input
             type="file"
@@ -230,51 +243,72 @@ const AddContentPage = ({
             className="hidden"
             onChange={handleImageChange}
             ref={fileInputRef}
+            multiple
           />
-          <div className="h-auto w-full ">
-            <div>
-              <img src={redDelete} className="ml-auto mt-1" />
-            </div>{" "}
-          </div>
-          <div className="h-auto w-full">
-            {imagePreviewUrl && (
-              <img
-                src={imagePreviewUrl}
-                className="w-full h-auto"
-                alt="Uploaded Preview"
-              />
-            )}
-          </div>
-          <div
-            className="flex justify-end gap-1 bg-[#4B4B4B] text-wrap text-xs w-[39vw] p-1 ml-auto mr-1 cursor-pointer"
-            onClick={handleClickChangeContent}
-          >
-            Add/Change Content
-            <img
-              src={AddChnageContent}
-              className="w-3 h-3 pt-1"
-              alt="Change Content Icon"
-            />
-          </div>
+          {selectedImages.length === 0 ? (
+            <div className="h-auto w-full flex justify-center mt-2">
+              <button
+                className="bg-blue-500 text-white p-2 rounded"
+                onClick={handleClickChangeContent}
+              >
+                Add Content
+              </button>
+            </div>
+          ) : (
+            <Carousel
+              showThumbs={false}
+              infiniteLoop
+              useKeyboardArrows
+              swipeable
+              emulateTouch
+              showStatus={false}
+              showIndicators={true}
+              showArrows={true}
+            >
+              {selectedImages.map((image) => (
+                <div key={image.id} className="relative">
+                  <img
+                    src={image.url}
+                    className="object-contain w-full h-64 sm:h-96"
+                    alt="Uploaded Preview"
+                  />
+                  <div className="absolute top-2 right-2">
+                    <img
+                      src={redDelete}
+                      className="w-6 h-6 cursor-pointer"
+                      alt="Red Delete"
+                      onClick={() => handleImageDelete(image.id)}
+                    />
+                  </div>
+                  <div
+                    className="absolute bottom-2 right-2 bg-[#4B4B4B] text-nowrap text-xs text-white cursor-pointer flex items-center p-1 rounded"
+                    onClick={handleClickChangeContent}
+                  >
+                    Add/Change Content
+                    <img
+                      src={AddChnageContent}
+                      className="w-3 h-3 ml-1"
+                      alt="Change Content Icon"
+                    />
+                  </div>
+                </div>
+              ))}
+            </Carousel>
+          )}
         </div>
       </div>
       <div className="w-full h-auto inset-0 bg-black bg-opacity-50 flex flex-col p-4">
         <div className="text-white mb-4">
-          <h1 className="text-md top5">Title Board</h1>
+          <h1 className="text-md">Title Board</h1>
         </div>
         <textarea
-          className="w-full bg-transparent text-white border-none resize-none outline-none"
-          // value={description}
-          // onChange={handleDescriptionChange}
+          className="w-full bg-transparent text-white border border-gray-700 rounded p-2 resize-none outline-none"
           placeholder="Enter Board Description"
           rows={4}
           style={{ lineHeight: "1.5em" }}
         />
       </div>
-      <div
-        className="flex bg-blue-400 w-full fixed bottom-1 h-16 font-bold text-3xl text-white justify-center items-center mb-3"
-        // onClick={handleSave}
-      >
+      <div className="flex bg-blue-400 w-full fixed bottom-0 h-10 font-bold text-3xl text-white justify-center items-center mb-0">
         Save
         <img
           src={checkCircleWhite}

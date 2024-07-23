@@ -1,73 +1,136 @@
-import React from "react";
-import Navbar from "../common/Navbar";
+import React, { useState } from "react";
 import handleBack from "../../assets/handleBack.svg";
 import mailchimp from "../../assets/mailchimp.png";
 import instagram from "../../assets/instagram.svg";
 import message from "../../assets/message.png";
 import twitter from "../../assets/Twitter.png";
+import editToolNavbar from "../../assets/settings.png";
+import { baseURL } from "../../Constants/urls";
 
 function Contact() {
+  const [contactSubmitted, setContactSubmitted] = useState("");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(`${baseURL}/auth/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      if (result.status) {
+        alert(result.message);
+        setContactSubmitted(result.message);
+        console.log(result);
+      } else {
+        alert("Failed to send message.");
+        setContactSubmitted("Failed to send message.");
+      }
+    } catch (error) {
+      console.error("Error sending message", error);
+      alert("Error sending message.");
+      setContactSubmitted("Error sending message.");
+    }
+  };
+
   return (
     <>
-      <div className="min-h-screen bg-[#2A2A2A] text-white flex flex-col items-center p-4">
-        <div className="max-w-md w-full">
-          <div className="flex items-center space-x-2 mb-4 py-[1vh]">
-            <img src={handleBack} className="" />
-            <h1 className="text-2xl font-bold">Contact</h1>
+      <div className=" flex justify-between gap-5 pt-14 ">
+        <div className="bg-[#1E1E1E] w-full h-[70vh] ml-10 md:block lg:block hidden ">
+          <div>
+            <img src={editToolNavbar} className="ml-auto m-1" />
           </div>
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center space-x-2">
+          <div className="p-3">I’d love to hear from you</div>
+          <div className="p-3">
+            The canvas stretched before the artist, blank yet pregnant with
+            possibilities. With each stroke of the brush, colors danced in
+            harmony or clashed in discord, reflecting the artist's emotions and
+            visions. Layers of paint intertwined, revealing depths of meaning
+            that words could not convey.
+          </div>
+          <div className="ml-4 py-[10vh] mt-10">
+            <div className="flex items-center m-2 space-x-2">
               <img src={instagram} />
               <span className="text-md">@creatorart</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center m-2  space-x-2">
               <img src={twitter} />
               <span className="text-md">@creatorartist</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <img src={message} />
-              <span classname="text-md">creator@creator.com</span>
+            <div className="m-2  ">
+              <button className="w-auto flex  gap-3 p-2 bg-black rounded text-white">
+                <img className="w-5 h-5" src={mailchimp} />
+                Join Mailing list
+              </button>
             </div>
           </div>
-          <form className="space-y-2 mt-6 w-full">
+        </div>
+        <div className="w-full bg-[#1E1E1E] h-screen lg:h-[70vh] lg:mr-10">
+          <div>
+            <img src={editToolNavbar} className="ml-auto m-1" />
+          </div>
+          <div className="flex gap-2 ml-3">
+            <img src={message} /> erik@erikjonesart.com
+          </div>
+          <form className="space-y-3 mt-6 w-full p-5" onSubmit={handleSubmit}>
             <input
               type="text"
+              name="firstName"
               placeholder="First name"
-              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded placeholder-italic"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded italic"
             />
             <input
               type="email"
+              name="email"
               placeholder="Email address"
-              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded placeholder-italic"
+              value={formData.email}
+              onChange={handleChange}
+              className="p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded italic"
             />
             <input
               type="text"
+              name="subject"
               placeholder="Subject Matter"
-              className=" p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded placeholder-italic"
+              value={formData.subject}
+              onChange={handleChange}
+              className="p-2 bg-[#2A2A2A] border-2 h-[5vh] text-xs w-full rounded italic"
             />
             <textarea
+              name="message"
               placeholder="Write Your Message Here"
-              className=" p-2 bg-[#2A2A2A] border-2 text-sm w-full h-[20vh] rounded placeholder-italic"
+              value={formData.message}
+              onChange={handleChange}
+              className="p-2 bg-[#2A2A2A] border-2 mb-3 text-sm w-full h-[20vh] rounded italic"
             />
             <button
               type="submit"
-              className=" p-2 bg-[#696969] py-2  w-full rounded-full "
+              className="bg-[#696969] py-2 w-full rounded-full"
             >
               Submit
             </button>
           </form>
-          <div className="mt-6 bottom-[10vh] fixed">
-            <button className="  w-auto flex  gap-3 p-2 bg-black rounded text-white">
-              <img class="w-5 h-5" src={mailchimp} />
-              Join Mailing list
-            </button>
-          </div>
         </div>
-
-        {/* <Navbar /> */}
       </div>
-
-      <div></div>
     </>
   );
 }
