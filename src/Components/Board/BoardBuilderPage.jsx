@@ -61,10 +61,13 @@ const BoardBuilder = () => {
     <>
       <div className=" lg:w-[30%]">
         <div className="flex items-center">
-          <button className="w-auto h-auto" onClick={handleBackFunction}>
+          <button
+            className="w-auto h-auto cursor-pointer"
+            onClick={handleBackFunction}
+          >
             <img src={handleBack} className="text-3xl border-white" />
           </button>
-          <div className="flex items-center justify-between flex-grow">
+          <div className="flex items-center cursor-pointer justify-between flex-grow">
             <img src={LOGO_white} className="ml-1" />
             <img
               src={BoardBuilderText}

@@ -16,6 +16,9 @@ const CreatorInfo = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
   const [editingSection, setEditingSection] = useState("");
+  const [loadingNews, setLoadingNews] = useState(false);
+  const [loadingBio, setLoadingBio] = useState(false);
+  const [loadingCV, setLoadingCV] = useState(false);
   useEffect(() => {
     fetchNews();
     fetchBiography();
@@ -97,6 +100,7 @@ const CreatorInfo = () => {
   };
 
   const fetchNews = async () => {
+    setLoadingNews(true);
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(`${baseURL}/auth/getProfileNews`, {
@@ -116,10 +120,13 @@ const CreatorInfo = () => {
     } catch (error) {
       console.log("Error fetching news", error);
       setNewsData("Error fetching news.");
+    } finally {
+      setLoadingNews(false);
     }
   };
 
   const fetchBiography = async () => {
+    setLoadingBio(true);
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(`${baseURL}/auth/getProfileBio`, {
@@ -139,10 +146,13 @@ const CreatorInfo = () => {
     } catch (error) {
       console.log("Error fetching biography", error);
       setProfileBio("Error fetching biography.");
+    } finally {
+      setLoadingBio(false);
     }
   };
 
   const fetchCV = async () => {
+    setLoadingCV(true);
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(`${baseURL}/auth/getProfileCV`, {
@@ -163,6 +173,8 @@ const CreatorInfo = () => {
     } catch (error) {
       console.log("Error fetching CV", error);
       setProfileCV("Error fetching CV.");
+    } finally {
+      setLoadingCV(false);
     }
   };
 

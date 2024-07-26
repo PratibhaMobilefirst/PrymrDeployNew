@@ -77,18 +77,25 @@ const EditBoardInfo = () => {
     setDescription(e.target.value);
   };
 
-  const handleCheckCircleToggle = () => {
-    setIsCheckCircleToggled(!isCheckCircleToggled);
-    if (!isCheckCircleToggled) {
-      setIsCrossCircleToggled(false);
-    }
+  // const handleCheckCircleToggle = () => {
+  //   setIsCheckCircleToggled(!isCheckCircleToggled);
+  //   if (!isCheckCircleToggled) {
+  //     setIsCrossCircleToggled(false);
+  //   }
+  // };
+
+  // const handleCrossCircleToggle = () => {
+  //   setIsCrossCircleToggled(!isCrossCircleToggled);
+  //   if (!isCrossCircleToggled) {
+  //     setIsCheckCircleToggled(false);
+  //   }
+  // };
+  const handleYesClick = () => {
+    setSelectedOption(selectedOption === "yes" ? null : "yes");
   };
 
-  const handleCrossCircleToggle = () => {
-    setIsCrossCircleToggled(!isCrossCircleToggled);
-    if (!isCrossCircleToggled) {
-      setIsCheckCircleToggled(false);
-    }
+  const handleNoClick = () => {
+    setSelectedOption(selectedOption === "no" ? null : "no");
   };
 
   const toggleComments = () => {
@@ -96,8 +103,54 @@ const EditBoardInfo = () => {
   };
 
   return (
-    <div className="container top-[100vh] text-white">
-      <div>
+    // <div className="container top-[100vh] text-white">
+    //   <div>
+    //     <header
+    //       onClick={handleBack}
+    //       className="flex items-center mt-2 space-x-2 mb-4 cursor-pointer"
+    //     >
+    //       <AiOutlineArrowLeft className="text-xl" />
+    //       <span className="text-lg">Back</span>
+    //     </header>
+    //     <div className="p-1 rounded-lg mb-2">
+    //       <img src={imageUrl} alt="Board" className="h-[54vh] w-full" />
+
+    //       <div className="absolute top-[50vh] w-full h-auto inset-0 bg-black bg-opacity-50 flex flex-col p-4">
+    //         <div className="text-white mb-4">
+    //           <h1 className="text-md top5">Title Board</h1>
+    //         </div>
+    //         <textarea
+    //           className="w-full bg-transparent text-white border-none resize-none outline-none"
+    //           value={description}
+    //           onChange={handleDescriptionChange}
+    //           placeholder="Enter Board Description"
+    //           rows={4}
+    //           style={{ lineHeight: "1.5em" }}
+    //         />
+    //         <div className="text-white">
+    //           {description.split("\n").map((line, index) => (
+    //             <div key={index} className="border-b border-white"></div>
+    //           ))}
+    //         </div>
+    //       </div>
+
+    //       <div
+    //         className="flex bg-blue-400 w-full fixed bottom-1 h-16 font-bold text-3xl text-white justify-center items-center mb-3"
+    //         onClick={handleSave}
+    //       >
+    //         Save
+    //         <img
+    //           src={checkCircleWhite}
+    //           alt="Check Circle White"
+    //           className="ml-3 w-8 h-8"
+    //         />
+    //       </div>
+    //     </div>
+    //   </div>
+    //   <ToastContainer />
+    // </div>
+    <div className="container mx-auto text-white h-screen flex-grow">
+      <div className="relative w-full h-full">
         <header
           onClick={handleBack}
           className="flex items-center mt-2 space-x-2 mb-4 cursor-pointer"
@@ -105,42 +158,44 @@ const EditBoardInfo = () => {
           <AiOutlineArrowLeft className="text-xl" />
           <span className="text-lg">Back</span>
         </header>
-        <div className="p-1 rounded-lg mb-2">
-          <img src={imageUrl} alt="Board" className="h-[54vh] w-full" />
 
-          <div className="absolute top-[50vh] w-full h-auto inset-0 bg-black bg-opacity-50 flex flex-col p-4">
-            <div className="text-white mb-4">
-              <h1 className="text-md top5">Title Board</h1>
-            </div>
-            <textarea
-              className="w-full bg-transparent text-white border-none resize-none outline-none"
-              value={description}
-              onChange={handleDescriptionChange}
-              placeholder="Enter Board Description"
-              rows={4}
-              style={{ lineHeight: "1.5em" }}
-            />
-            <div className="text-white">
-              {description.split("\n").map((line, index) => (
-                <div key={index} className="border-b border-white"></div>
-              ))}
-            </div>
-          </div>
+        <img
+          src={imageUrl}
+          alt="Board"
+          className="w-full h-[40vh] object-contain"
+        />
 
-          <div
-            className="flex bg-blue-400 w-full fixed bottom-1 h-16 font-bold text-3xl text-white justify-center items-center mb-3"
-            onClick={handleSave}
-          >
-            Save
-            <img
-              src={checkCircleWhite}
-              alt="Check Circle White"
-              className="ml-3 w-8 h-8"
-            />
+        <div className="absolute top-1/2 h-auto left-0 right-0 bg-black bg-opacity-50 p-4 py-10 flex flex-col">
+          <input
+            className=" text-lg mb-2  bg-transparent text-white border-none resize-none outline-no  overflow-auto"
+            placeholder="Title Board"
+          />
+          <textarea
+            className="w-full bg-transparent text-white border-none resize-none outline-none h-[20vh] overflow-auto"
+            value={description}
+            onChange={handleDescriptionChange}
+            placeholder="Enter Board Description"
+            style={{ lineHeight: "1.5em" }}
+          />
+          <div className="text-white mt-2">
+            {description.split("\n").map((line, index) => (
+              <div key={index} className="border-b border-white"></div>
+            ))}
           </div>
         </div>
+
+        <div
+          className="fixed bottom-0 left-[18vw] right-[18vw]  bg-blue-400 h-10 mb-5 flex items-center  rounded-full justify-center font-bold text-xl text-white cursor-pointer"
+          onClick={handleSave}
+        >
+          Save
+          <img
+            src={checkCircleWhite}
+            alt="Check Circle White"
+            className="ml-3 w-5 h-5"
+          />
+        </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

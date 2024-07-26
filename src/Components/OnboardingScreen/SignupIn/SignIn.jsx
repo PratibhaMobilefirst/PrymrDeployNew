@@ -6,6 +6,7 @@ import blueFly from "../../../assets/mainpageclouds.svg";
 import { baseURL } from "../../../Constants/urls";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignIn = ({ mediaBtn }) => {
   const navigate = useNavigate();
@@ -99,7 +100,7 @@ const SignIn = ({ mediaBtn }) => {
         className="absolute w-full h-full object-cover"
       />
       <div className="text-center relative">
-        <div className="absolute -top-8 -right-10">
+        <div className="absolute cursor-pointer -top-8 -right-10">
           <RiCloseCircleFill
             className="w-8 h-8 cursor-pointer"
             onClick={handleBack}
@@ -169,7 +170,7 @@ const SignIn = ({ mediaBtn }) => {
           </Link>
           <div className="justify-center mt-6">
             <button
-              className="text-white font-bold bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full"
+              className="text-white cursor-pointer font-bold bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full"
               type="submit"
             >
               Sign In

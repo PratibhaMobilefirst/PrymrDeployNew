@@ -31,7 +31,7 @@ const LoginScreen = () => {
 
         <div>
           <button
-            className="text-white font-bold bg-opacity-300 bg-blue-600  border-[#4e4e4e] gap-2 w-[100%] h-[45px] rounded-full mb-5 "
+            className="text-white  cursor-pointer font-bold bg-opacity-300 bg-blue-600  border-[#4e4e4e] gap-2 w-[100%] h-[45px] rounded-full mb-5 "
             type="submit"
             onClick={handleSignUp}
           >
@@ -40,14 +40,13 @@ const LoginScreen = () => {
         </div>
         <div>
           <button
-            className="text-white font-bold bg-opacity-300 bg-gray-600 border border-[#4e4e4e] gap-2 w-[100%] h-[45px] rounded-full mb-3 "
+            className="text-white cursor-pointer font-bold bg-opacity-300 bg-gray-600 border border-[#4e4e4e] gap-2 w-[100%] h-[45px] rounded-full mb-3 "
             type="submit"
             onClick={handleSignIn}
           >
             Sign In
           </button>
         </div>
-
       </div>
     </div>
   );

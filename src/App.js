@@ -33,19 +33,22 @@ import Contact from "./Components/HomePage/Contact";
 import HomePage from "./Components/HomePage/HomePage";
 import SaveDesktopView from "./Components/Board/CreateNewBoard/SaveDesktopView";
 import AddContentPage from "./Components/Board/ActionBar/Layers/AddContentPage";
+import DesktopNavbar from "./Components/common/DesktopNavbar";
+import InfoOverlay from "./Components/Board/ActionBar/Layers/InfoOverlay";
 
 function App() {
   return (
     <BrowserRouter>
       <ImageProvider>
         <Routes>
-          {/* <Route path="/" element={<Blank />} /> */}
+          <Route path="/nav" element={<DesktopNavbar />} />
+          {/* <Route path="/" element={<OnBoarding />} /> */}
           <Route path="/user-profile" element={<VisitorProfile />} />
+          {/* <Route path="/" element={<Blank />} /> */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/" element={<LoginScreen />} />
           <Route path="/forgetpassword" element={<ForgetPassword />} />
-          {/* old code */}
-          {/* <Route path="/" element={<OnBoarding />} /> */}
+
           <Route path="/home" element={<Home />} />
           <Route path="/home-about-allcreators" element={<AllCreators />} />
           <Route path="/home-about-prymr" element={<AboutPrymr />} />
@@ -89,6 +92,7 @@ function App() {
             element={<SaveDesktopView />}
           />
           <Route path="/add-content" element={<AddContentPage />} />
+          <Route path="/infoOverlay" element={<InfoOverlay />} />
         </Routes>
       </ImageProvider>
     </BrowserRouter>

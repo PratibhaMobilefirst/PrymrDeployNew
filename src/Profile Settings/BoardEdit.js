@@ -24,11 +24,10 @@ import BlackAndWhiteTool from "./BlackAndWhiteTool";
 import VintageTool from "./VintageTool";
 import GrungeTool from "./GrungeTool";
 import { useLocation } from "react-router";
-// const imageUrl =
-//   "https://artstudiolife.com/wp-content/uploads/2022/03/roman-painting.jpg";
+
 const BoardEdit = () => {
   const location = useLocation();
-  // const imageUrl = location.state; // Access imageUrl from location.state
+
   const imageUrl = JSON.parse(sessionStorage.getItem("state"))?.imageUrl; // Access imageUrl from location.state
   console.log("Editor ", imageUrl);
   const [currentImage, setCurrentImage] = useState(imageUrl);

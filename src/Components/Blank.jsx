@@ -16,8 +16,8 @@ const Blank = () => {
     setIsContactOpen(!isContactOpen);
   };
   return (
-    <div>
-      <Header />
+    <div className="h-screen bg-black">
+      {/* <Header />
       <nav className="p-4 pt-[14vh] h-screen text-white bg-[#2A2A2A]">
         <ul className="space-y-4">
           <li className="flex items-center space-x-2">
@@ -74,9 +74,7 @@ const Blank = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <Navbar />
+      </div> */}
     </div>
   );
 };

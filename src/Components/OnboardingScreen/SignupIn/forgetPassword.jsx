@@ -217,7 +217,7 @@ const ForgetPassword = () => {
                 <p className="text-xs text-red-500">Invalid email address</p>
               )}
               <button
-                className={`w-full h-12 mb-10 bg-blue-600 text-white font-bold rounded-md ${
+                className={`w-full cursor-pointer h-12 mb-10 bg-blue-600 text-white font-bold rounded-md ${
                   loading && "opacity-50 cursor-not-allowed"
                 }`}
                 type="submit"

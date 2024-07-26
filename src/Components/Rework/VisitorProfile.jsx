@@ -18,7 +18,7 @@ const VisitorProfile = () => {
           <img
             src={backarrow}
             alt="Back Arrow"
-            className="w-4 h-4"
+            className="w-4 h-4 cursor-pointer"
             onClick={handleBack}
           />
           <img src={smallavatar} alt="User" className="w-8 h-8 rounded-full" />
@@ -28,7 +28,9 @@ const VisitorProfile = () => {
           </div>
         </div>
         <div>
-          <button className="text-blue-500 ml-auto mr-5">edit</button>
+          <button className="text-blue-500 ml-auto mr-5 cursor-pointer">
+            edit
+          </button>
         </div>
       </header>
 
@@ -48,8 +50,8 @@ const VisitorProfile = () => {
         </ul>
       </nav>
       <footer className="p-4 fixed bottom-12 w-full ">
-        <button className="text-[#FF0404] text-2xl flex  gap-3">
-          <img src={logoutRedBtn} className="h-6  w-6 mt-1" />
+        <button className="text-[#FF0404] text-2xl cursor-pointer flex  gap-3">
+          <img src={logoutRedBtn} className="h-6   w-6 mt-1" />
           Log Out
         </button>
       </footer>

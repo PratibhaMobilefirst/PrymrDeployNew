@@ -31,6 +31,7 @@ const Home = () => {
   const [useInfiniteScroll, setUseInfiniteScroll] = useState(false);
   const [isArtOpen, setIsArtOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
+  // const [clickImageUrl, setClickImageUrl] = useState();
 
   const page = 1;
   useEffect(() => {
@@ -41,7 +42,9 @@ const Home = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${baseURL}/board/fetchRecentBoard?page=${page}&pageSize=${pageSize}`,
+        // `${baseURL}/board/fetchRecentBoard?page=${page}&pageSize=${pageSize}`,
+         `${baseURL}/board/fetchRecentPublicUserBoard?page=${page}&pageSize=${pageSize}`,
+        
         {
           method: "GET",
           headers: {
@@ -89,16 +92,6 @@ const Home = () => {
     { src: deleteBai, alt: "Avatar 3" },
   ];
 
-  // const handleContact = () => {
-  //   setIsContactOpen(!isContactOpen);
-  //   setInfoOpen(false);
-  // };
-
-  // const handleInfo = () => {
-  //   setInfoOpen(!isInfoOpen);
-  //   setIsContactOpen(false);
-  // };
-
   const handleContact = () => {
     setIsContactOpen(true);
     setInfoOpen(false);
@@ -110,80 +103,13 @@ const Home = () => {
     setIsContactOpen(false);
     setActiveItem("Info");
   };
+  // const displayImageUrl = (url) => {
+  //   setClickImageUrl(url);
+  // };
   return (
     <>
       <div className="lg:w-[30%]  ">
         <Header />
-
-        {/* <nav className="p-4 pt-[14vh]  text-white ">
-          <ul className="space-y-4">
-            <li
-              className={`flex items-center text-white space-x-2 cursor-pointer `}
-              onClick={toggleArt}
-            >
-              <img className="w-6 h-6" src={Galary} alt="Galary" />
-              <span className="text-white cursor-pointer">Art</span>
-              <img
-                className={`w-6 h-6 transform transition-transform ${
-                  isArtOpen ? "rotate-180" : "rotate-0"
-                }`}
-                src={leftarrow}
-                alt="leftarrow"
-              />
-            </li>
-            {isArtOpen && (
-              <div className="space-y-4 mt-4 px-5">
-                <div className="flex items-center space-x-2 cursor-pointer">
-                  <span>Traditional</span>
-                </div>
-                <div className="flex items-center cursor-pointer space-x-2">
-                  <span>Digital</span>
-                </div>
-              </div>
-            )}
-            <li
-              className={`flex items-center space-x-2 ${
-                isArtOpen
-                  ? "filter brightness-50 hover:brightness-75"
-                  : "filter brightness-100"
-              }`}
-            >
-              <img
-                className="w-6 h-6 cursor-pointer"
-                src={headershop}
-                alt="headershop"
-              />
-              <span className="cursor-pointer">Shop</span>
-            </li>
-            <li
-              className={`flex items-center space-x-2 ${
-                isInfoOpen
-                  ? "filter brightness-50 hover:brightness-75"
-                  : "filter brightness-100"
-              }`}
-            >
-              <img
-                className="w-6 h-6 cursor-pointer"
-                src={headerinfo}
-                alt="headerinfo"
-              />
-              <span className="cursor-pointer" onClick={handleInfo}>
-                Info
-              </span>
-            </li>
-            <li
-              className={`flex items-center cursor-pointer space-x-2 ${
-                isContactOpen
-                  ? "filter brightness-50 hover:brightness-75"
-                  : "filter brightness-100"
-              }`}
-              onClick={handleContact}
-            >
-              <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
-              <span>Contact</span>
-            </li>
-          </ul>
-        </nav> */}
         <nav className="p-4 pt-[14vh] text-white">
           <ul className="space-y-4">
             <li
@@ -194,7 +120,7 @@ const Home = () => {
               }`}
               onClick={toggleArt}
             >
-              <img className="w-6 h-6" src={Galary} alt="Galary" />
+              <img className="w-6 h-6 " src={Galary} alt="Galary" />
               <span>Art</span>
               <img
                 className={`w-6 h-6 transform transition-transform ${
@@ -307,6 +233,7 @@ const Home = () => {
                             className="h-[25vh] w-full rounded-t-3xl object-cover"
                             src={image.imageUrl}
                             alt={`image-${imageIndex}`}
+                            // onClick={displayImageUrl(image.imageUrl)}
                           />
                         ))}
                       <div className="left-2 flex m-2 h-10 space-x-2 relative z-0">
@@ -356,20 +283,6 @@ const Home = () => {
           <Navbar />
         </div>
 
-        {/* <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
-          <div className="m-5 text-white">
-            {isInfoOpen && (
-              <div className="flex justify-between h-[90vh] bg-[#191919]">
-                <CreatorInfo />
-              </div>
-            )}
-            {isContactOpen && (
-              <div className="flex justify-between h-[90vh] bg-[#2A2A2A]">
-                <Contact />
-              </div>
-            )}
-          </div>
-        </div> */}
         <div
           className={`${
             isInfoOpen || isContactOpen ? "block" : "hidden"
@@ -406,6 +319,10 @@ const Home = () => {
             )}
           </div>
         </div>
+
+        {/* <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
+          {clickedImageUrl && <p>{clickedImageUrl}</p>}
+        </div> */}
       </div>
     </>
   );

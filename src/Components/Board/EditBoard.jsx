@@ -32,7 +32,7 @@ const EditBoard = ({ cameraImage }) => {
   });
   const [isLayersPanelVisible, setIsLayersPanelVisible] = useState(false);
   const [tappableContent, setTappableContent] = useState(null);
-  const { imageUrl } = location.state || {};
+  const imageUrl = JSON.parse(sessionStorage.getItem("state"))?.imageUrl;
   const [selectedLayerId, setSelectedLayerId] = useState(null);
 
   useEffect(() => {

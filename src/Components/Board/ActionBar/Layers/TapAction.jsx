@@ -48,7 +48,7 @@ const TapAction = () => {
           <img src={questionmarkcircle} alt="" className="ml-auto" />
         </div>
 
-        <div className="flex px-8  m-4  gap-1  items-center py-2 rounded-[20px] border-[1px] p-[0px_5px_5px_1px]">
+        {/* <div className="flex px-8  m-4  gap-1  items-center py-2 rounded-[20px] border-[1px] p-[0px_5px_5px_1px]">
           <img src={switchh} className="mr-2" />
           <div className="flex text-wrap flex-col justify-center">
             <h3> Switch </h3>
@@ -63,7 +63,7 @@ const TapAction = () => {
           </div>
 
           <img src={questionmarkcircle} alt="" className="ml-auto" />
-        </div>
+        </div> */}
       </div>{" "}
     </>
   );

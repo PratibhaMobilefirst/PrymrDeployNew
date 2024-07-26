@@ -212,7 +212,7 @@ const SignupPage = () => {
           </label>
           <div className="flex justify-center mt-6">
             <button
-              className="text-white font-bold bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full"
+              className="text-white cursor-pointer font-bold bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full"
               type="submit"
             >
               Register Now

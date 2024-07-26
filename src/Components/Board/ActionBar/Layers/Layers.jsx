@@ -55,8 +55,8 @@ const LayersPanel = ({
     }
   }, [isVisible, selectedLayerId, layers]);
 
-  const NavigateToAddContent = () => {
-    navigate("/add-content");
+  const NavigateToAddContent = (layer) => {
+    navigate("/add-content", { state: { layer } });
   };
 
   const handleLayerAddClick = () => {
@@ -65,9 +65,8 @@ const LayersPanel = ({
     }
   };
 
-  const handleTapAction = () => {
-    setTapActionOpen(!isTapActionOpen);
-    setLayerIsClicked(false);
+  const handleTapActionClick = () => {
+    navigate("/infoOverlay");
   };
 
   const handleAddContent = () => {
@@ -196,263 +195,280 @@ const LayersPanel = ({
           />
         </header>
         <div className="bg-gray-800 text-white opacity-500 p-2">
-          {isSwiperView ? (
-            <Swiper
-              onSwiper={(swiper) => {
-                swiperInstanceRef.current = swiper;
-              }}
-              slidesPerView={1}
-              spaceBetween={10}
-              loop={false}
-              navigation
-            >
-              {filteredLayers.map((layer) => (
-                <SwiperSlide key={layer.id}>
-                  <div className="relative flex flex-col space-y-1">
-                    <div
-                      className="flex items-center h-9 justify-between p-2"
-                      style={{
-                        backgroundColor: layer.selectedColor,
-                        borderRadius: "0.25rem",
-                      }}
-                    >
-                      <input
-                        type="text"
-                        value={layer.name}
-                        onChange={(e) =>
-                          handleLayerNameChange(layer.id, e.target.value)
-                        }
-                        className="text-sm bg-transparent border-none outline-none text-white"
-                      />
-
-                      <div
-                        className={`flex h-8 w-60 transition-transform duration-30 ease-in-out bg-[#4B4B4B] ${
-                          colorPanelVisible && currentLayerId === layer.id
-                            ? "transform -translate-x-36"
-                            : ""
-                        }`}
-                      >
-                        <button
-                          onClick={() => setLayerIsClicked(!layerIsClicked)}
-                          className="p-2 "
-                        >
-                          <img
-                            src={eye}
-                            className="h-[10px] w-[10px] "
-                            alt="Eye Icon"
-                          />
-                        </button>
-                        <button
-                          onClick={handleNewLayerAddClick}
-                          className="p-0 ml-2"
-                        >
-                          <img src={pin} className="h-8 w-8 " alt="Pin Icon" />
-                        </button>
-                        <button
-                          onClick={() => handleLayerDeleteClick(layer.id)}
-                          className="p-1 ml-2"
-                        >
-                          <img
-                            src={deletee}
-                            className="w-[29px] "
-                            alt="Delete Icon"
-                          />
-                        </button>
-                        <button
-                          onClick={() => handleColorCircleClick(layer.id)}
-                          className={`p-1 ml-2 left-20 ${
-                            colorPanelVisible && currentLayerId === layer.id
-                              ? "hidden"
-                              : ""
-                          }`}
-                        >
-                          <img
-                            src={colorcircle}
-                            className="w-[25px] "
-                            alt="Color Circle Icon"
-                          />
-                        </button>
-
-                        {colorPanelVisible && currentLayerId === layer.id && (
-                          <div className="absolute left-16 top-0 z-10">
-                            <div className="overflow-y-auto">
-                              <ColorPanel
-                                onSelectColor={handleColorSelect}
-                                onClose={() => setColorPanelVisible(false)}
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-1">
-                      <button
-                        className="flex flex-col items-center justify-center"
-                        style={{
-                          backgroundColor: layer.selectedColor,
-                          borderRadius: "0.25rem",
-                        }}
-                        onClick={() => handleTappableClick(layer.id)}
-                      >
-                        <label htmlFor={`fileInput${layer.id}`}>
-                          {renderTappableContent(layer.tappableContent)}
-                        </label>
-                      </button>
-                      <button
-                        className="flex flex-col items-center justify-center"
-                        style={{
-                          backgroundColor: layer.selectedColor,
-                          borderRadius: "0.25rem",
-                        }}
-                        onClick={handleTapAction}
-                      >
-                        <img src={AddAction} alt="Add Actions" />
-                      </button>
-                      <button
-                        onClick={NavigateToAddContent}
-                        className="flex flex-col items-center justify-center"
-                        style={{
-                          backgroundColor: layer.selectedColor,
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <img src={AddContent} alt="Add Content" />
-                      </button>
-                    </div>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+          {isTapActionOpen ? (
+            <TapAction
+              imageUrl={selectedImage}
+              onClose={() => setIsTapActionOpen(false)}
+            />
           ) : (
-            <div className="flex flex-col space-y-1 m-3 max-h-[70vh] overflow-y-auto">
-              {filteredLayers.map((layer) => (
-                <div
-                  key={layer.id}
-                  className="relative flex flex-col space-y-1 m-3"
-                  style={{
-                    backgroundColor: layer.selectedColor,
-                    borderRadius: "0.25rem",
-                    padding: "10px",
+            <>
+              {isSwiperView ? (
+                <Swiper
+                  onSwiper={(swiper) => {
+                    swiperInstanceRef.current = swiper;
                   }}
-                  onClick={() => handleTappableClick(layer.id)}
+                  slidesPerView={1}
+                  spaceBetween={10}
+                  loop={false}
+                  navigation
                 >
-                  <div
-                    className="flex items-center h-9 justify-between p-2"
-                    style={{
-                      backgroundColor: layer.selectedColor,
-                      borderRadius: "0.25rem",
-                    }}
-                  >
-                    <input
-                      type="text"
-                      value={layer.name}
-                      onChange={(e) =>
-                        handleLayerNameChange(layer.id, e.target.value)
-                      }
-                      className="text-sm bg-transparent border-none outline-none text-white"
-                    />
-
-                    <div
-                      className={`flex h-8 w-60 transition-transform duration-30 ease-in-out bg-[#4B4B4B] ${
-                        colorPanelVisible && currentLayerId === layer.id
-                          ? "transform -translate-x-36"
-                          : ""
-                      }`}
-                    >
-                      <button
-                        onClick={() => setLayerIsClicked(!layerIsClicked)}
-                        className="p-2 "
-                      >
-                        <img
-                          src={eye}
-                          className="h-[10px] w-[10px] "
-                          alt="Eye Icon"
-                        />
-                      </button>
-                      <button
-                        onClick={handleNewLayerAddClick}
-                        className="p-0 ml-2"
-                      >
-                        <img src={pin} className="h-8 w-8 " alt="Pin Icon" />
-                      </button>
-                      <button
-                        onClick={() => handleLayerDeleteClick(layer.id)}
-                        className="p-1 ml-2"
-                      >
-                        <img
-                          src={deletee}
-                          className="w-[29px] "
-                          alt="Delete Icon"
-                        />
-                      </button>
-                      <button
-                        onClick={() => handleColorCircleClick(layer.id)}
-                        className={`p-1 ml-2 left-20 ${
-                          colorPanelVisible && currentLayerId === layer.id
-                            ? "hidden"
-                            : ""
-                        }`}
-                      >
-                        <img
-                          src={colorcircle}
-                          className="w-[25px] "
-                          alt="Color Circle Icon"
-                        />
-                      </button>
-
-                      {colorPanelVisible && currentLayerId === layer.id && (
-                        <div className="absolute left-16 top-0 z-10">
-                          <div className="overflow-y-auto">
-                            <ColorPanel
-                              onSelectColor={handleColorSelect}
-                              onClose={() => setColorPanelVisible(false)}
-                            />
+                  {filteredLayers.map((layer) => (
+                    <SwiperSlide key={layer.id}>
+                      <div className="relative flex flex-col space-y-1">
+                        <div
+                          className="flex items-center h-9 justify-between p-2"
+                          style={{
+                            backgroundColor: layer.selectedColor,
+                            borderRadius: "0.25rem",
+                          }}
+                        >
+                          <input
+                            type="text"
+                            value={layer.name}
+                            onChange={(e) =>
+                              handleLayerNameChange(layer.id, e.target.value)
+                            }
+                            className="text-sm bg-transparent border-none outline-none text-white"
+                          />
+                          <div
+                            className={`flex h-8 w-60 transition-transform duration-30 ease-in-out bg-[#4B4B4B] ${
+                              colorPanelVisible && currentLayerId === layer.id
+                                ? "transform -translate-x-36"
+                                : ""
+                            }`}
+                          >
+                            <button
+                              onClick={() => setLayerIsClicked(!layerIsClicked)}
+                              className="p-2 "
+                            >
+                              <img
+                                src={eye}
+                                className="h-[10px] w-[10px] "
+                                alt="Eye Icon"
+                              />
+                            </button>
+                            <button
+                              onClick={handleNewLayerAddClick}
+                              className="p-0 ml-2"
+                            >
+                              <img
+                                src={pin}
+                                className="h-8 w-8 "
+                                alt="Pin Icon"
+                              />
+                            </button>
+                            <button
+                              onClick={() => handleLayerDeleteClick(layer.id)}
+                              className="p-1 ml-2"
+                            >
+                              <img
+                                src={deletee}
+                                className="w-[29px] "
+                                alt="Delete Icon"
+                              />
+                            </button>
+                            <button
+                              onClick={() => handleColorCircleClick(layer.id)}
+                              className={`p-1 ml-2 left-20 ${
+                                colorPanelVisible && currentLayerId === layer.id
+                                  ? "hidden"
+                                  : ""
+                              }`}
+                            >
+                              <img
+                                src={colorcircle}
+                                className="w-[25px] "
+                                alt="Color Circle Icon"
+                              />
+                            </button>
+                            {colorPanelVisible &&
+                              currentLayerId === layer.id && (
+                                <div className="absolute left-16 top-0 z-10">
+                                  <div className="overflow-y-auto">
+                                    <ColorPanel
+                                      onSelectColor={handleColorSelect}
+                                      onClose={() =>
+                                        setColorPanelVisible(false)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                              )}
                           </div>
                         </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      className="flex flex-col items-center justify-center"
+                        <div className="grid grid-cols-3 gap-1">
+                          <button
+                            className="flex flex-col items-center justify-center"
+                            style={{
+                              backgroundColor: layer.selectedColor,
+                              borderRadius: "0.25rem",
+                            }}
+                            onClick={() => handleTappableClick(layer.id)}
+                          >
+                            <label htmlFor={`fileInput${layer.id}`}>
+                              {renderTappableContent(layer.tappableContent)}
+                            </label>
+                          </button>
+                          <button
+                            className="flex flex-col items-center justify-center"
+                            style={{
+                              backgroundColor: layer.selectedColor,
+                              borderRadius: "0.25rem",
+                            }}
+                            onClick={handleTapActionClick}
+                          >
+                            <img src={AddAction} alt="Add Actions" />
+                          </button>
+                          <button
+                            className="flex flex-col items-center justify-center"
+                            style={{
+                              backgroundColor: layer.selectedColor,
+                              borderRadius: "0.25rem",
+                            }}
+                            onClick={() => NavigateToAddContent(layer)}
+                          >
+                            <img src={AddContent} alt="Add Content" />
+                          </button>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              ) : (
+                <div className="flex flex-col space-y-1 m-3 max-h-[70vh] overflow-y-auto">
+                  {filteredLayers.map((layer) => (
+                    <div
+                      key={layer.id}
+                      className="relative flex flex-col space-y-1 m-3"
                       style={{
                         backgroundColor: layer.selectedColor,
                         borderRadius: "0.25rem",
+                        padding: "10px",
                       }}
                       onClick={() => handleTappableClick(layer.id)}
                     >
-                      <label htmlFor={`fileInput${layer.id}`}>
-                        {renderTappableContent(layer.tappableContent)}
-                      </label>
-                    </button>
-                    <button
-                      className="flex flex-col items-center justify-center"
-                      style={{
-                        backgroundColor: layer.selectedColor,
-                        borderRadius: "0.25rem",
-                      }}
-                      onClick={handleTapAction}
-                    >
-                      <img src={AddAction} alt="Add Actions" />
-                    </button>
-                    <button
-                      className="flex flex-col items-center justify-center"
-                      style={{
-                        backgroundColor: layer.selectedColor,
-                        borderRadius: "0.25rem",
-                      }}
-                      onClick={handleAddContent}
-                    >
-                      <img src={AddContent} alt="Add Content" />
-                    </button>
-                  </div>
+                      <div
+                        className="flex items-center h-9 justify-between p-2"
+                        style={{
+                          backgroundColor: layer.selectedColor,
+                          borderRadius: "0.25rem",
+                        }}
+                      >
+                        <input
+                          type="text"
+                          value={layer.name}
+                          onChange={(e) =>
+                            handleLayerNameChange(layer.id, e.target.value)
+                          }
+                          className="text-sm bg-transparent border-none outline-none text-white"
+                        />
+                        <div
+                          className={`flex h-8 w-60 transition-transform duration-30 ease-in-out bg-[#4B4B4B] ${
+                            colorPanelVisible && currentLayerId === layer.id
+                              ? "transform -translate-x-36"
+                              : ""
+                          }`}
+                        >
+                          <button
+                            onClick={() => setLayerIsClicked(!layerIsClicked)}
+                            className="p-2 "
+                          >
+                            <img
+                              src={eye}
+                              className="h-[10px] w-[10px] "
+                              alt="Eye Icon"
+                            />
+                          </button>
+                          <button
+                            onClick={handleNewLayerAddClick}
+                            className="p-0 ml-2"
+                          >
+                            <img
+                              src={pin}
+                              className="h-8 w-8 "
+                              alt="Pin Icon"
+                            />
+                          </button>
+                          <button
+                            onClick={() => handleLayerDeleteClick(layer.id)}
+                            className="p-1 ml-2"
+                          >
+                            <img
+                              src={deletee}
+                              className="w-[29px] "
+                              alt="Delete Icon"
+                            />
+                          </button>
+                          <button
+                            onClick={() => handleColorCircleClick(layer.id)}
+                            className={`p-1 ml-2 left-20 ${
+                              colorPanelVisible && currentLayerId === layer.id
+                                ? "hidden"
+                                : ""
+                            }`}
+                          >
+                            <img
+                              src={colorcircle}
+                              className="w-[25px] "
+                              alt="Color Circle Icon"
+                            />
+                          </button>
+                          {colorPanelVisible && currentLayerId === layer.id && (
+                            <div className="absolute left-16 top-0 z-10">
+                              <div className="overflow-y-auto">
+                                <ColorPanel
+                                  onSelectColor={handleColorSelect}
+                                  onClose={() => setColorPanelVisible(false)}
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          className="flex flex-col items-center justify-center"
+                          style={{
+                            backgroundColor: layer.selectedColor,
+                            borderRadius: "0.25rem",
+                          }}
+                          onClick={() => handleTappableClick(layer.id)}
+                        >
+                          <label htmlFor={`fileInput${layer.id}`}>
+                            {renderTappableContent(layer.tappableContent)}
+                          </label>
+                        </button>
+                        <button
+                          className="flex flex-col items-center justify-center"
+                          style={{
+                            backgroundColor: layer.selectedColor,
+                            borderRadius: "0.25rem",
+                          }}
+                          onClick={handleTapActionClick}
+                        >
+                          <img src={AddAction} alt="Add Actions" />
+                        </button>
+                        <button
+                          className="flex flex-col items-center justify-center"
+                          style={{
+                            backgroundColor: layer.selectedColor,
+                            borderRadius: "0.25rem",
+                          }}
+                          onClick={() => NavigateToAddContent(layer)}
+                        >
+                          <img src={AddContent} alt="Add Content" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {filteredLayers.length === 0 && (
+                    <div className="text-center text-white">
+                      No layers found.
+                    </div>
+                  )}
                 </div>
-              ))}
-              {filteredLayers.length === 0 && (
-                <div className="text-center text-white">No layers found.</div>
               )}
-            </div>
+            </>
           )}
         </div>
       </div>
