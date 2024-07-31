@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router";
+import left_arrow from "../assets/images/left_arrow.svg";
 import Frame from "../assets/images/Frame.png";
 import HeaderDiv from "./HeaderDiv";
 import BottomDiv from "./BottomDiv";
@@ -23,14 +25,15 @@ import HDRScapeTool from "./HDRScapeTool";
 import BlackAndWhiteTool from "./BlackAndWhiteTool";
 import VintageTool from "./VintageTool";
 import GrungeTool from "./GrungeTool";
-import { useLocation } from "react-router";
 
 const BoardEdit = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-
   const imageUrl = JSON.parse(sessionStorage.getItem("state"))?.imageUrl; // Access imageUrl from location.state
-  console.log("Editor ", imageUrl);
+
   const [currentImage, setCurrentImage] = useState(imageUrl);
+  console.log("Editor ", currentImage);
+
   const [showTools, setShowTools] = useState(false);
   const [showTuneImageTool, setShowTuneImageTool] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
@@ -52,7 +55,6 @@ const BoardEdit = () => {
   const [isBlackAndWhiteOpen, setIsBlackAndWhiteOpen] = useState(false);
   const [isVintageOpen, setIsVintageOpen] = useState(false);
   const [isGrungeOpen, setIsGrungeOpen] = useState(false);
-  // const [currentImage, setCurrentImage] = useState(Frame);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -154,6 +156,7 @@ const BoardEdit = () => {
   const calculateImageStyle = useCallback(() => {
     const img = new Image();
     img.src = currentImage;
+
     const windowWidth = windowSize.width;
     const windowHeight = windowSize.height;
 
@@ -200,6 +203,17 @@ const BoardEdit = () => {
     };
   }, []);
 
+  const handleBack = () => {
+    navigate("/board-builder-edit-board");
+  };
+
+  const handleSaveImage = () => {
+    navigate("/board-builder-edit-board", {
+      state: { editedImage: currentImage },
+    });
+    console.log(currentImage);
+  };
+
   return (
     <div className="bg-black h-screen flex flex-col">
       {!showTuneImageTool &&
@@ -220,8 +234,20 @@ const BoardEdit = () => {
         !isVintageOpen &&
         !isBlackAndWhiteOpen &&
         !isHDRScapeOpen && (
-          <div>
-            <HeaderDiv />
+          <div className=" w-full bg-black py-5 px-5 flex justify-between">
+            {/* {/ <HeaderDiv /> /} */}
+            <div className="flex items-center" onClick={handleBack}>
+              <img className="w-[31px] h-[31px]" src={left_arrow} alt="back" />
+              <div className="text-white text-[11px] text-lg font-bold capitalize tracking-tight ml-2">
+                Back
+              </div>
+            </div>
+            <div
+              className="text-white text-lg bg-blue-500 rounded-full w-[5vw] text-center p-2 font-bold capitalize tracking-tight"
+              onClick={handleSaveImage}
+            >
+              Save
+            </div>
           </div>
         )}
       <div className="flex-grow flex justify-center items-center relative overflow-hidden">
@@ -391,7 +417,7 @@ const BoardEdit = () => {
             setIsGlamourOpen(false);
           }}
         />
-      )}{" "}
+      )}
       {isGrainyFilmOpen && (
         <GrainyFilmTool
           image={currentImage}
@@ -441,7 +467,7 @@ const BoardEdit = () => {
             setShowTuneImageTool(false);
           }}
         />
-      )}{" "}
+      )}
       {isHDRScapeOpen && (
         <HDRScapeTool
           image={currentImage}

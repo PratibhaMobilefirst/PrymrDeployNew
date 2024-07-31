@@ -13,7 +13,7 @@ import { baseURL } from "../../../../Constants/urls";
 
 const EditBoardInfo = () => {
   const [selectedRating, setSelectedRating] = useState("G");
-  const [title, setTitle] = useState("Enter Title");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [allowComments, setAllowComments] = useState(false);
   const [isCheckCircleToggled, setIsCheckCircleToggled] = useState(false);
@@ -30,16 +30,22 @@ const EditBoardInfo = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
+    // Validate input fields
     if (!title.trim()) {
       toast.error("Please enter a title for the board.");
-      return; // Prevents the request from being sent if title is empty
+      return;
+    }
+
+    if (!description.trim()) {
+      toast.error("Please enter a description for the board.");
+      return;
     }
 
     const postData = JSON.stringify({
       imageUrl: imageUrl,
-      title: "Board Title",
+      title: title, // Use the state variable for title
       description: description,
-      allowComments: true,
+      allowComments: allowComments,
     });
 
     try {
@@ -55,11 +61,11 @@ const EditBoardInfo = () => {
 
       const data = await response.json();
 
-      if (response.status) {
-        console.log("Comment saved");
-        toast.success(data.message);
+      if (response.ok) {
+        toast.success(message);
+        alert("Board info saved successfully");
       } else {
-        alert(data.message);
+        toast.error(data.message);
         console.log(data.message);
       }
     } catch (error) {
@@ -70,26 +76,13 @@ const EditBoardInfo = () => {
   };
 
   const handleTitleChange = (e) => {
-    setTitle(e.target.value); // Update title state
+    setTitle(e.target.value);
   };
 
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
 
-  // const handleCheckCircleToggle = () => {
-  //   setIsCheckCircleToggled(!isCheckCircleToggled);
-  //   if (!isCheckCircleToggled) {
-  //     setIsCrossCircleToggled(false);
-  //   }
-  // };
-
-  // const handleCrossCircleToggle = () => {
-  //   setIsCrossCircleToggled(!isCrossCircleToggled);
-  //   if (!isCrossCircleToggled) {
-  //     setIsCheckCircleToggled(false);
-  //   }
-  // };
   const handleYesClick = () => {
     setSelectedOption(selectedOption === "yes" ? null : "yes");
   };
@@ -103,52 +96,6 @@ const EditBoardInfo = () => {
   };
 
   return (
-    // <div className="container top-[100vh] text-white">
-    //   <div>
-    //     <header
-    //       onClick={handleBack}
-    //       className="flex items-center mt-2 space-x-2 mb-4 cursor-pointer"
-    //     >
-    //       <AiOutlineArrowLeft className="text-xl" />
-    //       <span className="text-lg">Back</span>
-    //     </header>
-    //     <div className="p-1 rounded-lg mb-2">
-    //       <img src={imageUrl} alt="Board" className="h-[54vh] w-full" />
-
-    //       <div className="absolute top-[50vh] w-full h-auto inset-0 bg-black bg-opacity-50 flex flex-col p-4">
-    //         <div className="text-white mb-4">
-    //           <h1 className="text-md top5">Title Board</h1>
-    //         </div>
-    //         <textarea
-    //           className="w-full bg-transparent text-white border-none resize-none outline-none"
-    //           value={description}
-    //           onChange={handleDescriptionChange}
-    //           placeholder="Enter Board Description"
-    //           rows={4}
-    //           style={{ lineHeight: "1.5em" }}
-    //         />
-    //         <div className="text-white">
-    //           {description.split("\n").map((line, index) => (
-    //             <div key={index} className="border-b border-white"></div>
-    //           ))}
-    //         </div>
-    //       </div>
-
-    //       <div
-    //         className="flex bg-blue-400 w-full fixed bottom-1 h-16 font-bold text-3xl text-white justify-center items-center mb-3"
-    //         onClick={handleSave}
-    //       >
-    //         Save
-    //         <img
-    //           src={checkCircleWhite}
-    //           alt="Check Circle White"
-    //           className="ml-3 w-8 h-8"
-    //         />
-    //       </div>
-    //     </div>
-    //   </div>
-    //   <ToastContainer />
-    // </div>
     <div className="container mx-auto text-white h-screen flex-grow">
       <div className="relative w-full h-full">
         <header
@@ -167,7 +114,9 @@ const EditBoardInfo = () => {
 
         <div className="absolute top-1/2 h-auto left-0 right-0 bg-black bg-opacity-50 p-4 py-10 flex flex-col">
           <input
-            className=" text-lg mb-2  bg-transparent text-white border-none resize-none outline-no  overflow-auto"
+            className="text-lg mb-2 bg-transparent text-white border-none resize-none outline-none overflow-auto"
+            value={title}
+            onChange={handleTitleChange} // Update title state
             placeholder="Title Board"
           />
           <textarea
@@ -185,7 +134,7 @@ const EditBoardInfo = () => {
         </div>
 
         <div
-          className="fixed bottom-0 left-[18vw] right-[18vw]  bg-blue-400 h-10 mb-5 flex items-center  rounded-full justify-center font-bold text-xl text-white cursor-pointer"
+          className="fixed bottom-0 left-[18vw] right-[18vw] bg-blue-400 h-10 mb-5 flex items-center rounded-full justify-center font-bold text-xl text-white cursor-pointer"
           onClick={handleSave}
         >
           Save
@@ -196,6 +145,7 @@ const EditBoardInfo = () => {
           />
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

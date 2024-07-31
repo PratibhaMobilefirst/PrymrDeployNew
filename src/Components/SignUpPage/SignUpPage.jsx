@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./signup.css";
 import blueFly from "../../assets/mainpageclouds.svg";
 import { RxCrossCircled } from "react-icons/rx";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Import eye icons
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { baseURL } from "../../Constants/urls";
 import token from "../../Constants/urls";
 import { toast, ToastContainer } from "react-toastify";
@@ -72,6 +72,8 @@ const SignupPage = () => {
       console.log(data);
       if (data.status) {
         localStorage.setItem("token", data.data.token);
+        localStorage.setItem("userRole", data.data.userInfo.role);
+        console.log("userRole 76 Signup : " + data.data.userInfo.role);
         toast.success("Sign in successful");
         navigate("/home");
       } else {
@@ -109,7 +111,7 @@ const SignupPage = () => {
         <div className="absolute -top-8 right-5">
           <RxCrossCircled
             className="w-8 h-8 cursor-pointer"
-            // onClick={handleBack}
+            onClick={handleBack}
           />
         </div>
         <h1 className="text-[28px] font-bold mb-1 text-center">
@@ -185,7 +187,7 @@ const SignupPage = () => {
               <p className="text-xs text-red-500 mt-1">{errors.email}</p>
             )}
           </label>
-          <label className="block mb-2 relative">
+          {/* <label className="block mb-2 relative">
             Password :
             <input
               className="w-full p-2  bg-gray-900 rounded-md pr-10"
@@ -209,7 +211,32 @@ const SignupPage = () => {
             {errors.password && (
               <p className="text-xs text-red-500 mt-1">{errors.password}</p>
             )}
-          </label>
+          </label> */}
+          <label className="block mb-2 relative">
+            Password :
+            <input
+              className="w-full p-2 bg-gray-900 rounded-md pr-10"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              placeholder="Enter Password"
+              onChange={handleChange}
+              required
+            />
+            <span
+              className="absolute inset-y-0 right-0 mt-3 flex items-center pr-3 cursor-pointer"
+              onClick={toggleShowPassword}
+            >
+              {showPassword ? (
+                <AiFillEyeInvisible className="w-5 h-5  text-gray-400" />
+              ) : (
+                <AiFillEye className="w-5 h-5 text-gray-400" />
+              )}
+            </span>
+          </label>{" "}
+          {errors.password && (
+            <p className="text-xs text-red-500 mt-1">{errors.password}</p>
+          )}
           <div className="flex justify-center mt-6">
             <button
               className="text-white cursor-pointer font-bold bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full"
@@ -230,7 +257,6 @@ const SignupPage = () => {
           draggable
           pauseOnHover
           toastClassName="h-12 w-auto text-center toast-custom"
-          // className="center-toast-container"
         />
       </div>
     </div>

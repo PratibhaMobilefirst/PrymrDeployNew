@@ -1,5 +1,7 @@
 import React from "react";
-import smallavatar from "../../assets/smallAvatar.svg";
+import smallAvatar from "../../assets/smallAvatar.svg";
+import bigAvatar from "../../assets/bigAvatar.jpg";
+import deleteuserimg from "../../assets/deleteuserimg.png";
 import backarrow from "../../assets/backarrow.png";
 import BellNotification from "../../assets/BellNotification.png";
 import logoutRedBtn from "../../assets/logoutRedBtn.png";
@@ -8,12 +10,20 @@ import { useNavigate } from "react-router";
 
 const VisitorProfile = () => {
   const navigate = useNavigate();
+  const userRole = localStorage.getItem("userRole");
   const handleBack = () => {
     navigate("/home");
   };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
+
+    navigate("/");
+  };
   return (
-    <div className="h-screen bg-black text-white">
-      <header className="flex items-center justify-between p-4">
+    <div className="h-screen lg:w-[30%] bg-black text-white">
+      <div></div>
+      <header className="flex bg-[#191919]items-center justify-between p-4">
         <div className="flex items-center space-x-2">
           <img
             src={backarrow}
@@ -21,7 +31,17 @@ const VisitorProfile = () => {
             className="w-4 h-4 cursor-pointer"
             onClick={handleBack}
           />
-          <img src={smallavatar} alt="User" className="w-8 h-8 rounded-full" />
+          <img
+            src={
+              userRole === "publicUser"
+                ? smallAvatar
+                : userRole === "user"
+                ? deleteuserimg
+                : bigAvatar
+            }
+            alt="User"
+            className="w-8 h-8 rounded-full"
+          />
           <div className="text-sm">
             <div>User Name Icon</div>
             <div>username@gmail.com</div>
@@ -34,7 +54,7 @@ const VisitorProfile = () => {
         </div>
       </header>
 
-      <nav className="p-4">
+      <nav className="p-4 ">
         <ul className="space-y-4">
           <li className="flex items-center justify-between">
             <span className="flex gap-4">
@@ -50,7 +70,10 @@ const VisitorProfile = () => {
         </ul>
       </nav>
       <footer className="p-4 fixed bottom-12 w-full ">
-        <button className="text-[#FF0404] text-2xl cursor-pointer flex  gap-3">
+        <button
+          className="text-[#FF0404] text-2xl cursor-pointer flex  gap-3"
+          onClick={handleLogout}
+        >
           <img src={logoutRedBtn} className="h-6   w-6 mt-1" />
           Log Out
         </button>

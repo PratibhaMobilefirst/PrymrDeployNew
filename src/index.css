@@ -14,6 +14,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+button.Toastify__close-button.Toastify__close-button--light {
+  width: auto;
+}
+
 /* 
 @media (min-width: 320px) and (max-width: 420px) {
   .canvas-container {

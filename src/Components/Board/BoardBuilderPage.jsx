@@ -17,7 +17,6 @@ import ADS from "../../assets/ADS.svg";
 import deleteBai from "../../assets/deleteBai.svg";
 import deleteFoodFrame from "../../assets/deleteFoodFrame.svg";
 import { BsThreeDotsVertical } from "react-icons/bs";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -59,15 +58,12 @@ const BoardBuilder = () => {
   ];
   return (
     <>
-      <div className=" lg:w-[30%]">
+      <div className=" lg:w-[30%] lg:hidden ">
         <div className="flex items-center">
-          <button
-            className="w-auto h-auto cursor-pointer"
-            onClick={handleBackFunction}
-          >
+          <button className="w-auto h-auto" onClick={handleBackFunction}>
             <img src={handleBack} className="text-3xl border-white" />
           </button>
-          <div className="flex items-center cursor-pointer justify-between flex-grow">
+          <div className="flex items-center justify-between flex-grow">
             <img src={LOGO_white} className="ml-1" />
             <img
               src={BoardBuilderText}

@@ -66,7 +66,7 @@ const ActionBar = ({
 
   const handleTappableClick = () => {
     setNewTappableClicked(!isNewTappableClicked);
-    setBoardVisible(isNewTappableClicked);
+    // setBoardVisible(isNewTappableClicked);
     setLayerIsClicked(false);
     onLayersToggle(false);
   };
@@ -83,11 +83,25 @@ const ActionBar = ({
     onSelectTappableArea();
     setNewTappableClicked(false);
   };
+  const navigatetoahome = () => {
+    navigate("/home");
+  };
 
   return (
     <>
       <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
-        {isBoardVisible && (
+        
+
+        {layerIsClicked && <LayersPanel />}
+        {isNewTappableClicked && (
+          <NewTappable
+            onClose={handleTappableClose}
+            onSelectTappableArea={handleSelectTappableArea}
+            onImageSelect={onImageSelect}
+            onEmojiSelect={onEmojiSelect}
+          />
+        )}
+{isBoardVisible && (
           <div className="bg-gray-600 justify-center flex w-full p-1 items-center space-y-2 shrink">
             <div className="flex space-x-4 py-1">
               <button
@@ -100,7 +114,9 @@ const ActionBar = ({
                 </span>
               </button>
               <button className="py-1 px-6 sm:py-1 sm:px-5 md:py-1 md:px-6 lg:py-1 lg:px-7  bg-sky-500 rounded-[55px]  flex items-center justify-center space-x-2">
-                <span className="flex-shrink-0">Preview</span>
+                <span className="flex-shrink-0" onClick={navigatetoahome}>
+                  Publish
+                </span>
                 <span className="flex-shrink-0">
                   <img src={Play} alt="" />
                 </span>
@@ -119,17 +135,6 @@ const ActionBar = ({
             </div>
           </div>
         )}
-
-        {layerIsClicked && <LayersPanel />}
-        {isNewTappableClicked && (
-          <NewTappable
-            onClose={handleTappableClose}
-            onSelectTappableArea={handleSelectTappableArea}
-            onImageSelect={onImageSelect}
-            onEmojiSelect={onEmojiSelect}
-          />
-        )}
-
         <div className="bg-gray-900 justify-center flex w-full p-1 items-center ">
           <div className="flex space-x-5 py-1">
             <div className="flex flex-col items-center space-x-2   mr-1">

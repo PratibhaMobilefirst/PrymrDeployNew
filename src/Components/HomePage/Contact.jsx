@@ -6,9 +6,11 @@ import message from "../../assets/message.png";
 import twitter from "../../assets/Twitter.png";
 import editToolNavbar from "../../assets/settings.png";
 import { baseURL } from "../../Constants/urls";
+import { useNavigate } from "react-router";
 
 function Contact() {
   const [contactSubmitted, setContactSubmitted] = useState("");
+  const naviagte = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     email: "",
@@ -22,7 +24,7 @@ function Contact() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
+    e.preventDefault();
 
     const token = localStorage.getItem("token");
     try {
@@ -40,6 +42,7 @@ function Contact() {
         alert(result.message);
         setContactSubmitted(result.message);
         console.log(result);
+        navigate("/home");
       } else {
         alert("Failed to send message.");
         setContactSubmitted("Failed to send message.");
@@ -54,7 +57,7 @@ function Contact() {
   return (
     <>
       <div className=" flex justify-between gap-5 pt-14 ">
-        <div className="bg-[#1E1E1E] w-full h-[70vh] ml-10 md:block lg:block hidden ">
+        <div className="bg-[#1E1E1E] w-full ml-10  md:hidden  lg:h-[70vh] lg:block hidden ">
           <div>
             <img src={editToolNavbar} className="ml-auto m-1" />
           </div>
@@ -66,7 +69,7 @@ function Contact() {
             visions. Layers of paint intertwined, revealing depths of meaning
             that words could not convey.
           </div>
-          <div className="ml-4 py-[10vh] mt-10">
+          <div className="ml-4  mt-10">
             <div className="flex items-center m-2 space-x-2">
               <img src={instagram} />
               <span className="text-md">@creatorart</span>
@@ -83,12 +86,44 @@ function Contact() {
             </div>
           </div>
         </div>
-        <div className="w-full bg-[#1E1E1E] h-screen lg:h-[70vh] lg:mr-10">
+        {/* <div className="bg-[#1E1E1E] w-full ml-10 md:hidden lg:block lg:h-[70vh] hidden">
+          <div className="flex flex-col justify-between h-full">
+            <div>
+              <img src={editToolNavbar} className="ml-auto m-1" />
+            </div>
+            <div className="p-3">I’d love to hear from you</div>
+            <div className="p-3">
+              The canvas stretched before the artist, blank yet pregnant with
+              possibilities. With each stroke of the brush, colors danced in
+              harmony or clashed in discord, reflecting the artist's emotions
+              and visions. Layers of paint intertwined, revealing depths of
+              meaning that words could not convey.
+            </div>
+            <div className="ml-4 py-[10vh] mt-10 self-start lg:self-center lg:mt-0">
+              <div className="flex items-center m-2 space-x-2">
+                <img src={instagram} />
+                <span className="text-md">@creatorart</span>
+              </div>
+              <div className="flex items-center m-2 space-x-2">
+                <img src={twitter} />
+                <span className="text-md">@creatorartist</span>
+              </div>
+              <div className="m-2">
+                <button className="w-auto flex gap-3 p-2 bg-black rounded text-white">
+                  <img className="w-5 h-5" src={mailchimp} />
+                  Join Mailing list
+                </button>
+              </div>
+            </div>
+          </div>
+        </div> */}
+
+        <div className="w-full bg-[#1E1E1E] h-screen md:h-auto lg:h-[70vh] lg:mr-10">
           <div>
             <img src={editToolNavbar} className="ml-auto m-1" />
           </div>
           <div className="flex gap-2 ml-3">
-            <img src={message} /> erik@erikjonesart.com
+            <img src={message} /> mailto:erik@erikjonesart.com
           </div>
           <form className="space-y-3 mt-6 w-full p-5" onSubmit={handleSubmit}>
             <input

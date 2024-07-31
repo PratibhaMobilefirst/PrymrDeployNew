@@ -3,7 +3,8 @@ import editToolNavbar from "../../assets/settings.png";
 import handleBackk from "../../assets/handleBack.svg";
 import cart from "../../assets/ShoppingCartpng.png";
 import info from "../../assets/info.svg";
-import bluepencile from "../../assets/bluepencil.svg"; // Add this import
+import bluepencile from "../../assets/bluepencil.svg";
+import whitepencil from "../../assets/whitepencil.svg";
 import { baseURL } from "../../Constants/urls";
 import { useNavigate } from "react-router";
 
@@ -16,172 +17,88 @@ const CreatorInfo = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
   const [editingSection, setEditingSection] = useState("");
-  const [loadingNews, setLoadingNews] = useState(false);
-  const [loadingBio, setLoadingBio] = useState(false);
-  const [loadingCV, setLoadingCV] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+  const userRole = localStorage.getItem("userRole");
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
-    fetchNews();
-    fetchBiography();
-    fetchCV();
+    if (token) {
+      fetchInfoForPrivate();
+    }
+    fetchInfoForPublic();
   }, []);
 
-  const handleButtonClick = (button) => {
-    setActiveButton(button);
-    setIsEditing(false);
-    setEditContent("");
+  const fetchInfoForPublic = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${baseURL}/auth/getPublicProfileInfo`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+      if (result.status && result.message) {
+        const data = result.data.data;
+        setProfileCV(data.cv);
+        setNewsData(data.news);
+        setProfileBio(data.bio);
+      } else {
+        setMessage("Failed to fetch public profile information.");
+      }
+    } catch (error) {
+      setMessage("Error fetching public profile information.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // const handleEditButtonClick = () => {
-  //   setIsEditing(true);
-  //   if (activeButton === "News") {
-  //     setEditContent(newsData);
-  //   } else if (activeButton === "Bio") {
-  //     setEditContent(profileBio);
-  //   } else if (activeButton === "CV") {
-  //     setEditContent(profileCV);
-  //   }
-  // };
+  const fetchInfoForPrivate = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${baseURL}/auth/getPrivateProfileInfo`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+      if (result.status && result.message) {
+        const data = result.data.data;
+        setProfileCV(data.cv);
+        setNewsData(data.news);
+        setProfileBio(data.bio);
+      } else {
+        setMessage("Failed to fetch private profile information.");
+      }
+    } catch (error) {
+      setMessage("Error fetching private profile information.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEditButtonClick = (section) => {
-    setIsEditing(true);
     setEditingSection(section);
-    if (section === "News") {
-      setEditContent(newsData);
-    } else if (section === "Bio") {
-      setEditContent(profileBio);
-    } else if (section === "CV") {
-      setEditContent(profileCV);
-    }
+    setIsEditing(true);
+    setEditContent(
+      section === "News" ? newsData : section === "Bio" ? profileBio : profileCV
+    );
   };
 
-  const handleSaveButtonClick = async () => {
-    let url = "";
-    let payload = {};
-
-    if (activeButton === "News") {
-      url = `${baseURL}/auth/addProfileNews?addProfileNews=${newsData}`;
-      payload = { addProfileNews: editContent };
-    } else if (activeButton === "Bio") {
-      url = `${baseURL}/auth/addProfileBio?addBio=${profileBio}`;
-      payload = { addProfileBio: editContent };
-    } else if (activeButton === "CV") {
-      url = `${baseURL}/auth/addProfileCV?addProfileNews=${profileCV}`;
-      payload = { addProfileCV: editContent };
-    }
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-      if (result.status && result.message) {
-        if (activeButton === "News") {
-          setNewsData(editContent);
-        } else if (activeButton === "Bio") {
-          setProfileBio(editContent);
-        } else if (activeButton === "CV") {
-          setProfileCV(editContent);
-        }
-        setIsEditing(false);
-        setEditContent("");
-      } else {
-        console.error("Failed to save data:", result.message);
-      }
-    } catch (error) {
-      console.error("Error saving data", error);
-    }
-  };
-
-  const fetchNews = async () => {
-    setLoadingNews(true);
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(`${baseURL}/auth/getProfileNews`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-      if (result.status && result.message) {
-        setNewsData(result.data.news);
-      } else {
-        setNewsData("Failed to fetch news.");
-      }
-    } catch (error) {
-      console.log("Error fetching news", error);
-      setNewsData("Error fetching news.");
-    } finally {
-      setLoadingNews(false);
-    }
-  };
-
-  const fetchBiography = async () => {
-    setLoadingBio(true);
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(`${baseURL}/auth/getProfileBio`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-      if (result.status && result.message) {
-        setProfileBio(result.data.bio);
-      } else {
-        setProfileBio("Failed to fetch biography.");
-      }
-    } catch (error) {
-      console.log("Error fetching biography", error);
-      setProfileBio("Error fetching biography.");
-    } finally {
-      setLoadingBio(false);
-    }
-  };
-
-  const fetchCV = async () => {
-    setLoadingCV(true);
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(`${baseURL}/auth/getProfileCV`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-      if (result.status && result.message) {
-        setProfileCV(result.data.CV);
-        console.log("828", result.data.CV);
-      } else {
-        setProfileCV("Failed to fetch CV.");
-      }
-    } catch (error) {
-      console.log("Error fetching CV", error);
-      setProfileCV("Error fetching CV.");
-    } finally {
-      setLoadingCV(false);
-    }
+  const handleSaveButtonClick = () => {
+    // Add logic to save the edited content here
+    setIsEditing(false);
   };
 
   return (
     <>
       <div className="w-full bg-[#191919] sm:text-xs h-screen lg:hidden">
-        <header className="flex justify-between mt-[18vh] items-center">
+        <header className="flex justify-between mt-[12vh] items-center">
           <div className="flex gap-2 ml-2 text-md">
             <img src={handleBackk} alt="Info" className="w-5 h-5" /> Info
             <img src={info} alt="Info" className="w-3 h-3 mt-1" />
@@ -197,30 +114,58 @@ const CreatorInfo = () => {
           </div>
         </header>
 
-        <div className="flex py-2 justify-between gap-3 m-2 text-sm">
+        <div className="flex py-2 justify-between  m-2 text-sm md:gap-28 sm:gap-3">
           <button
-            className={`flex cursor-pointer rounded-full h-auto text-sm ${
-              activeButton === "News" ? "active-class" : ""
+            className={`flex gap-2 justify-center text-center cursor-pointer rounded-full h-auto text-sm ${
+              activeButton === "News"
+                ? "active-class bg-blue-500 text-white"
+                : ""
             }`}
-            onClick={() => handleButtonClick("News")}
+            onClick={() => setActiveButton("News")}
           >
             News
+            {(userRole === "publicUser" || userRole === "privateUser") && (
+              <img
+                src={whitepencil}
+                className="w-5 h-5"
+                onClick={() => handleEditButtonClick(activeButton)}
+                alt="Edit"
+              />
+            )}
           </button>
           <button
-            className={`rounded-full h-auto text-sm cursor-pointer ${
-              activeButton === "Bio" ? "active-class" : ""
+            className={`flex gap-2  justify-center text-center rounded-full h-auto text-sm cursor-pointer ${
+              activeButton === "Bio"
+                ? "active-class bg-blue-500 text-white"
+                : ""
             }`}
-            onClick={() => handleButtonClick("Bio")}
+            onClick={() => setActiveButton("Bio")}
           >
             Bio
+            {(userRole === "publicUser" || userRole === "privateUser") && (
+              <img
+                src={whitepencil}
+                className="w-5 h-5"
+                onClick={() => handleEditButtonClick(activeButton)}
+                alt="Edit"
+              />
+            )}
           </button>
           <button
-            className={`cursor-pointer rounded-full h-auto text-sm ${
-              activeButton === "CV" ? "active-class" : ""
+            className={`flex gap-2 justify-center text-center cursor-pointer rounded-full h-auto text-sm ${
+              activeButton === "CV" ? "active-class bg-blue-500 text-white" : ""
             }`}
-            onClick={() => handleButtonClick("CV")}
+            onClick={() => setActiveButton("CV")}
           >
             CV
+            {(userRole === "publicUser" || userRole === "privateUser") && (
+              <img
+                src={whitepencil}
+                className="w-5 h-5"
+                onClick={() => handleEditButtonClick(activeButton)}
+                alt="Edit"
+              />
+            )}
           </button>
         </div>
 
@@ -237,17 +182,12 @@ const CreatorInfo = () => {
             </div>
           ) : (
             <div>
-              <img
-                src={bluepencile}
-                className="w-5 h-5"
-                onClick={handleEditButtonClick}
-                alt="Edit"
-              />
               {activeButton === "News" && <p>{newsData}</p>}
               {activeButton === "Bio" && <p>{profileBio}</p>}
               {activeButton === "CV" && <p>{profileCV}</p>}
             </div>
           )}
+          {message && <p>{message}</p>}
         </div>
       </div>
       <div className="gap-1 lg:mt-16 lg:flex justify-between hidden">
@@ -260,11 +200,13 @@ const CreatorInfo = () => {
             <div>
               <div className="flex gap-1">
                 News
-                <img
-                  src={bluepencile}
-                  className="w-5 h-5"
-                  onClick={() => handleEditButtonClick("News")}
-                />
+                {(userRole === "publicUser" || userRole === "privateUser") && (
+                  <img
+                    src={bluepencile}
+                    className="w-5 h-5"
+                    onClick={() => handleEditButtonClick("News")}
+                  />
+                )}
               </div>
               {isEditing && editingSection === "News" ? (
                 <div className="h-[58vh] w-[40vw]">
@@ -278,7 +220,7 @@ const CreatorInfo = () => {
                 </div>
               ) : (
                 <div className="p-2 rounded shadow max-h-[60vh] overflow-y-auto custom-scrollbar">
-                  <p className=" text-xs">{newsData}</p>
+                  <p className=" text-xs ">{newsData}</p>
                 </div>
               )}
             </div>
@@ -295,11 +237,13 @@ const CreatorInfo = () => {
             <div>
               <div className="flex gap-1">
                 Biography
-                <img
-                  src={bluepencile}
-                  className="w-5 h-5"
-                  onClick={() => handleEditButtonClick("Bio")}
-                />
+                {(userRole === "publicUser" || userRole === "privateUser") && (
+                  <img
+                    src={bluepencile}
+                    className="w-5 h-5"
+                    onClick={() => handleEditButtonClick("Bio")}
+                  />
+                )}
               </div>
               {isEditing && editingSection === "Bio" ? (
                 <div className="h-[58vh] w-[40vw]">
@@ -327,11 +271,13 @@ const CreatorInfo = () => {
             </div>
             <div className="flex gap-1">
               CV
-              <img
-                src={bluepencile}
-                className="w-5 h-5"
-                onClick={() => handleEditButtonClick("CV")}
-              />
+              {(userRole === "publicUser" || userRole === "privateUser") && (
+                <img
+                  src={bluepencile}
+                  className="w-5 h-5"
+                  onClick={() => handleEditButtonClick("CV")}
+                />
+              )}
             </div>
             {isEditing && editingSection === "CV" ? (
               <div className="h-[58vh] w-[40vw]">
@@ -345,7 +291,7 @@ const CreatorInfo = () => {
               </div>
             ) : (
               <div className="p-2 rounded shadow max-h-[60vh] overflow-y-auto custom-scrollbar">
-                <p className="break-words text-xs">{profileCV}</p>
+                <p className="break-words text-xs ">{profileCV}</p>
               </div>
             )}
           </div>

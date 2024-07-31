@@ -35,6 +35,9 @@ import SaveDesktopView from "./Components/Board/CreateNewBoard/SaveDesktopView";
 import AddContentPage from "./Components/Board/ActionBar/Layers/AddContentPage";
 import DesktopNavbar from "./Components/common/DesktopNavbar";
 import InfoOverlay from "./Components/Board/ActionBar/Layers/InfoOverlay";
+import LoginBen from "./Components/OnboardingScreen/SignupIn/LoginBen";
+import PublicHome from "./Components/HomePage/PublicHome.jsx";
+import CreatorInfo from "./Components/HomePage/CreatorInfo";
 
 function App() {
   return (
@@ -42,14 +45,15 @@ function App() {
       <ImageProvider>
         <Routes>
           <Route path="/nav" element={<DesktopNavbar />} />
-          {/* <Route path="/" element={<OnBoarding />} /> */}
+          {/* {/ {/ <Route path="/" element={<OnBoarding />} /> /} /} */}
           <Route path="/user-profile" element={<VisitorProfile />} />
-          {/* <Route path="/" element={<Blank />} /> */}
+          {/* {/ <Route path="/" element={<Blank />} /> /} */}
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/" element={<LoginScreen />} />
+          <Route path="/Ben" element={<LoginBen />} />
+          <Route path="/loginscreen" element={<LoginScreen />} />
           <Route path="/forgetpassword" element={<ForgetPassword />} />
-
           <Route path="/home" element={<Home />} />
+          <Route path="/" element={<PublicHome />} />
           <Route path="/home-about-allcreators" element={<AllCreators />} />
           <Route path="/home-about-prymr" element={<AboutPrymr />} />
           <Route path="/home-share" element={<Share />} />
@@ -58,7 +62,8 @@ function App() {
           <Route path="/create-new-board" element={<NewBoard />} />
           <Route path="/create-new-board-ADS" element={<Ads />} />
           <Route path="/create-new-board-saved" element={<SaveBoard />} />
-          <Route path="/actionbar" element={<ActionBar />} />
+          <Route path="/Contact" element={<Contact />} />
+          <Route path="/info" element={<CreatorInfo />} />
           <Route
             path="/create-new-board-edit-board-info"
             element={<EditBoardInfo />}
@@ -71,7 +76,7 @@ function App() {
             path="/boardBuilder-BoardInfo-createPost"
             element={<CreateBoard />}
           />
-          {/* <Route path="/Camera" element={<ImageFromCamera />} /> */}
+         {/* <Route path="/Camera" element={<ImageFromCamera />} />  */}
           <Route path="/board-builder-edit-board" element={<EditBoard />} />
           <Route
             path="/create-new-board-edit-board-info"
