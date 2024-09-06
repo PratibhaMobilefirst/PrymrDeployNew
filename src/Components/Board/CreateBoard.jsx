@@ -7,10 +7,12 @@ import {
   FaImage,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useToastManager } from "../Context/ToastContext";
 
 const CreateBoard = () => {
+  const toast = useToastManager();
   const [selectedRating, setSelectedRating] = useState("G");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -29,7 +31,7 @@ const CreateBoard = () => {
   const handleSave = () => {};
 
   const handleAddProgress = async () => {
-    alert("Board created Successfully");
+    toast("Board created Successfully");
     const storedToken = localStorage.getItem("token");
 
     const postData = JSON.stringify({
@@ -39,15 +41,11 @@ const CreateBoard = () => {
       rating: selectedRating,
       jsonElement: {
         version: "5.3.0",
-        objects: [
-          // Replace this part with your API's "jsonElement"
-        ],
+        objects: [],
       },
       jsonComment: {
         version: "5.3.0",
-        objects: [
-          // Replace this part with your API's "jsonComment"
-        ],
+        objects: [],
       },
     });
 
@@ -73,10 +71,10 @@ const CreateBoard = () => {
       setTimeout(() => {
         navigate("/blank");
       }, 2000);
-      toast.success("Board created successfully !!");
+      toast("Board created successfully !!");
       console.log("Board created successfully:", data);
     } catch (error) {
-      toast.error("Error creating board");
+      toast("Error creating board");
       console.error("Error creating board:", error);
     }
   };
@@ -99,22 +97,6 @@ const CreateBoard = () => {
           <div className="flex items-center text-sm space-x-2  mb-4">
             <span className="text-[12px]">Select Asset Rating</span>
             <FaQuestionCircle className="text-sm" />
-
-            {/* <div className="flex w-[60vw] h-[40px] space-x-1 text-xs ">
-              {["G", "PG", "PG-13", "R"].map((rating) => (
-                <button
-                  key={rating}
-                  onClick={() => handleRatingChange(rating)}
-                  className={`px-4 py-2 rounded-full border ${
-                    selectedRating === rating
-                      ? "bg-blue-500 border-blue-500"
-                      : "border-gray-500"
-                  }`}
-                >
-                  {rating}
-                </button>
-              ))}
-            </div> */}
           </div>
           <div className="text-20 font-semibold leading-33 text-left">
             <input

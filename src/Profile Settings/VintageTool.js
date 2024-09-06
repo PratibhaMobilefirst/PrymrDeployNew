@@ -165,7 +165,7 @@ const VintageTool = ({ image, onClose, onApply }) => {
             {[1, 2, 3].map((styleNum) => (
               <button
                 key={styleNum}
-                className={`px-4 py-2 rounded ${
+                className={`px-4 py-2 m-2 rounded ${
                   style === styleNum ? "bg-blue-500" : "bg-gray-500"
                 } text-white`}
                 onClick={() => setStyle(styleNum)}
@@ -198,7 +198,7 @@ const VintageTool = ({ image, onClose, onApply }) => {
               onChange={setContrast}
             />
           </div>
-          <div className="flex justify-between mt-2">
+          <div className="flex  gap-2 justify-between mt-2">
             <button
               className="bg-red-500 text-white px-4 py-1 rounded"
               onClick={onClose}

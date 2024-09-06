@@ -144,7 +144,7 @@ const TonalContrastTool = ({ image, onClose, onApply }) => {
             value={highContrast}
             onChange={setHighContrast}
           />
-          <div className="col-span-3 flex justify-between">
+          <div className="col-span-3 gap-2 flex justify-between">
             <button
               className="bg-red-500 text-white px-4 py-1 rounded"
               onClick={onClose}

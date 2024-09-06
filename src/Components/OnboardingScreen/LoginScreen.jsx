@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import blueFly from "../../assets/mainpageclouds.svg";
-
+import xcircle from "../../assets/xcircle.png";
 const LoginScreen = () => {
   const navigate = useNavigate();
   const handleSignUp = () => {
@@ -12,9 +12,9 @@ const LoginScreen = () => {
     navigate("/signin");
   };
 
-  // const handleForgetPassword = () => {
-  //   navigate("/forgetpassword");
-  // };
+  const handleBack = () => {
+    navigate("/");
+  };
   return (
     //
     <div className="bg-cover bg-center absolute h-[100vh] w-full flex flex-col  justify-center items-center text-white ">
@@ -22,14 +22,27 @@ const LoginScreen = () => {
         src={blueFly}
         alt="Blue cloud"
         className="absolute w-full h-full object-cover"
-      />
+      />{" "}
+      <div className="absolute top-2 right-2 z-10">
+        <img
+          src={xcircle}
+          className="w-8 h-8 cursor-pointer"
+          onClick={handleBack}
+        />
+      </div>
       <div className=" text-center relative bg-gray-800 bg-opacity-75 p-6 rounded-md space-y-4  ml-[18px] mr-[18px]">
         <div className="font-bold text-lg mb-4"> Sign in to interact</div>
 
         <div className="text-xs ">
-          To purchase items or leave comments, you’ll
-          <p> need to leave your email address, create a</p>
-          <p> password, and choose an avatar.Simple :)</p>
+          <p className="text-nowrap">
+            To purchase items or leave comments, you’ll{" "}
+          </p>
+          <p className="text-nowrap">
+            need to leave your email address, create a
+          </p>
+          <p className="text-nowrap">
+            password, and choose an avatar.Simple :)
+          </p>
         </div>
 
         <div>

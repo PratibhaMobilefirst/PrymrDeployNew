@@ -121,7 +121,7 @@ const HDRScapeTool = ({ image, onClose, onApply }) => {
             value={intensity}
             onChange={setIntensity}
           />
-          <div className="flex justify-between mt-4">
+          <div className="flex gap-2 justify-between mt-4">
             <button
               className="bg-red-500 text-white px-4 py-1 rounded"
               onClick={onClose}

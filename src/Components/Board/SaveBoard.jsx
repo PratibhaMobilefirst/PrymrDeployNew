@@ -17,7 +17,7 @@ const SaveBoard = () => {
     setError(null);
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
-      alert("No token found. Please sign in again.");
+      // alert("No token found. Please sign in again.");
       setLoading(false);
       return;
     }

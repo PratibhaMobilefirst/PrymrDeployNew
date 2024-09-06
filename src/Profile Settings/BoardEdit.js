@@ -25,11 +25,15 @@ import HDRScapeTool from "./HDRScapeTool";
 import BlackAndWhiteTool from "./BlackAndWhiteTool";
 import VintageTool from "./VintageTool";
 import GrungeTool from "./GrungeTool";
+import { baseURL } from "../Constants/urls";
+import { useToastManager } from "../Components/Context/ToastContext";
 
 const BoardEdit = () => {
+  const toast = useToastManager();
   const navigate = useNavigate();
   const location = useLocation();
-  const imageUrl = JSON.parse(sessionStorage.getItem("state"))?.imageUrl; // Access imageUrl from location.state
+  const [isSaving, setIsSaving] = useState(false);
+  const imageUrl = JSON.parse(sessionStorage.getItem("state"))?.imageUrl;
 
   const [currentImage, setCurrentImage] = useState(imageUrl);
   console.log("Editor ", currentImage);
@@ -206,12 +210,73 @@ const BoardEdit = () => {
   const handleBack = () => {
     navigate("/board-builder-edit-board");
   };
+  const handleSaveImage = async () => {
+    setIsSaving(true);
+    try {
+      console.log("Starting image save process...");
 
-  const handleSaveImage = () => {
-    navigate("/board-builder-edit-board", {
-      state: { editedImage: currentImage },
-    });
-    console.log(currentImage);
+      const storedToken = localStorage.getItem("token");
+      const boardImageId = sessionStorage.getItem("boardImageId");
+
+      if (!boardImageId) {
+        console.error("boardImageId not found in session storage");
+        setIsSaving(false);
+        return;
+      }
+
+      const formData = new FormData();
+      const response = await fetch(currentImage);
+      const blob = await response.blob();
+      formData.append("file", blob, "edited_image.jpg");
+
+      const uploadResponse = await fetch(`${baseURL}/file-upload/uploadFile`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error(`HTTP error! status: ${uploadResponse.status}`);
+      }
+
+      const uploadResult = await uploadResponse.json();
+      const newImageUrl = uploadResult.data.url;
+
+      const updateResponse = await fetch(
+        `${baseURL}/board/editBoardBackgroundImage`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedToken}`,
+          },
+          body: JSON.stringify({
+            boardImageId: boardImageId,
+            imageUrl: newImageUrl,
+          }),
+        }
+      );
+
+      if (!updateResponse.ok) {
+        throw new Error(`HTTP error! status: ${updateResponse.status}`);
+      }
+
+      await updateResponse.json();
+
+      navigate("/board-builder-edit-board", {
+        state: { editedImage: newImageUrl },
+      });
+
+      toast("Image saved successfully!");
+      setIsSaving(false);
+    } catch (error) {
+      console.error("Error saving image:", error);
+      toast("Failed to save image. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -243,10 +308,11 @@ const BoardEdit = () => {
               </div>
             </div>
             <div
-              className="text-white text-lg bg-blue-500 rounded-full w-[5vw] text-center p-2 font-bold capitalize tracking-tight"
-              onClick={handleSaveImage}
+              className="text-white text-lg bg-blue-500 rounded-3xl w-auto text-center p-2 pt-3 pb-3 font-bold capitalize cursor-pointer tracking-tight"
+              onClick={!isSaving ? handleSaveImage : undefined}
+              disabled={isSaving}
             >
-              Save
+              {isSaving ? "Saving..." : "Save the board"}
             </div>
           </div>
         )}

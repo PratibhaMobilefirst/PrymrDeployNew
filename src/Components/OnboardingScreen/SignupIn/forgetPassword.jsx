@@ -30,7 +30,7 @@
 //       console.log(data);
 
 //       if (response.status) {
-//         alert("Email Sent to mail");
+//         toast("Email Sent to mail");
 //         setMessage(data.message);
 //         navigate("/resetPassword");
 //       } else {
@@ -110,6 +110,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../../../Constants/urls";
 import blueFly from "../../../assets/mainpageclouds.svg";
+import { useToastManager } from "../../Context/ToastContext";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -117,7 +118,7 @@ const ForgetPassword = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const toast = useToastManager();
   const handleEmailChange = (e) => {
     const { value } = e.target;
     setEmail(value); // Update email state
@@ -149,17 +150,17 @@ const ForgetPassword = () => {
 
       if (response.status === 200) {
         setMessage(data.message);
-        alert(data.message);
+        toast(" Directing to Forgot Password");
       } else {
         if (data && data.message) {
-          alert(data.message); // Show error message from backend
+          toast(data.message); // Show error message from backend
         } else {
-          alert("Something went wrong. Please try again."); // Default error message
+          toast("Something went wrong. Please try again."); // Default error message
         }
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred. Please try again later.");
+      toast("An error occurred. Please try again later.");
     }
 
     setLoading(false);
@@ -192,7 +193,7 @@ const ForgetPassword = () => {
               </p>
             </div>
             <h1 className="text-4xl font-bold leading-[38.19px] text-white mb-4">
-              Forgot Password
+              Forget Password
             </h1>
             <p className="text-sm font-normal leading-[20.46px] text-white mb-6">
               Please enter the email address you used when creating this

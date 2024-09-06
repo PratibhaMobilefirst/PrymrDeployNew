@@ -225,7 +225,10 @@ const CurvesModal = ({ image, onClose, onApply }) => {
     <div style={modalStyle}>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-white font-bold">Curves</h2>
-        <button className="text-white hover:text-gray-400" onClick={onClose}>
+        <button
+          className="text-white hover:text-gray-400 w-auto"
+          onClick={onClose}
+        >
           <svg
             className="w-6 h-6"
             fill="none"

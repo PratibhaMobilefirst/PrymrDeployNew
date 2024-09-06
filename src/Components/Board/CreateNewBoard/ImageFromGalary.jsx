@@ -23,7 +23,7 @@ const ImageFromGalary = () => {
   };
 
   const handleDelete = () => {
-    alert("Delete Content?");
+    // alert("Delete Content?");
     navigate("/create-new-board");
   };
 

@@ -7,11 +7,13 @@ import bluepencile from "../../assets/bluepencil.svg";
 import whitepencil from "../../assets/whitepencil.svg";
 import { baseURL } from "../../Constants/urls";
 import { useNavigate } from "react-router";
+import Navbar from "../common/Navbar";
 
-const CreatorInfo = () => {
+const CreatorInfo = ({ closeInfo }) => {
   const [activeButton, setActiveButton] = useState("News");
   const navigate = useNavigate();
   const [newsData, setNewsData] = useState("");
+
   const [profileBio, setProfileBio] = useState("");
   const [profileCV, setProfileCV] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -19,15 +21,17 @@ const CreatorInfo = () => {
   const [editingSection, setEditingSection] = useState("");
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+
   const userRole = localStorage.getItem("userRole");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (token) {
+    fetchInfoForPublic();
+
+    if (token && userRole === "privateUser") {
       fetchInfoForPrivate();
     }
-    fetchInfoForPublic();
-  }, []);
+  }, [token, userRole]);
 
   const fetchInfoForPublic = async () => {
     setLoading(true);
@@ -94,13 +98,21 @@ const CreatorInfo = () => {
     // Add logic to save the edited content here
     setIsEditing(false);
   };
-
+  const handleBack = () => {
+    closeInfo();
+  };
   return (
     <>
-      <div className="w-full bg-[#191919] sm:text-xs h-screen lg:hidden">
-        <header className="flex justify-between mt-[12vh] items-center">
+      <div className="w-full bg-[#191919] sm:text-xs h-screen  lg:hidden">
+        <header className="flex justify-between mt-[2vh] w-auto items-center">
           <div className="flex gap-2 ml-2 text-md">
-            <img src={handleBackk} alt="Info" className="w-5 h-5" /> Info
+            <img
+              src={handleBackk}
+              alt="Info"
+              className="w-5 h-5 cursor-pointer"
+              onClick={handleBack}
+            />{" "}
+            Info
             <img src={info} alt="Info" className="w-3 h-3 mt-1" />
           </div>
 
@@ -181,16 +193,17 @@ const CreatorInfo = () => {
               <button onClick={handleSaveButtonClick}>Save</button>
             </div>
           ) : (
-            <div>
-              {activeButton === "News" && <p>{newsData}</p>}
-              {activeButton === "Bio" && <p>{profileBio}</p>}
-              {activeButton === "CV" && <p>{profileCV}</p>}
+            <div className="custom-scrollbar  overflow-y-auto">
+              {activeButton === "News" && <p className="p-4 ">{newsData}</p>}
+              {activeButton === "Bio" && <p className="p-4">{profileBio}</p>}
+              {activeButton === "CV" && <p className="p-4"> {profileCV}</p>}
             </div>
           )}
           {message && <p>{message}</p>}
         </div>
       </div>
-      <div className="gap-1 lg:mt-16 lg:flex justify-between hidden">
+
+      <div className="gap-1 lg:my-16 lg:flex justify-between hidden">
         <div className="bg-[#2A2A2A]">
           <div className="p-2 m-4 w-full h-[70vh]">
             <div className="flex -mt-4">
@@ -294,6 +307,9 @@ const CreatorInfo = () => {
                 <p className="break-words text-xs ">{profileCV}</p>
               </div>
             )}
+          </div>
+          <div className="block lg:hidden">
+            <Navbar />
           </div>
         </div>
       </div>

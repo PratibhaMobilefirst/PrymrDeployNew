@@ -4,17 +4,17 @@
 }
 
 .slick-dots {
-  top: 510px; /* Adjust as needed to position dots vertically */
+  top: 510px;
   text-align: center;
 }
 
 .slick-dots li {
-  margin: 0 5px; /* Adjust the spacing between dots */
+  margin: 0 5px;
 }
 
 .slick-dots li button:before {
-  color: white; /* Change to desired color */
-  font-size: 12px; /* Adjust the size of the dots */
+  color: white;
+  font-size: 12px;
 }
 
 .slick-dots {
@@ -78,12 +78,7 @@
     padding-right: 100px;
   }
 }
-/* @media (min-width: 1440px) and (max-width: 2560px) {
-  .container {
-    padding-left: 130px;
-    padding-right: 100px;
-  }
-} */
+
 @media (min-width: 1440px) and (max-width: 1640px) {
   .container {
     padding-left: 130px;
@@ -97,3 +92,94 @@
   }
 }
 
+[contenteditable]:empty:before {
+  content: attr(data-placeholder);
+  color: gray;
+  font-style: italic;
+}
+
+.my-masonry-grid {
+  display: flex;
+}
+.my-masonry-grid_column {
+  padding-left: 6px;
+  background-clip: padding-box;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #2d2d2d;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 3px;
+}
+.capture-border {
+  position: absolute;
+  border: 2px solid red; /* Red border for visibility */
+  pointer-events: none; /* Ignore mouse events */
+  z-index: 20; /* Ensure it is above other elements */
+  display: none; /* Hidden by default */
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.bottom-4 {
+  bottom: 16px;
+}
+
+.right-4 {
+  right: 16px;
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.z-30 {
+  z-index: 30;
+}
+
+.z-20 {
+  z-index: 20;
+}
+
+.info-overlay-enter {
+  transform: translateX(100%);
+}
+
+.info-overlay-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+.info-overlay-exit {
+  transform: translateX(0);
+}
+
+.info-overlay-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
+}

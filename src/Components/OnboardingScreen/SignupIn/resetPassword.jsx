@@ -3,13 +3,15 @@ import "./signup.css";
 import ValidationButton from "./ValidationButton";
 import { useNavigate, useParams } from "react-router";
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { baseURL } from "../../../Constants/urls";
 import { RxCrossCircled } from "react-icons/rx";
 import blueFly from "../../../assets/mainpageclouds.svg";
+import { useToastManager } from "../../Context/ToastContext";
 
 const ResetPassword = () => {
+  const toast = useToastManager();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isValid, setIsValid] = useState(true);
@@ -54,14 +56,14 @@ const ResetPassword = () => {
       // console.log(data);
 
       if (response.status) {
-        toast.success(data.message);
+        toast(data.message);
         navigate("/signin");
       } else {
-        alert(data.message);
+        toast(data.message);
         console.log(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast(error.message);
     }
   };
 

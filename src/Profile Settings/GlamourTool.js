@@ -124,7 +124,7 @@ const GlamourTool = ({ image, onClose, onApply }) => {
             {glamourLevel}
           </div>
         </div>
-        <div className="flex justify-between">
+        <div className="flex gap-2 justify-between">
           <button
             className="bg-red-500 text-white px-4 py-1 rounded"
             onClick={onClose}

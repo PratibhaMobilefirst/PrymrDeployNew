@@ -143,7 +143,7 @@ const BlackAndWhiteTool = ({ image, onClose, onApply }) => {
             min="0"
             max="100"
           />
-          <div className="flex col-span-3 justify-between mt-4 ">
+          <div className="flex col-span-3 gap-2 justify-between mt-4 ">
             <button
               className="bg-red-500 text-white px-4 py-1 rounded"
               onClick={onClose}

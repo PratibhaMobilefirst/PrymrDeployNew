@@ -46,7 +46,7 @@ const RotateTool = ({ image, onClose, onRotate }) => {
   };
 
   return (
-    <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+    <div className="absolute inset-0 bg-black flex items-center justify-center">
       <div className="relative">
         <img
           ref={imageRef}
@@ -56,7 +56,7 @@ const RotateTool = ({ image, onClose, onRotate }) => {
           crossOrigin="anonymous"
         />
       </div>
-      <div className="grid sm:grid-cols-4 grid-cols-2 gap-1 absolute bottom-0 justify-center text-nowrap">
+      <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 absolute bottom-0 justify-center text-nowrap">
         <button
           className="bg-gray-800 text-white rounded-full"
           onClick={() => handleRotate(-90)}

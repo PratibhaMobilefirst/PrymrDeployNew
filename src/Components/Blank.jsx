@@ -1,82 +1,58 @@
-import React, { useState } from "react";
-import Header from "./common/Header";
-import Navbar from "./common/Navbar";
-import Galary from "../assets/Galary.png";
-import viewColumns from "../assets/viewColumns.png";
-import viewBox from "../assets/viewBox.png";
-import leftarrow from "../assets/leftarrow.svg";
-import headerinfo from "../assets/headerInfo.png";
-import headershop from "../assets/headershop.png";
-import message from "../assets/message.png";
-import mailchimp from "../assets/mailchimp.png";
+// import React from "react";
 
-const Blank = () => {
-  const [isContactOpen, setIsContactOpen] = useState(false);
-  const toggleArt = () => {
-    setIsContactOpen(!isContactOpen);
-  };
-  return (
-    <div className="h-screen bg-black">
-      {/* <Header />
-      <nav className="p-4 pt-[14vh] h-screen text-white bg-[#2A2A2A]">
-        <ul className="space-y-4">
-          <li className="flex items-center space-x-2">
-            <img className="w-6 h-6" src={headershop} alt="headershop" />
-            <span>Shop</span>
-          </li>
-          <li className="flex items-center space-x-2">
-            <img className="w-6 h-6" src={headerinfo} alt="headerinfo" />
-            <span>Info</span>
-          </li>
-          <li
-            className="flex items-center space-x-2 cursor-pointer"
-            onClick={toggleArt}
-          >
-            <img className="w-6 h-6" src={Galary} alt="Galary" />
-            <span>Art</span>
-            <img
-              className={`w-6 h-6 transform transition-transform ${
-                isContactOpen ? "rotate-180" : "rotate-0"
-              }`}
-              src={leftarrow}
-              alt="leftarrow"
-            />
-          </li>
-          {isContactOpen && (
-            <div className="space-y-4 mt-4 px-5">
-              <div className="flex items-center space-x-2">
-                <span>Traditional</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span>Digital</span>
-              </div>
-            </div>
-          )}
-        </ul>
-      </nav>
-      <div className="fixed bottom-20 flex flex-col gap-4 px-8">
-        <div class="w-[230.87px] h-[27.88px] justify-start items-center gap-[13.94px] inline-flex">
-          <div class="w-[27.88px] h-[27.88px] relative">
-            <img src={message} alt="message" />
-          </div>
-          <div class="text-center text-white text-lg font-medium font-['Inter'] leading-[17.42px]">
-            Erik@erikjonesart.com
-          </div>
-        </div>
+// const Blank = () => {
+//   return (
+//     <div>
+//       <div class="w-[314px] h-[178px] p-2.5 bg-[#303030] rounded-[15px] backdrop-blur-[30px] flex-col justify-start items-start gap-[17px] inline-flex">
+//         <div class="self-stretch justify-start items-start gap-2.5 inline-flex">
+//           <div class="grow shrink basis-0 h-7 justify-start items-center gap-2.5 flex">
+//             <div class="grow shrink basis-0 self-stretch p-0.5 bg-white rounded-[31px] border border-black justify-center items-center flex">
+//               <img
+//                 class="w-4 h-4 rounded-[28.50px] border-white"
+//                 src="https://via.placeholder.com/16x16"
+//               />
+//             </div>
+//             <div class="justify-center items-center gap-2.5 flex">
+//               <div class="text-white text-sm font-bold font-['Nunito']">
+//                 Pizza Boy
+//               </div>
+//               <div class="text-[#9f9f9f] text-[11px] font-semibold font-['Nunito']">
+//                 just now
+//               </div>
+//             </div>
+//           </div>
+//           <div class="grow shrink basis-0 self-stretch p-[7.50px] bg-[#adadad]/0 rounded-[5px] border-white justify-center items-center gap-[6.25px] flex">
+//             <div class="grow shrink basis-0 self-stretch justify-center items-center flex">
+//               <div class="w-[17.30px] h-[17.30px] relative"></div>
+//             </div>
+//           </div>
+//         </div>
+//         <div class="w-[293px] h-[75px] relative">
+//           <div class="w-[218px] left-0 top-0 absolute text-white text-[13px] font-semibold font-['Nunito']">
+//             CHOMP CHOMP!!!!!
+//           </div>
+//           <div class="w-[75px] h-[75px] left-[218px] top-0 absolute bg-white rounded-md border border-[#e1e1e1] justify-center items-center inline-flex">
+//             <img
+//               class="w-[75px] h-[75px] rounded-[10px]"
+//               src="https://via.placeholder.com/75x75"
+//             />
+//           </div>
+//           <div class="left-[198.76px] top-[-25px] absolute origin-top-left rotate-[25.26deg] flex-col justify-end items-center inline-flex"></div>
+//         </div>
+//         <div class="self-stretch justify-start items-start gap-[228px] inline-flex">
+//           <div class="text-[#389fff] text-[13px] font-normal font-['Nunito']">
+//             Reply{" "}
+//           </div>
+//           <div class="bg-black/0 justify-center items-center flex">
+//             <div class="w-6 h-6 relative"></div>
+//             <div class="text-center text-white text-sm font-semibold font-['Nunito'] leading-[18.20px]">
+//               0
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
-        <div class="w-[160.30px] h-[45.30px] p-[8.71px] bg-black rounded-md flex-col justify-start items-start gap-[8.71px] inline-flex">
-          <div class="self-stretch justify-start items-center gap-[13.94px] inline-flex">
-            <div class="w-[27.88px] h-[27.88px] bg-white justify-center items-center flex">
-              <img class="w-5 h-5" src={mailchimp} />
-            </div>
-            <div class="text-center text-white text-xs font-medium font-['Inter'] leading-[17.42px]">
-              Join Mailing list
-            </div>
-          </div>
-        </div>
-      </div> */}
-    </div>
-  );
-};
-
-export default Blank;
+// export default Blank;

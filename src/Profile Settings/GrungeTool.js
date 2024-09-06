@@ -178,7 +178,7 @@ const GrungeTool = ({ image, onClose, onApply }) => {
             min="0"
             max="100"
           />
-          <div className="flex justify-between mt-4 col-span-3">
+          <div className="flex gap-2 justify-between mt-4 col-span-3">
             <button
               className="bg-red-500 text-white px-4 py-1 rounded"
               onClick={onClose}

@@ -1,6 +1,6 @@
 const SocialMediaBtn = ({ mediaBtn }) => {
   const handleGoogleLogin = () => {
-    alert("Redirecting to the Google authentication ");
+    toast("Redirecting to the Google authentication ");
     window.location.href = " https://prymr.vercel.app/api/auth/google";
   };
   return (

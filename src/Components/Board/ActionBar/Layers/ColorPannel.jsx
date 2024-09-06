@@ -2,14 +2,13 @@ import React from "react";
 
 const ColorPanel = ({ onSelectColor, onClose }) => {
   const colors = [
-    "#FF0000",
-    "#00FF00",
-    "#0000FF",
-    "#FFFF00",
-    "#FF00FF",
-    "#00FFFF",
-    "#000000",
     "#4B4B4B",
+    "#FF0000",
+    "#00EEFF",
+    "#FFFF00",
+    "#00FF00",
+    "#9E00FF",
+    "#FFFF",
   ];
 
   return (
@@ -24,7 +23,10 @@ const ColorPanel = ({ onSelectColor, onClose }) => {
           />
         ))}
       </div>
-      <button onClick={onClose} className="p-1 text-white hover:text-gray-300">
+      <button
+        onClick={onClose}
+        className="p-1 ml-3  text-white hover:text-gray-300"
+      >
         X
       </button>
     </div>

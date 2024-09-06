@@ -1,14 +1,17 @@
-//  perfect working
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { RiCloseCircleFill } from "react-icons/ri";
+import xcircle from "../../../assets/xcircle.png";
 import blueFly from "../../../assets/mainpageclouds.svg";
 import { baseURL, showToast } from "../../../Constants/urls";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { toast, ToastContainer } from "react-toastify";
+import { useToastManager } from "../../Context/ToastContext";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { debounce } from "lodash";
 
 const SignIn = ({ mediaBtn }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToastManager();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -46,54 +49,65 @@ const SignIn = ({ mediaBtn }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        const result = await fetch(`${baseURL}/auth/loginUser`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
 
-        const data = await result.json();
+    if (validateForm() && !isSubmitting) {
+      setIsSubmitting(true);
 
-        if (data.status === true) {
-          localStorage.setItem("token", data.data.token);
-          localStorage.setItem("userRole", data.data.role);
-          console.log("userRole" + data.data.role);
-          // toast.success(data.message, { className: "center-toast" });
-          showToast(data.message, { className: "center-toast" });
-          navigate("/home");
-        } else {
-          const newErrors = {};
-          if (data.message) {
-            toast.error(data.message);
+      if (validateForm()) {
+        try {
+          const result = await fetch(`${baseURL}/auth/loginUser`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          const data = await result.json();
+
+          if (data.status === true) {
+            localStorage.setItem("token", data.data.token);
+            localStorage.setItem("userRole", data.data.role);
+            localStorage.setItem("userName", data.data.userName);
+            localStorage.setItem("userEmail", data.data.email);
+            localStorage.setItem("profileImage", data.data.profileImage);
+
+            toast("Login Successfull");
+            navigate("/home");
+          } else {
+            const newErrors = {};
+            if (data.message) {
+              toast(data.message);
+            }
+            if (data.errors && Array.isArray(data.errors)) {
+              data.errors.forEach((error) => {
+                if (error.field && error.message) {
+                  newErrors[error.field] = error.message;
+                }
+              });
+            }
+            setErrors(newErrors);
           }
-          if (data.errors && Array.isArray(data.errors)) {
-            data.errors.forEach((error) => {
-              if (error.field && error.message) {
-                newErrors[error.field] = error.message;
-              }
-            });
-          }
-          setErrors(newErrors);
+        } catch (error) {
+          console.error("Error signing in:", error);
+        } finally {
+          setIsSubmitting(false);
         }
-      } catch (error) {
-        console.error("Error signing in:", error);
       }
     }
   };
 
   const handleForgetPassword = () => {
-    alert("Directing to ForgetPassword");
+    toast("Directing to ForgetPassword");
   };
 
   const handleBack = () => {
     navigate("/");
   };
-
+  const toggleShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
   return (
     <div className="bg-cover bg-center absolute h-[100vh] w-full flex flex-col  justify-center items-center text-white ">
       <img
@@ -101,14 +115,18 @@ const SignIn = ({ mediaBtn }) => {
         alt="Blue cloud"
         className="absolute w-full h-full object-cover"
       />
+
+      <div className="absolute top-2 right-2 z-10">
+        <img
+          src={xcircle}
+          className="w-8 h-8 cursor-pointer"
+          onClick={handleBack}
+        />
+      </div>
       <div className="relative flex items-center justify-center">
-        <div className="absolute  right-0 top-0">
-          <RiCloseCircleFill
-            className="w-8 h-8 cursor-pointer"
-            onClick={handleBack}
-          />
-        </div>
-        <h1 className="text-[28px] px-16 font-bold  ">Sign In to Prymr</h1>
+        <h1 className="text-[28px] text-nowrap px-10 font-bold  ">
+          Sign In to Prymr
+        </h1>
       </div>
 
       <div className="m-6 w-full relative md:w-[400px]">
@@ -116,10 +134,10 @@ const SignIn = ({ mediaBtn }) => {
           onSubmit={handleSubmit}
           className="bg-gray-800 bg-opacity-75 p-6 rounded-md space-y-4  ml-[18px] mr-[18px]"
         >
-          <label className="block mb-2 ">
+          <label>
             Email Address / Username
             <input
-              className={`w-full h-12 pl-3 bg-gray-800 rounded-tl-md sm:text-xs text-md ${
+              className={`w-full p-2  bg-gray-900 rounded-md ${
                 errors.username ? "border-red-500" : ""
               }`}
               type="text"
@@ -133,30 +151,29 @@ const SignIn = ({ mediaBtn }) => {
               <p className="text-red-500 text-sm mt-1">{errors.username}</p>
             )}
           </label>
-          <label className="block mb-2">
-            Password
-            <div className="relative">
-              <input
-                className={`w-full h-12 pl-3 bg-gray-800 rounded-tl-md ${
-                  errors.password ? "border-red-500" : ""
-                }`}
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                placeholder="Enter Password"
-                onChange={handleChange}
-                required
-              />
-              <div
-                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <AiFillEyeInvisible className="text-gray-500" />
-                ) : (
-                  <AiFillEye className="text-gray-500" />
-                )}
-              </div>
+
+          <label className="block mb-2 relative">
+            Password :
+            <input
+              className={`w-full p-2 bg-gray-900 rounded-md pr-10 ${
+                errors.password ? "border-red-500" : ""
+              }`}
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              placeholder="Enter Password"
+              onChange={handleChange}
+              required
+            />{" "}
+            <div
+              className="absolute inset-y-0 right-0 mt-3 flex items-center pr-3 cursor-pointer"
+              onClick={toggleShowPassword}
+            >
+              {showPassword ? (
+                <AiFillEye className="w-5 h-5  text-gray-400" />
+              ) : (
+                <AiFillEyeInvisible className="w-5 h-5 text-gray-400" />
+              )}
             </div>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -165,7 +182,7 @@ const SignIn = ({ mediaBtn }) => {
 
           <Link to="/forgetpassword">
             <p
-              className="text-lg text-black font-medium text-right mb-2"
+              className=" text-white text-sm  text-right mb-8"
               onClick={handleForgetPassword}
             >
               Forgot Password?
@@ -175,8 +192,9 @@ const SignIn = ({ mediaBtn }) => {
             <button
               className="text-white font-bold bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full"
               type="submit"
+              disabled={isSubmitting}
             >
-              Sign In
+              {isSubmitting ? "Signing In..." : "Sign In"}
             </button>
             <div className="mt-3 text-center">
               <p>
@@ -188,7 +206,7 @@ const SignIn = ({ mediaBtn }) => {
             </div>
             <img
               src="/Images/Line.png"
-              className="my-4 w-20 mx-auto"
+              className="mt-4 w-20 mx-auto"
               alt="Line"
             />
           </div>

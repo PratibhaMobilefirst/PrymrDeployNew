@@ -59,16 +59,16 @@
   flex: 1;
   overflow-y: auto;
   margin-bottom: 16px;
-  /* Hide scrollbar for Firefox */
+ 
   scrollbar-width: none;
-  /* Hide scrollbar for WebKit (Chrome, Safari, Edge) */
-  -ms-overflow-style: none; /* IE and Edge */
+
+  -ms-overflow-style: none; 
   position: relative;
   z-index: 1;
 }
 
 .content-container::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for WebKit (Chrome, Safari, Edge) */
+  display: none; 
 }
 
 .popup-visible {
@@ -206,7 +206,7 @@
 
 .addFolder-popup input[type="text"]::placeholder {
   color: rgb(0, 0, 0);
-  opacity: 1; /* Firefox */
+  opacity: 1; 
 }
 
 .addFolder-popup p {

@@ -58,7 +58,7 @@ const BoardBuilder = () => {
   ];
   return (
     <>
-      <div className=" lg:w-[30%] lg:hidden ">
+      {/* <div className=" lg:w-[30%] lg:hidden ">
         <div className="flex items-center">
           <button className="w-auto h-auto" onClick={handleBackFunction}>
             <img src={handleBack} className="text-3xl border-white" />
@@ -70,9 +70,9 @@ const BoardBuilder = () => {
               className=" m-4 p-3 h-auto -pt-2 text-sm w-auto ml-auto"
             />
           </div>
-        </div>
+        </div> */}
 
-        {/* <div className=" flex items-center justify-center  border-white w-auto">
+      {/* <div className=" flex items-center justify-center  border-white w-auto">
           <div
             className="text-[#757575] px-12 flex items-center justify-center font-bold text-xl"
             onClick={handleNewBoardCreator}
@@ -100,7 +100,7 @@ const BoardBuilder = () => {
           </button>
         </div> */}
 
-        {/*         
+      {/*         
       <div className=" flex border-white w-auto">
         <button
           className="text-[#757575] flex items-center justify-center font-bold text-xl"
@@ -133,7 +133,7 @@ const BoardBuilder = () => {
                 }`}>ADS</span>
         </button>
       </div> */}
-        <div
+      {/*  <div
           className="bg-[#FFF500] m-3 ml-10 mr-10 h-10 flex items-center justify-center text-black w-auto rounded-full font-bold"
           onClick={handleNewBoardCreator}
         >
@@ -146,7 +146,7 @@ const BoardBuilder = () => {
             <div key={index} className="bg-[#262626] p-4 rounded-lg">
               <div className="relative">
                 <img src={deleteFoodFrame} className="rounded-md" alt="Food" />
-                {/* <div className="absolute bottom-2 left-2 flex space-x-1">
+                 <div className="absolute bottom-2 left-2 flex space-x-1">
                   <img
                     src={deleteBai}
                     className="h-6 w-6 rounded-full"
@@ -167,8 +167,8 @@ const BoardBuilder = () => {
                     className="h-6 w-6 rounded-full"
                     alt="Avatar"
                   />
-                </div> */}
-                {/* <div className=" left-2 flex m-2 h-20 space-x-2">
+                </div>
+              <div className=" left-2 flex m-2 h-20 space-x-2">
                       <Swiper
                         spaceBetween={10}
                         slidesPerView="auto"
@@ -182,7 +182,7 @@ const BoardBuilder = () => {
                           </SwiperSlide>
                         ))}
                       </Swiper>
-                    </div> */}
+                    </div> 
               </div>
               <div className="mt-2">
                 <p className="bg-[#949494] rounded-lg px-2 py-1 text-sm text-black w-20 text-center">
@@ -197,7 +197,7 @@ const BoardBuilder = () => {
           ))}
         </div>
 
-        {/* <Swiper
+         <Swiper
           slidesPerView={4}
           spaceBetween={20}
           freeMode={false}
@@ -262,13 +262,13 @@ const BoardBuilder = () => {
                 <BsThreeDotsVertical className="text-slate-200" />
               </div>
             </SwiperSlide>
-          ))}  </Swiper>  */}
+          ))}  </Swiper>  
 
-        {/* <div className="flex m-4 ">
+      <div className="flex m-4 ">
           <h1 className="text-white flex-grow-0">AD BUILDER</h1>
           <img src={arrowspointingout} className="ml-auto" />
-        </div> */}
-        {/* 
+        </div> 
+      
         <div className="bg-[#262626] text-white">
           <div className="flex">
             <h1 className="text-[#13A63B] bg-[#233A29] rounded-full m-5 p-2 text-xs">
@@ -292,12 +292,12 @@ const BoardBuilder = () => {
               </div>
             </div>
           </div>
-        </div> */}
-      </div>
+        </div> 
+      </div>*/}
 
-      <div className="hidden lg:block lg:w-[70%] fixed right-0 top-0">
-        <NewBoard />
-      </div>
+      {/* <div className=" lg:block lg:w-[70%] fixed right-0 top-0"> */}
+      <NewBoard />
+      {/* </div> */}
     </>
   );
 };

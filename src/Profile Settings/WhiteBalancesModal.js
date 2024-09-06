@@ -131,7 +131,7 @@ const WhiteBalanceTool = ({ image, onClose, onApply }) => {
             min="-100"
             max="100"
           />
-          <div className="col-span-2 flex justify-between mt-4">
+          <div className="col-span-2 gap-2 flex justify-between mt-4">
             <button
               className="bg-red-500 text-white px-4 py-1 rounded"
               onClick={onClose}

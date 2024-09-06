@@ -161,7 +161,6 @@ const GrainyFilmTool = ({ image, onClose, onApply }) => {
 
   return (
     <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col">
-
       <div className="flex-grow relative">
         <img
           src={previewImageUrl || image}
@@ -205,7 +204,7 @@ const GrainyFilmTool = ({ image, onClose, onApply }) => {
           />
           <div className="col-span-3 mb-1">
             <label className="text-white capitalize">Film Style</label>
-            <div className="flex justify-between mt-1">
+            <div className="flex justify-between gap-2 mt-1">
               {filmStyles.map((style, index) => (
                 <button
                   key={style.name}
@@ -219,7 +218,7 @@ const GrainyFilmTool = ({ image, onClose, onApply }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-3 flex justify-between">
+          <div className="col-span-3 gap-2 flex justify-between">
             <button
               className="bg-red-500 text-white px-4 py-1 rounded"
               onClick={onClose}
