@@ -1117,7 +1117,9 @@ const FullImageWithTappables = ({
   publicBoardId,
 }) => {
   const stageRef = useRef(null);
-
+  const isTouchDevice = () => {
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+  };
   const [stageSize, setStageSize] = useState({
     width: window.innerWidth * 0.7,
     height: window.innerHeight,
@@ -1169,10 +1171,7 @@ const FullImageWithTappables = ({
   const [selectedTappableContent, setSelectedTappableContent] = useState(null);
 
   
-  // Detect if the device is a touch device
-  const isTouchDevice = () => {
-    return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
-  };
+ 
   
   useEffect(() => {
     console.log("Reactions updated 1604 : ", tappableId);
@@ -1455,27 +1454,51 @@ const FullImageWithTappables = ({
  
 
   const handleResize = () => {
-    if (isTouchDevice()) {
-      // Full width for touch devices
-      setStageSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    } else {
-      // Keep the size for desktop unchanged
-      setStageSize({
-        width: window.innerWidth * 0.7,
-        height: window.innerHeight,
-      });
+    setStageSize({
+      width: isTouchDevice() ? window.innerWidth : window.innerWidth * 0.7,
+      height: window.innerHeight,
+    });
+
+    // Update the position to center the image on resize
+    if (loadedImage) {
+      const imageAspectRatio = loadedImage.width / loadedImage.height;
+      const stageAspectRatio = stageSize.width / stageSize.height;
+
+      let newWidth, newHeight, newX, newY;
+
+      if (imageAspectRatio > stageAspectRatio) {
+        newWidth = stageSize.width;
+        newHeight = stageSize.width / imageAspectRatio;
+      } else {
+        newHeight = stageSize.height;
+        newWidth = stageSize.height * imageAspectRatio;
+      }
+
+      newX = (stageSize.width - newWidth) / 2;
+      newY = (stageSize.height - newHeight) / 2;
+
+      setScale(newWidth / loadedImage.width);
+      setPosition({ x: newX, y: newY });
     }
   };
 
   useEffect(() => {
+    if (
+      status === "loaded" &&
+      loadedImage &&
+      loadedImage.width &&
+      loadedImage.height
+    ) {
+      handleResize();
+    }
+  }, [loadedImage, stageSize, status]);
+
+ useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [loadedImage]);
 
   const handleWheel = (e) => {
     e.evt.preventDefault();
@@ -2054,7 +2077,9 @@ const FullImageWithTappables = ({
             />
           )}
 
-          {tappableAreas.map((area) => {
+          {isTapsOn && 
+
+          tappableAreas.map((area) => {
             // Convert `left` and `top` from string to number
 
             
@@ -2084,13 +2109,13 @@ const FullImageWithTappables = ({
               );
               return null;
             }
-          })}
+          })} 
         </Layer>
       </Stage>
       {showOverlay && selectedTappableContent && (
   <div className="fixed inset-0 z-50 flex justify-end items-center">
     <div className="lg:w-[70%] w-full h-full flex justify-center items-center">
-      <div className="p-4 rounded-lg shadow-md">
+      <div className="rounded-lg shadow-md">
         <InfoOverlayInHomepg
           tappableContent={selectedTappableContent}
           onClose={() => setShowOverlay(false)} 
